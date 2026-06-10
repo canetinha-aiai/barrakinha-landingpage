@@ -6,103 +6,83 @@ const VendorBenefits = () => {
   const benefits = [
     {
       icon: MapPinned,
-      title: 'Venda em Qualquer Lugar da Região',
-      description: 'Mobilidade total. Marque sua localização e deixe os clientes te encontrarem onde quer que você esteja.',
+      title: 'Venda em Qualquer Lugar',
+      description: 'Mobilidade total. Marque sua localização e deixe os clientes te encontrarem onde você estiver.',
     },
     {
       icon: TrendingUp,
-      title: 'Destaque Automático no Mapa',
-      description: 'Seu negócio aparece automaticamente para clientes próximos, aumentando sua visibilidade.',
+      title: 'Destaque no Mapa',
+      description: 'Seu negócio aparece automaticamente para clientes na sua região, aumentando sua visibilidade.',
     },
     {
       icon: Smartphone,
-      title: 'Gerenciamento de Pedidos Simplificado',
-      description: 'Receba, gerencie e confirme pedidos direto pelo app. Tudo na palma da sua mão.',
+      title: 'Painel de Pedidos Simples',
+      description: 'Receba, gerencie e confirme pedidos direto pelo app. Sem burocracia, tudo na palma da mão.',
     },
     {
       icon: Users,
-      title: 'Aumento de Clientes',
-      description: 'Conecte-se com milhares de clientes que procuram comida de rua autêntica e de qualidade.',
+      title: 'Mais Clientes Próximos',
+      description: 'Conecte-se de forma direta com milhares de clientes que procuram comida de rua autêntica.',
     },
   ];
 
   return (
-    <section id="vendor-benefits" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-orange-100 via-orange-50 to-white relative overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-red-400/20 to-orange-400/20 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-orange-400/20 to-yellow-400/20 rounded-full blur-3xl"></div>
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Image Column */}
+    <section id="vendor-benefits" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#FAFAFA] border-y border-gray-100">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+          
+          {/* Image Column - Clean, Framed, order-last on mobile */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative"
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-5 order-last lg:order-first relative"
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-200/50 aspect-[16/9] sm:aspect-[4/3] bg-white">
               <img 
                 src="https://images.unsplash.com/photo-1610139413990-b0cd120a8d84" 
-                alt="Vendedor de comida de rua"
-                className="w-full h-full object-cover"
+                alt="Vendedor ambulante de comida de rua preparando lanches"
+                className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-orange-600/40 to-transparent"></div>
             </div>
-            
-            {/* Decorative Food Illustrations */}
-            <motion.div
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="absolute -top-8 -right-8 w-24 h-24 bg-gradient-to-br from-red-500 to-orange-500 rounded-full opacity-20 blur-xl"
-            ></motion.div>
-            <motion.div
-              animate={{ rotate: [0, -5, 5, 0] }}
-              transition={{ duration: 5, repeat: Infinity }}
-              className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-full opacity-20 blur-xl"
-            ></motion.div>
           </motion.div>
 
           {/* Content Column */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="lg:col-span-7"
           >
-            <h2 className="font-fredoka text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="font-fredoka text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
               Venda Sem Lugar Fixo, Com Visibilidade Total
             </h2>
-            <p className="text-xl text-gray-700 font-poppins mb-10">
-              Transforme seu negócio ambulante em um empreendimento digital. Alcance mais clientes e venda mais, sem complicação.
+            <p className="text-base sm:text-lg text-gray-500 font-poppins mb-10 max-w-2xl leading-relaxed">
+              Transforme seu negócio ambulante em um ponto digital dinâmico. Alcance novos clientes na sua vizinhança e venda mais, sem complicação.
             </p>
 
-            <div className="space-y-6">
+            {/* Clean Grid Layout - flex-row on items for cleaner mobile scanning */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
               {benefits.map((benefit, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="flex items-start gap-4 group"
-                >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <benefit.icon className="text-white" size={24} strokeWidth={2} />
+                <div key={index} className="flex flex-row items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shadow-sm border border-orange-100/50 shrink-0 mt-0.5">
+                    <benefit.icon size={20} strokeWidth={2} />
                   </div>
                   <div>
-                    <h3 className="font-fredoka text-xl font-bold text-gray-900 mb-2">
+                    <h3 className="font-fredoka text-lg font-bold text-gray-900 mb-1">
                       {benefit.title}
                     </h3>
-                    <p className="text-gray-600 font-poppins">
+                    <p className="text-sm text-gray-500 font-poppins leading-relaxed">
                       {benefit.description}
                     </p>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>

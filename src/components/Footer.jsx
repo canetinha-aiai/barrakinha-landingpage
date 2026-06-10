@@ -1,21 +1,72 @@
-import React from 'react';
-import { Instagram, Music2, Mail, MapPin, Phone } from 'lucide-react';
+import React, { useState } from 'react';
+import { Instagram, Music2, Mail, MapPin, Phone, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import { config } from '@/config';
 
 const Footer = () => {
   const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setLoading(true);
+
+    try {
+      if (config.googleSheetUrl) {
+        const response = await fetch(config.googleSheetUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            email: email,
+            created_at: new Date().toLocaleString('pt-BR')
+          }),
+        });
+        
+        if (response.ok) {
+          toast({
+            title: "Inscrição realizada com sucesso!",
+            description: "Seu e-mail foi adicionado à nossa newsletter!",
+          });
+        } else {
+          throw new Error('Falha no envio');
+        }
+      } else {
+        console.warn("Aviso de Dev: Nenhuma URL de Planilha do Google configurada em src/config.js. Simulando sucesso.");
+        await new Promise(resolve => setTimeout(resolve, 800));
+        toast({
+          title: "Quase lá! Cadastro Simulado",
+          description: "Configure a URL da planilha no arquivo src/config.js para salvar de verdade.",
+        });
+      }
+      setEmail('');
+    } catch (err) {
+      console.error(err);
+      toast({
+        variant: "destructive",
+        title: "Erro ao se inscrever",
+        description: "Não conseguimos salvar seu e-mail. Verifique a conexão e tente novamente.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLinkClick = (section) => {
     toast({
-      title: "🚧 Em breve!",
+      title: "Em breve!",
       description: `A seção ${section} estará disponível em breve!`,
     });
   };
 
   const handleSocialClick = (platform) => {
     toast({
-      title: "🚧 Redes Sociais",
+      title: "Redes Sociais",
       description: `Nosso ${platform} estará no ar em breve. Aguarde novidades!`,
     });
   };
@@ -108,7 +159,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter (Optional) */}
+          {/* Newsletter Form */}
           <div>
             <h4 className="font-fredoka text-lg font-bold mb-4 text-orange-400">
               Fique Ligado
@@ -116,12 +167,24 @@ const Footer = () => {
             <p className="text-gray-400 font-poppins mb-4 text-sm">
               Receba novidades sobre novos vendedores e promoções!
             </p>
-            <Button
-              onClick={() => handleLinkClick('Newsletter')}
-              className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-poppins font-semibold rounded-lg transition-all duration-300"
-            >
-              Inscrever-se
-            </Button>
+            <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Seu e-mail" 
+                required 
+                autoComplete="email"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 text-white placeholder-gray-500 text-sm font-poppins min-h-[40px]"
+              />
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-poppins font-semibold rounded-lg transition-all duration-300 py-2 text-sm min-h-[40px] flex items-center justify-center"
+              >
+                {loading ? 'Cadastrando...' : 'Inscrever-se'}
+              </Button>
+            </form>
           </div>
         </div>
 
@@ -131,8 +194,8 @@ const Footer = () => {
             <p className="text-gray-400 font-poppins text-sm text-center md:text-left">
               © 2026 Barrakinha. Todos os direitos reservados.
             </p>
-            <p className="text-gray-500 font-poppins text-sm text-center md:text-right">
-              Feito com ❤️ para amantes de comida de rua
+            <p className="text-gray-500 font-poppins text-sm text-center md:text-right flex items-center justify-center md:justify-end gap-1">
+              Feito com <Heart size={14} className="text-red-500 fill-red-500 inline shrink-0" /> para amantes de comida de rua
             </p>
           </div>
         </div>

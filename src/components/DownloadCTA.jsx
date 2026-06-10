@@ -1,15 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Smartphone, Beef, Coffee, Croissant, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import { config } from '@/config';
 
 const DownloadCTA = () => {
   const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setLoading(true);
+
+    try {
+      if (config.googleSheetUrl) {
+        const response = await fetch(config.googleSheetUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            email: email,
+            created_at: new Date().toLocaleString('pt-BR')
+          }),
+        });
+        
+        if (response.ok) {
+          toast({
+            title: "Inscrição realizada com sucesso!",
+            description: "Avisaremos você assim que o aplicativo for lançado no Google Play!",
+          });
+        } else {
+          throw new Error('Falha no envio');
+        }
+      } else {
+        console.warn("Aviso de Dev: Nenhuma URL de Planilha do Google configurada em src/config.js. Simulando sucesso.");
+        await new Promise(resolve => setTimeout(resolve, 800));
+        toast({
+          title: "Quase lá! Cadastro Simulado",
+          description: "Configure a URL da planilha no arquivo src/config.js para salvar de verdade.",
+        });
+      }
+      setEmail('');
+    } catch (err) {
+      console.error(err);
+      toast({
+        variant: "destructive",
+        title: "Erro ao se cadastrar",
+        description: "Não conseguimos cadastrar seu e-mail. Verifique a conexão e tente novamente.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleNotifyMe = () => {
     toast({
-      title: "🚀 Estamos cozinhando algo especial!",
+      title: "Estamos cozinhando algo especial!",
       description: "O app estará disponível no Google Play em breve. Obrigado pelo interesse!",
     });
   };
@@ -71,13 +122,47 @@ const DownloadCTA = () => {
           transition={{ duration: 0.8 }}
         >
           <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white font-bold font-poppins mb-6 animate-pulse">
-            🚧 Em Desenvolvimento
+            Em Desenvolvimento
           </div>
           <h2 className="font-fredoka text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
             Estamos Quase Lá!
           </h2>
-          <p className="text-2xl sm:text-3xl text-white/95 font-poppins mb-12 max-w-3xl mx-auto">
+          <p className="text-xl sm:text-2xl text-white/95 font-poppins mb-10 max-w-3xl mx-auto">
             O Barrakinha está sendo preparado com muito carinho e sabor. Em breve no seu Android!
+          </p>
+        </motion.div>
+
+        {/* Email Waitlist Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="max-w-md mx-auto mb-12 text-left sm:text-center"
+        >
+          <form 
+            onSubmit={handleSubscribe} 
+            className="flex flex-col sm:flex-row items-center gap-2 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 shadow-xl focus-within:ring-2 focus-within:ring-white transition-all duration-300"
+          >
+            <input 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Seu melhor e-mail" 
+              required 
+              autoComplete="email"
+              className="w-full px-4 py-3 bg-transparent border-0 focus:outline-none focus:ring-0 text-white placeholder-white/70 font-poppins text-base min-h-[48px]"
+            />
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full sm:w-auto bg-white hover:bg-orange-50 text-orange-600 font-poppins font-semibold px-6 py-3 rounded-xl shadow-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shrink-0 min-h-[48px] flex items-center justify-center gap-2"
+            >
+              {loading ? 'Cadastrando...' : 'Me Avise!'}
+            </button>
+          </form>
+          <p className="text-white/80 font-poppins text-xs mt-3 text-center">
+            Notificaremos assim que o aplicativo for lançado.
           </p>
         </motion.div>
 
@@ -88,24 +173,17 @@ const DownloadCTA = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8"
         >
-          {/* iOS Removed as requested */}
-
           <Button
             onClick={handleNotifyMe}
             size="lg"
-            className="bg-white/90 hover:bg-white text-gray-500 font-poppins font-semibold px-10 py-7 text-lg rounded-2xl shadow-xl transition-all duration-300 cursor-not-allowed flex items-center gap-3 relative overflow-hidden"
+            className="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-poppins font-semibold px-8 py-5 text-sm rounded-2xl shadow-xl transition-all duration-300 flex items-center gap-3"
           >
-            <div className="absolute inset-0 bg-gray-100/50"></div>
-            <div className="relative flex items-center gap-3 z-10 opacity-70">
-              <Smartphone size={32} />
-              <div className="text-left">
-                <div className="text-xs uppercase tracking-wider font-bold">Em Breve no</div>
-                <div className="text-xl font-bold">Google Play</div>
-              </div>
+            <Smartphone size={24} />
+            <div className="text-left">
+              <div className="text-[10px] uppercase tracking-wider font-bold opacity-80">Em Breve no</div>
+              <div className="text-base font-bold">Google Play</div>
             </div>
-            <div className="absolute top-2 right-2 text-orange-500">
-              <Clock size={16} />
-            </div>
+            <Clock size={14} className="text-white/80" />
           </Button>
         </motion.div>
 
@@ -122,7 +200,7 @@ const DownloadCTA = () => {
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-white rounded-full"></div>
-            <span>Versão Beta em Breve</span>
+            <span>Novidades em Breve</span>
           </div>
         </motion.div>
       </div>
