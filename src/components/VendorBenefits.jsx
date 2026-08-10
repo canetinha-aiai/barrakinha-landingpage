@@ -1,88 +1,133 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPinned, TrendingUp, Smartphone, Users } from 'lucide-react';
+import {
+  Clock,
+  Navigation,
+  ClipboardList,
+  BarChart3,
+  ArrowRight,
+} from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading';
+
+/*
+  A funcionalidade descrita aqui é a "jornada" do app, mas o termo não
+  aparece em lugar nenhum da página: quem chega neste site ainda não
+  usou o produto e não tem por que conhecer o vocabulário interno dele.
+  A landing descreve o que acontece — abrir, aparecer no mapa, fechar —
+  e o app apresenta o nome depois.
+
+  Nenhuma menção a taxa, comissão ou repasse: essa conversa acontece
+  dentro do app, no cadastro. Anunciar número aqui só cria expectativa
+  antes da hora.
+*/
+const benefits = [
+  {
+    icon: Clock,
+    title: 'Você marca a hora de abrir e fechar',
+    description:
+      'Enquanto está vendendo, sua barraca aparece no mapa. Ao encerrar, ela sai da lista — ninguém aparece atrás de você depois que fechou.',
+  },
+  {
+    icon: Navigation,
+    title: 'Seu ponto é onde você parar',
+    description:
+      'A localização é a do lugar onde você abriu naquele dia. Mudou de esquina amanhã, o mapa muda junto.',
+  },
+  {
+    icon: ClipboardList,
+    title: 'Cardápio e pedidos no celular',
+    description:
+      'Cadastre comida, lanche e bebida com foto e preço. Os pedidos chegam prontos pra aceitar, sem comanda de papel.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Acompanhe suas vendas',
+    description:
+      'O que saiu, quanto rendeu e em quais dias. Dá pra decidir onde parar amanhã olhando o histórico.',
+  },
+];
 
 const VendorBenefits = () => {
-  const benefits = [
-    {
-      icon: MapPinned,
-      title: 'Venda em Qualquer Lugar',
-      description: 'Mobilidade total. Marque sua localização e deixe os clientes te encontrarem onde você estiver.',
-    },
-    {
-      icon: TrendingUp,
-      title: 'Destaque no Mapa',
-      description: 'Seu negócio aparece automaticamente para clientes na sua região, aumentando sua visibilidade.',
-    },
-    {
-      icon: Smartphone,
-      title: 'Painel de Pedidos Simples',
-      description: 'Receba, gerencie e confirme pedidos direto pelo app. Sem burocracia, tudo na palma da mão.',
-    },
-    {
-      icon: Users,
-      title: 'Mais Clientes Próximos',
-      description: 'Conecte-se de forma direta com milhares de clientes que procuram comida de rua autêntica.',
-    },
-  ];
-
   return (
-    <section id="vendor-benefits" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#FAFAFA] border-y border-gray-100">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-          
-          {/* Image Column - Clean, Framed, order-last on mobile */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-5 order-last lg:order-first relative"
-          >
-            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-200/50 aspect-[16/9] sm:aspect-[4/3] bg-white">
-              <img 
-                src="https://images.unsplash.com/photo-1610139413990-b0cd120a8d84" 
-                alt="Vendedor ambulante de comida de rua preparando lanches"
-                className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-500"
+    <section id="pra-vendedor" className="bg-cream-50 py-24 text-ink-900 lg:py-32">
+      <div className="mx-auto max-w-6xl px-5 lg:px-8">
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <SectionHeading
+              tone="light"
+              eyebrow="Pra quem vende"
+              title="Sem ponto fixo, com endereço no mapa"
+              description="Você já tem o cliente do bairro. O que falta é ele saber que hoje você está na rua — e onde."
+            />
+
+            {/*
+              Aqui entra uma foto real de barraca ou de vendedor
+              cadastrado. Sem mock de UI e sem foto de banco de imagem:
+              enquanto o material real não existe, a seção se sustenta
+              na tipografia.
+            */}
+
+            <motion.a
+              href="#lista"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              onClick={(event) => {
+                event.preventDefault();
+                document
+                  .querySelector('#lista')
+                  ?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="group mt-9 flex h-14 w-full items-center justify-center gap-2 rounded-sm bg-ink-900 text-base font-medium text-cream-50 transition-colors hover:bg-ink-700 sm:inline-flex sm:h-auto sm:w-auto sm:px-6 sm:py-3.5 sm:text-[15px]"
+            >
+              Quero cadastrar minha barraca
+              <ArrowRight
+                size={16}
+                aria-hidden="true"
+                className="transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5"
               />
-            </div>
-          </motion.div>
+            </motion.a>
+          </div>
 
-          {/* Content Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="lg:col-span-7"
-          >
-            <h2 className="font-fredoka text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-              Venda Sem Lugar Fixo, Com Visibilidade Total
-            </h2>
-            <p className="text-base sm:text-lg text-gray-500 font-poppins mb-10 max-w-2xl leading-relaxed">
-              Transforme seu negócio ambulante em um ponto digital dinâmico. Alcance novos clientes na sua vizinhança e venda mais, sem complicação.
-            </p>
-
-            {/* Clean Grid Layout - flex-row on items for cleaner mobile scanning */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
+          <div className="lg:col-span-7">
+            <div className="grid grid-cols-1 gap-x-10 gap-y-9 sm:grid-cols-2">
               {benefits.map((benefit, index) => (
-                <div key={index} className="flex flex-row items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shadow-sm border border-orange-100/50 shrink-0 mt-0.5">
-                    <benefit.icon size={20} strokeWidth={2} />
-                  </div>
-                  <div>
-                    <h3 className="font-fredoka text-lg font-bold text-gray-900 mb-1">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-sm text-gray-500 font-poppins leading-relaxed">
-                      {benefit.description}
-                    </p>
-                  </div>
-                </div>
+                <motion.div
+                  key={benefit.title}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.06,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                >
+                  <benefit.icon
+                    size={22}
+                    strokeWidth={1.75}
+                    aria-hidden="true"
+                    className="text-ember-600"
+                  />
+                  <h3 className="mt-5 text-[19px] leading-tight text-ink-900">
+                    {benefit.title}
+                  </h3>
+                  <p className="mt-2.5 text-[14px] leading-relaxed text-sand-600 text-pretty">
+                    {benefit.description}
+                  </p>
+                </motion.div>
               ))}
             </div>
-          </motion.div>
 
+            <div className="mt-14 border-t border-ink-900/10 pt-8">
+              <p className="max-w-prose text-[15px] leading-relaxed text-sand-600 text-pretty">
+                O cadastro leva alguns minutos e é feito direto pelo app, com
+                e-mail e código de confirmação. As condições de recebimento
+                aparecem pra você antes da primeira venda.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>

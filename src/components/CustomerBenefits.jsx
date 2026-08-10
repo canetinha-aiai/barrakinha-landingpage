@@ -1,109 +1,109 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Star, Zap, Heart } from 'lucide-react';
+import { MapPin, BookOpen, ClipboardList, Heart } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading';
 
+/*
+  Cada item corresponde a uma tela que já existe no app do cliente:
+  mapa, cardápio da loja, pedidos e favoritos.
+
+  Duas coisas que ficaram de fora de propósito:
+
+  1. "Jornada" é o nome que o vendedor usa pra abrir e fechar o ponto
+     dentro do app dele. Pro cliente isso é jargão — ele só precisa
+     saber que a barraca aparece quando está aberta e some quando fecha.
+
+  2. Nada de nota, estrela ou avaliação: essa funcionalidade não existe.
+     Anunciar aqui seria promessa que o app não cumpre no dia 1.
+*/
+const benefits = [
+  {
+    icon: MapPin,
+    title: 'Mapa em tempo real',
+    description:
+      'A barraca aparece no mapa enquanto está vendendo e some quando fecha. Você só vê quem está na rua agora.',
+  },
+  {
+    icon: BookOpen,
+    title: 'Cardápio com preço',
+    description:
+      'Comida, lanche e bebida com valor antes de sair de casa. Nada de chegar e descobrir o preço.',
+  },
+  {
+    icon: ClipboardList,
+    title: 'Pedido acompanhado',
+    description:
+      'Monte o carrinho, confirme e acompanhe o status até a hora de retirar. Sem esperar em pé na calçada.',
+  },
+  {
+    icon: Heart,
+    title: 'Barracas favoritas',
+    description:
+      'Marque as que você gosta e ache elas rápido sempre que estiverem abertas por perto.',
+  },
+];
+
+/*
+  Antes: quatro caixas brancas soltas, cada uma com um círculo de
+  gradiente diferente e sombra pesada no hover.
+
+  Agora: um único bloco dividido por hairlines, do jeito que uma
+  tabela editorial faria. O ícone é traço fino, o índice numérico dá
+  ordem de leitura e o hover só troca a cor de fundo da célula.
+
+  Nada aqui fala de taxa ou repasse — isso é assunto do app, depois
+  do cadastro, não da primeira visita.
+*/
 const CustomerBenefits = () => {
-  const benefits = [
-    {
-      icon: MapPin,
-      title: 'Encontre Barrakinhas no Mapa',
-      description: 'Descubra vendedores de comida de rua perto de você em tempo real. Nunca mais perca aquela barrakinha favorita!',
-      color: 'from-orange-400 to-red-500',
-    },
-    {
-      icon: Star,
-      title: 'Avaliações e Comentários',
-      description: 'Veja o que outros clientes estão dizendo. Avaliações reais de pessoas reais que amam comida de rua.',
-      color: 'from-yellow-400 to-orange-500',
-    },
-    {
-      icon: Zap,
-      title: 'Pedidos Rápidos e Fáceis',
-      description: 'Sistema de pedido simples e direto. Peça, pague e pegue sua comida sem complicação.',
-      color: 'from-red-500 to-pink-500',
-    },
-    {
-      icon: Heart,
-      title: 'Suporte Local',
-      description: 'Apoie vendedores locais e ajude a fortalecer a economia da sua comunidade.',
-      color: 'from-pink-500 to-red-600',
-    },
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' },
-    },
-  };
-
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
-      {/* Decorative Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-10 w-64 h-64 bg-orange-500 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-red-500 rounded-full blur-3xl"></div>
-      </div>
+    <section id="pra-voce" className="bg-ink-900 py-24 lg:py-32">
+      <div className="mx-auto max-w-6xl px-5 lg:px-8">
+        <SectionHeading
+          eyebrow="Pra quem come"
+          title="A comida boa da sua rua, sem depender da sorte"
+          description="Você já sabe que a barraca existe. O que falta é saber se ela está lá hoje."
+        />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="font-fredoka text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-            Por Que Nossos Clientes Amam
-          </h2>
-          <p className="text-xl text-gray-600 font-poppins max-w-2xl mx-auto">
-            Tudo que você precisa para descobrir e saborear a melhor comida de rua da região
-          </p>
-        </motion.div>
-
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-        >
+        {/* No celular a célula vai de ponta a ponta e o texto alinha com a
+            margem da seção. Com padding horizontal, a linha ganhava recuo
+            duplo e o card ficava apertado. O hover também só entra a
+            partir do sm — em tela de toque ele não existe. */}
+        <div className="mt-14 grid grid-cols-1 border-t border-ink-700 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
           {benefits.map((benefit, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
+            <motion.article
+              key={benefit.title}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.06,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="group border-b border-ink-700 py-7 transition-colors duration-300 sm:p-7 sm:hover:bg-ink-800 sm:[&:nth-child(odd)]:border-r lg:border-r lg:last:border-r-0 lg:[&:nth-child(odd)]:border-r"
             >
-              {/* Gradient Background on Hover */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${benefit.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
-              
-              <div className="relative z-10">
-                <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${benefit.color} flex items-center justify-center mb-6 shadow-lg`}>
-                  <benefit.icon className="text-white" size={32} strokeWidth={2} />
-                </div>
-                <h3 className="font-fredoka text-2xl font-bold text-gray-900 mb-4">
-                  {benefit.title}
-                </h3>
-                <p className="text-gray-600 font-poppins leading-relaxed">
-                  {benefit.description}
-                </p>
+              <div className="flex items-center justify-between">
+                <benefit.icon
+                  size={22}
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                  className="text-ember-500"
+                />
+                <span className="numeric font-display text-[13px] font-bold text-sand-500 transition-colors group-hover:text-cream-50">
+                  0{index + 1}
+                </span>
               </div>
-            </motion.div>
+
+              <h3 className="mt-6 text-[19px] leading-tight text-cream-50 sm:mt-8">
+                {benefit.title}
+              </h3>
+
+              <p className="mt-2.5 text-[15px] leading-relaxed text-sand-400 text-pretty sm:mt-3 sm:text-[14px]">
+                {benefit.description}
+              </p>
+            </motion.article>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

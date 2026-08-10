@@ -1,85 +1,81 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Search, ShoppingBag, Utensils } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading';
+
+/*
+  Passos escritos a partir do fluxo real do app (barrakinha-vendedor):
+  welcome → register (nome, e-mail, telefone) → otp-code → mapa de
+  vendedores → cardápio da loja → carrinho → pedido.
+
+  A versão anterior dizia "nenhum cadastro chato", o que era falso: a
+  conta é obrigatória. O que dá pra dizer com honestidade é que ela é
+  curta e sem senha, porque o login é por código no e-mail.
+
+  Sem "jornada" e sem avaliação nesta seção: a primeira é termo do app
+  do vendedor, a segunda é funcionalidade que ainda não existe.
+*/
+const steps = [
+  {
+    title: 'Crie sua conta',
+    description:
+      'Nome, e-mail e telefone. A confirmação chega por código e o login é sempre assim — você não precisa criar nem lembrar de senha.',
+  },
+  {
+    title: 'Veja quem está na rua',
+    description:
+      'O mapa mostra as barracas que estão vendendo naquele momento e a que distância cada uma fica de onde você está.',
+  },
+  {
+    title: 'Peça e retire',
+    description:
+      'Abre o cardápio da barraca, monta o carrinho, confirma o pedido e acompanha o status até a hora de pegar.',
+  },
+];
 
 const HowItWorks = () => {
-  const steps = [
-    {
-      number: 1,
-      icon: Search,
-      title: 'Encontre Barrakinhas',
-      description: 'Descubra barrakinhas próximas usando nosso mapa interativo em tempo real. Filtre por tipo de comida, avaliação e distância.',
-    },
-    {
-      number: 2,
-      icon: ShoppingBag,
-      title: 'Faça seu Pedido',
-      description: 'Navegue pelo cardápio digital do vendedor, escolha seus pratos favoritos e faça o pedido de forma rápida e fácil.',
-    },
-    {
-      number: 3,
-      icon: Utensils,
-      title: 'Saboreie na Hora',
-      description: 'Pegue sua comida direto com o vendedor. Comida de rua autêntica, fresca, quentinha e cheia de sabor para você aproveitar!',
-    },
-  ];
-
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-6xl mx-auto">
-        
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="font-fredoka text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Como Funciona?
-          </h2>
-          <p className="text-base sm:text-lg text-gray-500 font-poppins max-w-2xl mx-auto leading-relaxed">
-            Três passos simples para você saborear a melhor comida de rua da sua cidade
-          </p>
-        </motion.div>
+    <section id="como-funciona" className="bg-ink-900 py-24 lg:py-32">
+      <div className="mx-auto max-w-6xl px-5 lg:px-8">
+        <SectionHeading
+          eyebrow="Como funciona"
+          title="Da conta criada ao espetinho na mão"
+          description="Três passos, sem senha pra decorar."
+        />
 
-        {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <ol className="mt-14 border-t border-ink-700 lg:mt-16">
           {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
+            <motion.li
+              key={step.title}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.15 }}
-              className="relative bg-[#FAFAFA] border border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group"
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="group border-b border-ink-700 py-8 md:grid md:grid-cols-12 md:items-baseline md:gap-x-10 md:py-9"
             >
-              {/* Large, elegant step number background indicator */}
-              <span className="font-fredoka text-8xl font-black text-gray-200/40 absolute -top-2 -right-2 select-none group-hover:text-orange-500/5 transition-colors duration-300">
-                0{step.number}
-              </span>
-              
-              <div className="relative z-10">
-                {/* Clean soft-colored icon container */}
-                <div className="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100/50 flex items-center justify-center text-orange-600 mb-6 group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                  <step.icon size={22} strokeWidth={2} />
-                </div>
-                
-                {/* Title */}
-                <h3 className="font-fredoka text-xl font-bold text-gray-900 mb-3">
+              {/* `md:contents` dissolve este wrapper no desktop, e aí número
+                  e título voltam a ser células da grade. No celular ele
+                  mantém os dois na mesma linha — antes o número de 44px
+                  ocupava uma linha inteira sozinho. */}
+              <div className="flex items-baseline gap-4 md:contents">
+                <span className="numeric font-display text-[30px] font-extrabold leading-none tracking-[-0.05em] text-sand-600 transition-colors duration-300 group-hover:text-ember-500 md:col-span-2 md:text-[44px]">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+
+                <h3 className="text-[20px] leading-tight text-cream-50 md:col-span-4 md:text-[22px]">
                   {step.title}
                 </h3>
-                
-                {/* Description */}
-                <p className="text-sm text-gray-500 font-poppins leading-relaxed">
-                  {step.description}
-                </p>
               </div>
-            </motion.div>
-          ))}
-        </div>
 
+              <p className="mt-3.5 max-w-prose text-[15px] leading-relaxed text-sand-400 text-pretty md:col-span-6 md:mt-0">
+                {step.description}
+              </p>
+            </motion.li>
+          ))}
+        </ol>
       </div>
     </section>
   );
