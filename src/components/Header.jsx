@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const links = [
@@ -8,9 +9,38 @@ const links = [
   { label: 'Pra vendedor', href: '#pra-vendedor' },
 ];
 
+const easeOutExpo = [0.16, 1, 0.3, 1];
+
+/* O painel abre pela altura e os itens entram escalonados atrás dele. */
+const panel = {
+  hidden: { height: 0, opacity: 0 },
+  visible: {
+    height: 'auto',
+    opacity: 1,
+    transition: {
+      height: { duration: 0.38, ease: easeOutExpo },
+      opacity: { duration: 0.2 },
+      staggerChildren: 0.05,
+      delayChildren: 0.08,
+    },
+  },
+  exit: {
+    height: 0,
+    opacity: 0,
+    transition: { height: { duration: 0.28, ease: easeOutExpo }, opacity: { duration: 0.15 } },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: easeOutExpo } },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
+};
+
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -19,9 +49,54 @@ const Header = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  /* Menu aberto trava a rolagem do fundo e fecha no Esc — sem isso, o
+     usuário rola a página atrás do painel e se perde. */
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open]);
+
+  /*
+    Rolar só depois que o menu fechar.
+
+    Enquanto o painel está aberto o body fica com `overflow: hidden`, e
+    nesse estado o navegador simplesmente ignora o `scrollIntoView` — era
+    por isso que os itens do menu não levavam a lugar nenhum. O destino
+    fica guardado e a rolagem acontece no efeito abaixo, depois que a
+    limpeza do travamento devolveu o scroll ao body.
+  */
+  useEffect(() => {
+    if (!pending || open) return undefined;
+
+    const frame = requestAnimationFrame(() => {
+      document.querySelector(pending)?.scrollIntoView({ behavior: 'smooth' });
+      setPending(null);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [pending, open]);
+
   const go = (event, href) => {
     event.preventDefault();
-    setOpen(false);
+
+    if (open) {
+      setOpen(false);
+      setPending(href);
+      return;
+    }
+
     document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -30,7 +105,7 @@ const Header = () => {
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-colors duration-300',
         scrolled || open
-          ? 'border-b border-ink-700 bg-ink-900/95 backdrop-blur-sm'
+          ? 'border-b border-paper-200 bg-paper/95 backdrop-blur-sm'
           : 'border-b border-transparent',
       )}
     >
@@ -38,7 +113,7 @@ const Header = () => {
         <a
           href="#top"
           onClick={(event) => go(event, '#top')}
-          className="font-display text-lg font-extrabold tracking-[-0.04em] text-cream-50"
+          className="font-display text-lg font-extrabold tracking-[-0.04em] text-ink-900"
         >
           barrakinha
         </a>
@@ -49,7 +124,7 @@ const Header = () => {
               key={link.href}
               href={link.href}
               onClick={(event) => go(event, link.href)}
-              className="text-[13px] text-sand-400 transition-colors hover:text-cream-50"
+              className="text-[13px] text-ink-600 transition-colors hover:text-ink-900"
             >
               {link.label}
             </a>
@@ -57,44 +132,85 @@ const Header = () => {
           <a
             href="#lista"
             onClick={(event) => go(event, '#lista')}
-            className="rounded-sm bg-cream-50 px-4 py-2 text-[13px] font-medium text-ink-900 transition-colors hover:bg-white"
+            className="rounded-sm bg-ink-900 px-4 py-2 text-[13px] font-medium text-paper transition-colors hover:bg-ink-700"
           >
             Entrar na lista
           </a>
         </nav>
 
+        {/* As duas barras viram X girando em torno do próprio centro —
+            um ícone só, em movimento, em vez de trocar de ícone. */}
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-label={open ? 'Fechar menu' : 'Abrir menu'}
           aria-expanded={open}
-          className="-mr-2 flex h-11 w-11 items-center justify-center text-cream-50 md:hidden"
+          aria-controls="menu-mobile"
+          className="-mr-2 flex h-11 w-11 items-center justify-center md:hidden"
         >
-          {open ? <X size={20} /> : <Menu size={20} />}
+          <span className="relative block h-5 w-[22px]">
+            {[0, 1].map((index) => (
+              <motion.span
+                key={index}
+                aria-hidden="true"
+                className="absolute left-0 block h-[1.5px] w-full rounded-full bg-ink-900"
+                style={{ top: 'calc(50% - 0.75px)' }}
+                initial={false}
+                animate={
+                  open
+                    ? { rotate: index === 0 ? 45 : -45, y: 0 }
+                    : { rotate: 0, y: index === 0 ? -4 : 4 }
+                }
+                transition={{ duration: 0.32, ease: easeOutExpo }}
+              />
+            ))}
+          </span>
         </button>
       </div>
 
-      {open ? (
-        <nav className="border-t border-ink-700 bg-ink-900 px-5 py-3 md:hidden">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={(event) => go(event, link.href)}
-              className="block py-3 text-[15px] text-sand-300"
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href="#lista"
-            onClick={(event) => go(event, '#lista')}
-            className="mt-2 mb-1 block rounded-sm bg-ember-500 px-4 py-3 text-center text-[15px] font-medium text-ember-900"
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.nav
+            id="menu-mobile"
+            key="menu"
+            variants={panel}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="overflow-hidden border-t border-paper-200 bg-paper md:hidden"
           >
-            Entrar na lista
-          </a>
-        </nav>
-      ) : null}
+            <div className="px-5 pb-6 pt-2">
+              {links.map((link) => (
+                <motion.a
+                  key={link.href}
+                  variants={item}
+                  href={link.href}
+                  onClick={(event) => go(event, link.href)}
+                  className="group flex items-center justify-between border-b border-paper-200 py-4"
+                >
+                  <span className="font-display text-[22px] font-extrabold tracking-[-0.03em] text-ink-900">
+                    {link.label}
+                  </span>
+                  <ArrowUpRight
+                    size={20}
+                    aria-hidden="true"
+                    className="shrink-0 text-sand-400 transition-transform duration-300 ease-out-expo group-active:translate-x-0.5 group-active:-translate-y-0.5"
+                  />
+                </motion.a>
+              ))}
+
+              <motion.a
+                variants={item}
+                href="#lista"
+                onClick={(event) => go(event, '#lista')}
+                className="mt-6 flex h-14 items-center justify-center rounded-sm bg-ink-900 text-base font-medium text-paper"
+              >
+                Entrar na lista
+              </motion.a>
+            </div>
+          </motion.nav>
+        ) : null}
+      </AnimatePresence>
     </header>
   );
 };

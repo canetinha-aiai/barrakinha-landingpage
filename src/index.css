@@ -5,40 +5,38 @@
 /*
   Barrakinha — sistema visual
   ---------------------------
-  Regras que o design segue e que devem ser mantidas em qualquer
-  componente novo:
-
-  1. Nenhum gradiente. Cor chapada sempre. O interesse visual vem de
-     escala tipográfica, hairlines e fotografia — não de efeito.
-  2. Uma cor de acento só (ember). Se precisar de uma segunda, é sinal
-     de que a hierarquia está errada.
-  3. Sombras só onde há elevação real (nada de shadow-2xl decorativo).
-  4. Nada de badges/pills decorativas. Pill só quando comunica estado.
-  5. Cantos: 2px em controles, 12px em cards de mídia. Sem rounded-full
-     em botão, que é o que mais denuncia template.
+  1. Nenhum gradiente. Cor chapada sempre.
+  2. Uma cor de acento só (ember). Precisar de uma segunda é sinal de
+     que a hierarquia está errada.
+  3. Botão principal é preto, não laranja: branco sobre ember-600 dá
+     4.03 de contraste, abaixo do mínimo para texto. O laranja fica
+     reservado a ícone, número e destaque.
+  4. Texto curto. A medida da coluna é 52ch de propósito — se a frase
+     não couber em duas linhas, ela está longa demais.
+  5. Sombra só onde há elevação real. Divisão é hairline.
 */
 
 @layer base {
   :root {
-    --background: 20 8% 7%;
-    --foreground: 44 43% 94%;
-    --card: 20 8% 10%;
-    --card-foreground: 44 43% 94%;
-    --popover: 20 8% 10%;
-    --popover-foreground: 44 43% 94%;
-    --primary: 44 43% 94%;
-    --primary-foreground: 20 8% 7%;
-    --secondary: 20 7% 14%;
-    --secondary-foreground: 44 43% 94%;
-    --muted: 20 7% 14%;
-    --muted-foreground: 40 10% 64%;
-    --accent: 16 100% 62%;
-    --accent-foreground: 20 62% 14%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 44 43% 94%;
-    --border: 24 7% 17%;
-    --input: 24 7% 17%;
-    --ring: 16 100% 62%;
+    --background: 41 43% 96%;
+    --foreground: 48 19% 7%;
+    --card: 0 0% 100%;
+    --card-foreground: 48 19% 7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 48 19% 7%;
+    --primary: 48 19% 7%;
+    --primary-foreground: 41 43% 96%;
+    --secondary: 40 27% 92%;
+    --secondary-foreground: 48 19% 7%;
+    --muted: 40 27% 92%;
+    --muted-foreground: 43 12% 39%;
+    --accent: 18 85% 39%;
+    --accent-foreground: 41 43% 96%;
+    --destructive: 0 72% 41%;
+    --destructive-foreground: 41 43% 96%;
+    --border: 40 24% 86%;
+    --input: 40 24% 86%;
+    --ring: 18 85% 39%;
     --radius: 0.5rem;
   }
 }
@@ -50,45 +48,72 @@
 
   html {
     scroll-behavior: smooth;
-    /* Compensa o header fixo ao pular por âncora */
-    scroll-padding-top: 5rem;
+    /* Altura do header fixo: o encaixe para a seção logo abaixo dele. */
+    scroll-padding-top: 4rem;
+  }
+
+  /*
+    Encaixe magnético entre seções.
+
+    É `proximity`, não `mandatory`, de propósito: com `mandatory` uma
+    seção mais alta que a janela prende o usuário no meio do caminho e
+    parte do conteúdo fica inalcançável — acontece com teclado aberto,
+    fonte aumentada ou celular pequeno. Com `proximity` o navegador só
+    ajuda quando a rolagem já parou perto de um limite.
+
+    Fica desligado para quem pediu menos movimento no sistema.
+  */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-snap-type: y proximity;
+    }
   }
 
   body {
-    @apply bg-ink-900 text-cream-50 font-sans antialiased;
+    @apply bg-paper text-ink-900 font-sans antialiased;
     font-feature-settings: 'cv11', 'ss01';
     text-rendering: optimizeLegibility;
   }
 
-  /* Títulos: sempre display, sempre com tracking negativo.
-     A Bricolage tem cortes irregulares que só aparecem em peso alto. */
   h1, h2, h3 {
     @apply font-display font-extrabold tracking-tight;
   }
 
   ::selection {
-    @apply bg-ember-500 text-ember-900;
+    @apply bg-ember-100 text-ember-700;
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-ember-500 ring-offset-2 ring-offset-ink-900;
+    @apply outline-none ring-2 ring-ember-700 ring-offset-2 ring-offset-paper;
   }
 }
 
 @layer components {
-  /* Hairline: a divisória que substitui a sombra dos cards antigos */
-  .hairline {
-    @apply border-ink-700;
+  /*
+    Seção do tamanho da tela, para o encaixe do scroll ter onde parar.
+
+    Desconta os 4rem do header fixo. O `svh` é o que resolve o pulo da
+    barra de endereço no celular: com `vh`, a seção fica maior que a
+    área visível enquanto a barra está aberta. A linha com `vh` fica
+    como reserva para navegador que não conhece `svh`.
+
+    É `min-height`, não `height`: seção com conteúdo maior que a tela
+    precisa poder crescer.
+  */
+  .screen-section {
+    min-height: calc(100vh - 4rem);
+    min-height: calc(100svh - 4rem);
+    scroll-snap-align: start;
   }
 
-  /* Régua fina acima de títulos de seção — marca editorial */
+  /* Régua fina + rótulo: marca de seção editorial, no lugar das
+     "pills" decorativas do design anterior. */
   .eyebrow {
     @apply font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sand-500;
   }
 }
 
 @layer utilities {
-  /* Números e labels em versalete óptico */
   .numeric {
     font-variant-numeric: tabular-nums;
   }
@@ -102,27 +127,24 @@
   }
 }
 
-/* Scrollbar discreta, na cor da página. A versão anterior usava
-   gradiente laranja→vermelho, que puxava o olho pra borda da tela. */
 ::-webkit-scrollbar {
   width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #131211;
+  background: #FAF7F0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2E2B28;
-  border: 3px solid #131211;
+  background: #E7E0D0;
+  border: 3px solid #FAF7F0;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3A3631;
+  background: #BDB5A4;
 }
 
-/* Respeita quem desligou animação no sistema */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

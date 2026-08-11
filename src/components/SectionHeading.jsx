@@ -3,19 +3,21 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 /**
- * Cabeçalho de seção editorial: régua fina + rótulo pequeno em versalete,
- * título grande e um parágrafo curto. A régua substitui as "pills"
- * decorativas do design anterior — comunica hierarquia, não enfeite.
+ * Cabeçalho de seção: régua fina + rótulo curto + título.
+ *
+ * A descrição virou opcional e ficou limitada a uma frase. O trabalho
+ * de explicar passou pros próprios componentes — ícone, número, ordem —
+ * em vez de parágrafo de apoio embaixo de cada título.
  */
 const SectionHeading = ({
   eyebrow,
   title,
   description,
-  tone = 'dark',
+  tone = 'light',
   align = 'left',
   className,
 }) => {
-  const isLight = tone === 'light';
+  const isDark = tone === 'dark';
   const centered = align === 'center';
 
   return (
@@ -27,35 +29,23 @@ const SectionHeading = ({
       className={cn(centered && 'mx-auto text-center', className)}
     >
       {eyebrow ? (
-        <div
-          className={cn(
-            'flex items-center gap-3',
-            centered && 'justify-center',
-          )}
-        >
+        <div className={cn('flex items-center gap-3', centered && 'justify-center')}>
           <span
-            className={cn(
-              'h-px w-8',
-              isLight ? 'bg-ink-900/20' : 'bg-ink-500',
-            )}
+            className={cn('h-px w-8', isDark ? 'bg-ink-700' : 'bg-paper-200')}
             aria-hidden="true"
           />
-          <span
-            className={cn(
-              'eyebrow',
-              isLight && 'text-sand-600',
-            )}
-          >
-            {eyebrow}
-          </span>
+          <span className={cn('eyebrow', isDark && 'text-sand-400')}>{eyebrow}</span>
         </div>
       ) : null}
 
+      {/* 32px no celular e só depois o display-sm: 40px com 20px de
+          margem lateral quebra mal em telas de 375px. */}
       <h2
         className={cn(
-          'mt-5 max-w-3xl text-display-sm text-balance md:text-display-md',
+          'mt-5 max-w-3xl text-[32px] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance',
+          'sm:text-display-sm md:text-display-md',
           centered && 'mx-auto',
-          isLight ? 'text-ink-900' : 'text-cream-50',
+          isDark ? 'text-paper' : 'text-ink-900',
         )}
       >
         {title}
@@ -64,9 +54,9 @@ const SectionHeading = ({
       {description ? (
         <p
           className={cn(
-            'mt-5 max-w-prose text-[15px] leading-relaxed text-pretty md:text-base',
+            'mt-5 max-w-prose text-[16px] leading-relaxed text-pretty',
             centered && 'mx-auto',
-            isLight ? 'text-sand-600' : 'text-sand-400',
+            isDark ? 'text-sand-300' : 'text-ink-600',
           )}
         >
           {description}

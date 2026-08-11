@@ -1,109 +1,101 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, BookOpen, ClipboardList, Heart } from 'lucide-react';
+import { MapPin, Tag, Bike } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading';
 
 /*
-  Cada item corresponde a uma tela que já existe no app do cliente:
-  mapa, cardápio da loja, pedidos e favoritos.
+  Frase grande + ícone em marca d'água.
 
-  Duas coisas que ficaram de fora de propósito:
+  Histórico desta seção: card com ícone em círculo, célula dividida por
+  régua, carrossel com diagrama, linha com ícone solto, quadrado
+  colorido, bloco sangrando e texto puro. Os cinco primeiros pareciam
+  template; o texto puro ficou correto porém sem acabamento.
 
-  1. "Jornada" é o nome que o vendedor usa pra abrir e fechar o ponto
-     dentro do app dele. Pro cliente isso é jargão — ele só precisa
-     saber que a barraca aparece quando está aberta e some quando fecha.
+  A saída não é voltar à moldura. É mudar a escala do ícone: a 128px com
+  traço de 1px e cortado pela borda direita, ele deixa de ser pictograma
+  de interface e vira textura de fundo. Dá camada e cor sem card, sem
+  sombra e sem quadradinho.
 
-  2. Nada de nota, estrela ou avaliação: essa funcionalidade não existe.
-     Anunciar aqui seria promessa que o app não cumpre no dia 1.
+  O número em versalete ancora cada linha e devolve a hierarquia que o
+  texto puro tinha perdido.
+
+  Fora daqui de propósito:
+  1. "Jornada" é termo do app do vendedor — jargão pro cliente.
+  2. Nota, estrela e avaliação: a funcionalidade não existe.
 */
-const benefits = [
+const statements = [
   {
     icon: MapPin,
-    title: 'Mapa em tempo real',
-    description:
-      'A barraca aparece no mapa enquanto está vendendo e some quando fecha. Você só vê quem está na rua agora.',
+    label: 'Mapa',
+    before: 'Você vê ',
+    accent: 'quem está vendendo agora',
+    after: '.',
   },
   {
-    icon: BookOpen,
-    title: 'Cardápio com preço',
-    description:
-      'Comida, lanche e bebida com valor antes de sair de casa. Nada de chegar e descobrir o preço.',
+    icon: Tag,
+    label: 'Cardápio',
+    before: 'Você sabe ',
+    accent: 'o preço antes de sair de casa',
+    after: '.',
   },
   {
-    icon: ClipboardList,
-    title: 'Pedido acompanhado',
-    description:
-      'Monte o carrinho, confirme e acompanhe o status até a hora de retirar. Sem esperar em pé na calçada.',
-  },
-  {
-    icon: Heart,
-    title: 'Barracas favoritas',
-    description:
-      'Marque as que você gosta e ache elas rápido sempre que estiverem abertas por perto.',
+    icon: Bike,
+    label: 'Pedido',
+    before: 'Você pede pelo app e ',
+    accent: 'chega na hora de retirar',
+    after: '.',
   },
 ];
 
-/*
-  Antes: quatro caixas brancas soltas, cada uma com um círculo de
-  gradiente diferente e sombra pesada no hover.
-
-  Agora: um único bloco dividido por hairlines, do jeito que uma
-  tabela editorial faria. O ícone é traço fino, o índice numérico dá
-  ordem de leitura e o hover só troca a cor de fundo da célula.
-
-  Nada aqui fala de taxa ou repasse — isso é assunto do app, depois
-  do cadastro, não da primeira visita.
-*/
 const CustomerBenefits = () => {
   return (
-    <section id="pra-voce" className="bg-ink-900 py-24 lg:py-32">
-      <div className="mx-auto max-w-6xl px-5 lg:px-8">
+    <section
+      id="pra-voce"
+      className="screen-section flex items-start bg-paper pb-20 pt-24 lg:pt-28"
+    >
+      <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
         <SectionHeading
           eyebrow="Pra quem come"
-          title="A comida boa da sua rua, sem depender da sorte"
-          description="Você já sabe que a barraca existe. O que falta é saber se ela está lá hoje."
+          title="A comida da sua rua, sem depender da sorte"
         />
 
-        {/* No celular a célula vai de ponta a ponta e o texto alinha com a
-            margem da seção. Com padding horizontal, a linha ganhava recuo
-            duplo e o card ficava apertado. O hover também só entra a
-            partir do sm — em tela de toque ele não existe. */}
-        <div className="mt-14 grid grid-cols-1 border-t border-ink-700 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
-          {benefits.map((benefit, index) => (
-            <motion.article
-              key={benefit.title}
+        <ul className="mt-12 lg:mt-16">
+          {statements.map((statement, index) => (
+            <motion.li
+              key={statement.accent}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{
-                duration: 0.5,
-                delay: index * 0.06,
+                duration: 0.55,
+                delay: index * 0.08,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="group border-b border-ink-700 py-7 transition-colors duration-300 sm:p-7 sm:hover:bg-ink-800 sm:[&:nth-child(odd)]:border-r lg:border-r lg:last:border-r-0 lg:[&:nth-child(odd)]:border-r"
+              className="relative overflow-hidden border-t border-paper-200 py-7 last:border-b sm:py-9 lg:py-11"
             >
-              <div className="flex items-center justify-between">
-                <benefit.icon
-                  size={22}
-                  strokeWidth={1.75}
-                  aria-hidden="true"
-                  className="text-ember-500"
-                />
-                <span className="numeric font-display text-[13px] font-bold text-sand-500 transition-colors group-hover:text-cream-50">
-                  0{index + 1}
+              {/* Marca d'água: sai pela borda direita de propósito, o
+                  corte é o que a faz parecer textura e não ilustração
+                  centralizada num quadro. */}
+              <statement.icon
+                aria-hidden="true"
+                strokeWidth={1}
+                className="pointer-events-none absolute -right-6 top-1/2 h-24 w-24 -translate-y-1/2 text-ember-600/20 sm:-right-8 sm:h-36 sm:w-36 lg:h-44 lg:w-44"
+              />
+
+              <div className="relative flex items-baseline gap-4 sm:gap-5">
+                <span className="numeric shrink-0 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-ember-700">
+                  {String(index + 1).padStart(2, '0')}
                 </span>
+
+                <p className="max-w-[16ch] font-display text-[26px] font-extrabold leading-[1.05] tracking-[-0.035em] text-ink-900 text-balance sm:max-w-[20ch] sm:text-[34px] lg:max-w-[24ch] lg:text-[40px]">
+                  {statement.before}
+                  <span className="text-ember-700">{statement.accent}</span>
+                  {statement.after}
+                </p>
               </div>
-
-              <h3 className="mt-6 text-[19px] leading-tight text-cream-50 sm:mt-8">
-                {benefit.title}
-              </h3>
-
-              <p className="mt-2.5 text-[15px] leading-relaxed text-sand-400 text-pretty sm:mt-3 sm:text-[14px]">
-                {benefit.description}
-              </p>
-            </motion.article>
+            </motion.li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

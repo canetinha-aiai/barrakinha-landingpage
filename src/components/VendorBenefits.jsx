@@ -1,134 +1,101 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-  Clock,
-  Navigation,
-  ClipboardList,
-  BarChart3,
-  ArrowRight,
-} from 'lucide-react';
+import { Clock, Navigation, UtensilsCrossed, TrendingUp } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading';
 
 /*
-  A funcionalidade descrita aqui é a "jornada" do app, mas o termo não
-  aparece em lugar nenhum da página: quem chega neste site ainda não
-  usou o produto e não tem por que conhecer o vocabulário interno dele.
-  A landing descreve o que acontece — abrir, aparecer no mapa, fechar —
-  e o app apresenta o nome depois.
+  Mesma construção da seção do cliente: frase grande, número em versalete
+  e ícone em marca d'água cortado pela borda. A diferença entre as duas
+  seções é o conteúdo e o tom do fundo da seção vizinha, não um segundo
+  padrão de componente.
 
-  Nenhuma menção a taxa, comissão ou repasse: essa conversa acontece
-  dentro do app, no cadastro. Anunciar número aqui só cria expectativa
-  antes da hora.
+  A funcionalidade descrita aqui é a "jornada" do app, mas o termo não
+  aparece: quem chega neste site ainda não usou o produto e não tem por
+  que conhecer o vocabulário interno dele. A página descreve o que
+  acontece — abrir, aparecer no mapa, fechar — e o app apresenta o nome
+  depois.
+
+  Nada sobre taxa, comissão ou repasse, e nada sobre o passo a passo do
+  cadastro: as duas conversas acontecem dentro do app, na hora certa.
 */
-const benefits = [
+const statements = [
+  /*
+    "Fechou, sai da lista" soava como punição — o vendedor sendo
+    removido de algum lugar. O fato é o mesmo, mas dito do ponto de
+    vista de quem vende: ele é que decide quando aparece.
+  */
   {
     icon: Clock,
-    title: 'Você marca a hora de abrir e fechar',
-    description:
-      'Enquanto está vendendo, sua barraca aparece no mapa. Ao encerrar, ela sai da lista — ninguém aparece atrás de você depois que fechou.',
+    before: 'Você aparece no mapa ',
+    accent: 'só enquanto está vendendo',
+    after: '.',
   },
   {
     icon: Navigation,
-    title: 'Seu ponto é onde você parar',
-    description:
-      'A localização é a do lugar onde você abriu naquele dia. Mudou de esquina amanhã, o mapa muda junto.',
+    before: 'Mudou de esquina, ',
+    accent: 'o mapa muda junto',
+    after: '.',
   },
   {
-    icon: ClipboardList,
-    title: 'Cardápio e pedidos no celular',
-    description:
-      'Cadastre comida, lanche e bebida com foto e preço. Os pedidos chegam prontos pra aceitar, sem comanda de papel.',
+    icon: UtensilsCrossed,
+    before: 'Cardápio, foto e preço ',
+    accent: 'direto do celular',
+    after: '.',
   },
   {
-    icon: BarChart3,
-    title: 'Acompanhe suas vendas',
-    description:
-      'O que saiu, quanto rendeu e em quais dias. Dá pra decidir onde parar amanhã olhando o histórico.',
+    icon: TrendingUp,
+    before: 'Você acompanha ',
+    accent: 'o que saiu e quanto rendeu',
+    after: '.',
   },
 ];
 
 const VendorBenefits = () => {
   return (
-    <section id="pra-vendedor" className="bg-cream-50 py-24 text-ink-900 lg:py-32">
-      <div className="mx-auto max-w-6xl px-5 lg:px-8">
-        <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-5">
-            <SectionHeading
-              tone="light"
-              eyebrow="Pra quem vende"
-              title="Sem ponto fixo, com endereço no mapa"
-              description="Você já tem o cliente do bairro. O que falta é ele saber que hoje você está na rua — e onde."
-            />
+    <section
+      id="pra-vendedor"
+      className="screen-section flex items-start bg-paper pb-20 pt-24 lg:pt-28"
+    >
+      <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
+        <SectionHeading
+          eyebrow="Pra quem vende"
+          title="Sem ponto fixo, com endereço no mapa"
+        />
 
-            {/*
-              Aqui entra uma foto real de barraca ou de vendedor
-              cadastrado. Sem mock de UI e sem foto de banco de imagem:
-              enquanto o material real não existe, a seção se sustenta
-              na tipografia.
-            */}
-
-            <motion.a
-              href="#lista"
+        <ul className="mt-12 lg:mt-14">
+          {statements.map((statement, index) => (
+            <motion.li
+              key={statement.accent}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              onClick={(event) => {
-                event.preventDefault();
-                document
-                  .querySelector('#lista')
-                  ?.scrollIntoView({ behavior: 'smooth' });
+              transition={{
+                duration: 0.55,
+                delay: index * 0.08,
+                ease: [0.16, 1, 0.3, 1],
               }}
-              className="group mt-9 flex h-14 w-full items-center justify-center gap-2 rounded-sm bg-ink-900 text-base font-medium text-cream-50 transition-colors hover:bg-ink-700 sm:inline-flex sm:h-auto sm:w-auto sm:px-6 sm:py-3.5 sm:text-[15px]"
+              className="relative overflow-hidden border-t border-paper-200 py-6 last:border-b sm:py-8"
             >
-              Quero cadastrar minha barraca
-              <ArrowRight
-                size={16}
+              <statement.icon
                 aria-hidden="true"
-                className="transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5"
+                strokeWidth={1}
+                className="pointer-events-none absolute -right-6 top-1/2 h-20 w-20 -translate-y-1/2 text-ember-600/20 sm:-right-8 sm:h-32 sm:w-32 lg:h-36 lg:w-36"
               />
-            </motion.a>
-          </div>
 
-          <div className="lg:col-span-7">
-            <div className="grid grid-cols-1 gap-x-10 gap-y-9 sm:grid-cols-2">
-              {benefits.map((benefit, index) => (
-                <motion.div
-                  key={benefit.title}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-60px' }}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.06,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                >
-                  <benefit.icon
-                    size={22}
-                    strokeWidth={1.75}
-                    aria-hidden="true"
-                    className="text-ember-600"
-                  />
-                  <h3 className="mt-5 text-[19px] leading-tight text-ink-900">
-                    {benefit.title}
-                  </h3>
-                  <p className="mt-2.5 text-[14px] leading-relaxed text-sand-600 text-pretty">
-                    {benefit.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+              <div className="relative flex items-baseline gap-4 sm:gap-5">
+                <span className="numeric shrink-0 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-ember-700">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
 
-            <div className="mt-14 border-t border-ink-900/10 pt-8">
-              <p className="max-w-prose text-[15px] leading-relaxed text-sand-600 text-pretty">
-                O cadastro leva alguns minutos e é feito direto pelo app, com
-                e-mail e código de confirmação. As condições de recebimento
-                aparecem pra você antes da primeira venda.
-              </p>
-            </div>
-          </div>
-        </div>
+                <p className="max-w-[16ch] font-display text-[24px] font-extrabold leading-[1.05] tracking-[-0.035em] text-ink-900 text-balance sm:max-w-[20ch] sm:text-[30px] lg:max-w-[24ch] lg:text-[36px]">
+                  {statement.before}
+                  <span className="text-ember-700">{statement.accent}</span>
+                  {statement.after}
+                </p>
+              </div>
+            </motion.li>
+          ))}
+        </ul>
       </div>
     </section>
   );

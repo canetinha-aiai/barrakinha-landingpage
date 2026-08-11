@@ -15,39 +15,40 @@ module.exports = {
 		},
 		extend: {
 			colors: {
-				/* Base escura quente — a página inteira vive aqui */
+				/* Papel — fundo da página. Creme, não branco: branco puro
+				   deixa a página com cara de documento. */
+				paper: {
+					DEFAULT: '#FAF7F0',
+					100: '#F3EEE3',
+					200: '#E7E0D0',
+				},
+				/* Tinta — texto e as poucas superfícies escuras (CTA, rodapé) */
 				ink: {
-					950: '#0F0E0D',
-					900: '#131211',
-					800: '#1B1917',
-					700: '#242220',
-					600: '#2E2B28',
-					500: '#3A3631',
+					950: '#0F0E0A',
+					900: '#16150F',
+					800: '#24221A',
+					700: '#3F3B30',
+					600: '#57513F',
 				},
-				/* Creme — texto sobre escuro e fundo das seções invertidas */
-				cream: {
-					50: '#F7F2E7',
-					100: '#EFE8D9',
-					200: '#E2D9C6',
-				},
-				/* Neutros quentes — texto secundário */
+				/* Neutros quentes de apoio */
 				sand: {
 					300: '#BDB5A4',
-					400: '#A39C8D',
-					500: '#8A8375',
-					600: '#6B655A',
+					400: '#9A9282',
+					500: '#6E6858',
 				},
-				/* Acento único. Sem gradiente, sem segunda cor de marca. */
+				/* Acento único.
+				   O 700 é o único tom que passa em contraste sobre papel
+				   (5.1), então é ele que carrega texto e ícone. O 600 e o
+				   500 só entram em preenchimento — nunca atrás de texto. */
 				ember: {
-					400: '#FF8A63',
-					500: '#FF6B3D',
-					600: '#E85427',
-					900: '#3D1A0C',
+					700: '#B8420F',
+					600: '#D9531E',
+					500: '#F0632B',
+					100: '#FBE7DB',
 				},
-				/* Sinalização — usado só em status, nunca decorativo */
 				signal: {
-					open: '#5FBF88',
-					dim: '#1C3A2A',
+					open: '#2F7D51',
+					dim: '#DCEFE2',
 				},
 
 				border: 'hsl(var(--border))',
@@ -89,13 +90,9 @@ module.exports = {
 				sans: ['Inter', 'system-ui', 'sans-serif'],
 			},
 			fontSize: {
-				/* Escala editorial: títulos gigantes com tracking negativo,
-				   corpo pequeno e confortável. O contraste entre os dois é o
-				   que dá caráter — não a cor. */
 				'display-sm': ['2.5rem', { lineHeight: '0.95', letterSpacing: '-0.04em' }],
 				'display-md': ['3.5rem', { lineHeight: '0.92', letterSpacing: '-0.045em' }],
 				'display-lg': ['4.75rem', { lineHeight: '0.9', letterSpacing: '-0.05em' }],
-				'display-xl': ['6rem', { lineHeight: '0.88', letterSpacing: '-0.055em' }],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -103,7 +100,8 @@ module.exports = {
 				sm: 'calc(var(--radius) - 4px)',
 			},
 			maxWidth: {
-				prose: '62ch',
+				/* Medida curta de propósito: força frase curta. */
+				prose: '52ch',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -114,15 +112,10 @@ module.exports = {
 					from: { height: 'var(--radix-accordion-content-height)' },
 					to: { height: 0 },
 				},
-				'pulse-dot': {
-					'0%, 100%': { opacity: '1' },
-					'50%': { opacity: '0.35' },
-				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'pulse-dot': 'pulse-dot 2.4s ease-in-out infinite',
 			},
 			transitionTimingFunction: {
 				'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
