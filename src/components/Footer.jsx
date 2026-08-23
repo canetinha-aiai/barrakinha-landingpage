@@ -34,10 +34,7 @@ const Footer = () => {
       title: 'Legal',
       items: [
         { label: 'Termos de uso', onClick: () => soon('Os termos de uso') },
-        {
-          label: 'Política de privacidade',
-          onClick: () => soon('A política de privacidade'),
-        },
+        { label: 'Política de privacidade', href: '/privacidade.html' },
       ],
     },
   ];
@@ -74,13 +71,22 @@ const Footer = () => {
               <ul className="mt-5 space-y-3">
                 {section.items.map((item) => (
                   <li key={item.label}>
-                    <button
-                      type="button"
-                      onClick={item.onClick}
-                      className="text-left text-[14px] text-ink-600 transition-colors hover:text-ink-900"
-                    >
-                      {item.label}
-                    </button>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        className="text-left text-[14px] text-ink-600 transition-colors hover:text-ink-900"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={item.onClick}
+                        className="text-left text-[14px] text-ink-600 transition-colors hover:text-ink-900"
+                      >
+                        {item.label}
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
