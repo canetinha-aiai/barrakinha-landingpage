@@ -63,13 +63,15 @@ const sections = [
         <p>
           <strong className="text-ink-900">Cadastro no app.</strong> Nome,
           e-mail e telefone, para criar sua conta. O login é por código
-          enviado ao e-mail — não guardamos senha.
+          enviado por SMS ao seu telefone — não guardamos senha.
         </p>
         <p>
           <strong className="text-ink-900">Localização.</strong> Com sua
-          permissão, usamos a localização do aparelho para mostrar as
-          barracas abertas perto de você (cliente) ou para posicionar a
-          sua barraca no mapa enquanto está vendendo (vendedor).
+          permissão, usamos a localização do aparelho: pra mostrar a você
+          as barracas abertas perto de você (cliente), ou pra saber onde
+          fica a sua barraca enquanto está vendendo (vendedor) — é o app
+          que capta essa localização automaticamente, você não marca a
+          posição na mão.
         </p>
         <p>
           <strong className="text-ink-900">Pedidos.</strong> Itens, valores
@@ -186,7 +188,7 @@ const sections = [
         Usamos práticas de mercado para proteger os dados que tratamos:
         conexão criptografada (HTTPS/TLS) entre o app e nossos servidores,
         acesso restrito à equipe que precisa dele para o trabalho, e login
-        sem senha — o código por e-mail reduz o risco de uma senha
+        sem senha — o código por SMS reduz o risco de uma senha
         vazada em outro serviço abrir sua conta aqui. Nenhum sistema é
         infalível; se algo comprometer seus dados de um jeito que gere
         risco relevante, avisamos você e a Autoridade Nacional de Proteção
