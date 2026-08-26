@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import BrandMark from '@/components/BrandMark';
 
 const links = [
   { label: 'Como funciona', href: '#como-funciona' },
@@ -88,6 +89,17 @@ const Header = () => {
     return () => cancelAnimationFrame(frame);
   }, [pending, open]);
 
+  /*
+    O header é transparente e o hero é laranja, então no topo da página
+    ele flutua sobre a cor da marca — e ali tinta escura sobre laranja
+    não se lê. Como o hero é a primeira seção, "não rolou" e "está sobre
+    o hero" são a mesma condição, e uma variável resolve as duas.
+
+    Com o menu aberto o painel traz o fundo de papel junto, então nesse
+    caso vale a versão escura mesmo no topo.
+  */
+  const onHero = !scrolled && !open;
+
   const go = (event, href) => {
     event.preventDefault();
 
@@ -109,13 +121,46 @@ const Header = () => {
           : 'border-b border-transparent',
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
+      {/*
+        Véu por baixo do texto branco, só sobre o hero.
+
+        O header é fixo e sobrepõe o hero de fora — ele não é filho do
+        gradiente, então não herda o `.brand-scrim` que escurece o
+        conteúdo do hero por dentro. Sem véu próprio, "Como funciona" /
+        "Pra você" / "Pra vendedor" (13px, branco) caíam a 2,5–3,1:1 de
+        contraste contra o laranja claro do canto esquerdo — abaixo do
+        4,5:1 que texto desse tamanho pede.
+
+        41% do mesmo tom quente do `.brand-scrim` (não preto puro, pra
+        não destoar) resolve o pior caso (canto esquerdo, perto do
+        logo) e sobra folga no resto da faixa.
+      */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          'pointer-events-none absolute inset-0 transition-opacity duration-300',
+          onHero ? 'opacity-100' : 'opacity-0',
+        )}
+        style={{ backgroundColor: 'rgba(90, 26, 8, 0.41)' }}
+      />
+
+      <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
+        {/* O "B" do ícone do app ao lado do nome: o site e o produto
+            assinam igual. */}
         <a
           href="#top"
           onClick={(event) => go(event, '#top')}
-          className="font-display text-lg font-extrabold tracking-[-0.04em] text-ink-900"
+          className="flex items-center gap-2.5"
         >
-          barrakinha
+          <BrandMark size={30} />
+          <span
+            className={cn(
+              'font-display text-lg font-extrabold tracking-[-0.04em] transition-colors',
+              onHero ? 'text-white' : 'text-ink-900',
+            )}
+          >
+            Barrakinha
+          </span>
         </a>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -124,7 +169,12 @@ const Header = () => {
               key={link.href}
               href={link.href}
               onClick={(event) => go(event, link.href)}
-              className="text-[13px] text-ink-600 transition-colors hover:text-ink-900"
+              className={cn(
+                'text-[13px] transition-colors',
+                onHero
+                  ? 'text-white/85 hover:text-white'
+                  : 'text-ink-600 hover:text-ink-900',
+              )}
             >
               {link.label}
             </a>
@@ -132,7 +182,12 @@ const Header = () => {
           <a
             href="#lista"
             onClick={(event) => go(event, '#lista')}
-            className="rounded-sm bg-ink-900 px-4 py-2 text-[13px] font-medium text-paper transition-colors hover:bg-ink-700"
+            className={cn(
+              'rounded-full px-5 py-2.5 text-[13px] font-semibold transition-all',
+              onHero
+                ? 'bg-white text-ember-700 hover:bg-white/90'
+                : 'bg-brand text-white shadow-glow hover:brightness-105',
+            )}
           >
             Entrar na lista
           </a>
@@ -153,7 +208,10 @@ const Header = () => {
               <motion.span
                 key={index}
                 aria-hidden="true"
-                className="absolute left-0 block h-[1.5px] w-full rounded-full bg-ink-900"
+                className={cn(
+                  'absolute left-0 block h-[1.5px] w-full rounded-full transition-colors',
+                  onHero ? 'bg-white' : 'bg-ink-900',
+                )}
                 style={{ top: 'calc(50% - 0.75px)' }}
                 initial={false}
                 animate={
@@ -203,7 +261,7 @@ const Header = () => {
                 variants={item}
                 href="#lista"
                 onClick={(event) => go(event, '#lista')}
-                className="mt-6 flex h-14 items-center justify-center rounded-sm bg-ink-900 text-base font-medium text-paper"
+                className="mt-6 flex h-14 items-center justify-center rounded-full bg-brand text-base font-semibold text-white shadow-glow"
               >
                 Entrar na lista
               </motion.a>

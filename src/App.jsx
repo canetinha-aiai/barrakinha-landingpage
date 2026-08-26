@@ -16,6 +16,14 @@ import Footer from '@/components/Footer';
   A navegação entre os dois públicos vive só no header — ter os mesmos
   dois destinos repetidos em cards logo abaixo do hero era redundância,
   não orientação.
+
+  O `StreetSkyline` que marcava a virada entre "Como funciona" e "Pra
+  quem vende" morou aqui, solto entre as duas seções — e por isso o
+  scroll magnético nunca parava nele: sem `scroll-snap-align` próprio,
+  ele não é destino de encaixe, então a rolagem pula direto de uma
+  seção pra outra e a faixa fica invisível na navegação normal. Mudou
+  de casa: agora vive dentro do HowItWorks, no fim da seção — visível
+  sempre que ela está em foco, porque faz parte dela.
 */
 function App() {
   return (

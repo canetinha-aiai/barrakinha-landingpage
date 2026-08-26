@@ -1,6 +1,7 @@
 import React from 'react';
 import { Instagram, Music2, Mail } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import BrandMark from '@/components/BrandMark';
 
 /*
   Rodapé claro, separado por hairline. Não tem formulário aqui de
@@ -49,8 +50,11 @@ const Footer = () => {
       <div className="mx-auto max-w-6xl px-5 py-14 lg:px-8">
         <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-4">
           <div className="col-span-2">
-            <div className="font-display text-xl font-extrabold tracking-[-0.04em] text-ink-900">
-              barrakinha
+            <div className="flex items-center gap-2.5">
+              <BrandMark size={32} />
+              <span className="font-display text-xl font-extrabold tracking-[-0.04em] text-ink-900">
+                Barrakinha
+              </span>
             </div>
             <p className="mt-3 max-w-[32ch] text-[14px] leading-relaxed text-ink-600">
               O mapa da comida de rua do seu bairro.
@@ -67,7 +71,7 @@ const Footer = () => {
 
           {sections.map((section) => (
             <nav key={section.title}>
-              <h3 className="eyebrow font-sans">{section.title}</h3>
+              <h3 className="text-[13px] font-semibold text-ink-900">{section.title}</h3>
               <ul className="mt-5 space-y-3">
                 {section.items.map((item) => (
                   <li key={item.label}>

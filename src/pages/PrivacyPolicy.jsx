@@ -1,5 +1,6 @@
 import React from 'react';
 import Footer from '@/components/Footer';
+import BrandMark from '@/components/BrandMark';
 
 /*
   Página de política de privacidade.
@@ -289,11 +290,11 @@ const PrivacyPolicy = () => {
     <div className="min-h-screen bg-paper">
       <header className="border-b border-paper-200 bg-paper">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
-          <a
-            href="/"
-            className="font-display text-lg font-extrabold tracking-[-0.04em] text-ink-900"
-          >
-            barrakinha
+          <a href="/" className="flex items-center gap-2.5">
+            <BrandMark size={30} />
+            <span className="font-display text-lg font-extrabold tracking-[-0.04em] text-ink-900">
+              barrakinha
+            </span>
           </a>
           <a
             href="/"
@@ -304,36 +305,49 @@ const PrivacyPolicy = () => {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-5 pb-24 pt-14 lg:px-8 lg:pt-20">
-        <div className="flex items-center gap-3">
-          <span className="h-px w-8 bg-paper-200" aria-hidden="true" />
-          <span className="eyebrow">Legal</span>
+      {/* Mesmo bloco de marca do site, em versão baixa: o suficiente
+          para a página pertencer ao produto, sem virar pitch — o que
+          vem abaixo é documento. O rótulo "Legal" com régua saiu junto
+          com os outros do site. */}
+      <div className="relative overflow-hidden bg-brand">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-awning-lg"
+        />
+        <div className="brand-scrim" aria-hidden="true" />
+
+        <div className="relative mx-auto max-w-6xl px-5 py-12 lg:px-8 lg:py-16">
+          <h1 className="max-w-3xl text-[34px] font-extrabold leading-[0.98] tracking-[-0.04em] text-white text-balance sm:text-display-sm">
+            Política de privacidade
+          </h1>
+
+          <p className="mt-5 max-w-2xl text-[16px] leading-relaxed text-white text-pretty">
+            Aqui explicamos, sem juridiquês, quais dados a Barrakinha coleta
+            no site e nos apps, para que servem e como você pode controlá-los.
+          </p>
+
+          <p className="mt-4 text-[14px] text-white/85">
+            Última atualização: {LAST_UPDATED}
+          </p>
         </div>
+      </div>
 
-        <h1 className="mt-5 max-w-3xl text-[34px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink-900 text-balance sm:text-display-sm">
-          Política de privacidade
-        </h1>
+      <div className="awning-band awning-band-scrim" aria-hidden="true" />
 
-        <p className="mt-4 text-[14px] text-sand-500">
-          Última atualização: {LAST_UPDATED}
-        </p>
-
-        <p className="mt-6 max-w-2xl text-[16px] leading-relaxed text-ink-600 text-pretty">
-          Aqui explicamos, sem juridiquês, quais dados a Barrakinha coleta
-          no site e nos apps, para que servem e como você pode controlá-los.
-        </p>
-
-        <nav aria-label="Seções desta política" className="mt-10 max-w-2xl border-t border-paper-200 pt-6">
-          <span className="eyebrow">Nesta página</span>
-          <ol className="mt-4 grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2">
+      <main className="mx-auto max-w-6xl px-5 pb-24 pt-14 lg:px-8 lg:pt-16">
+        <nav aria-label="Seções desta política" className="max-w-2xl border-b border-paper-200 pb-8">
+          <h2 className="font-display text-[15px] font-extrabold tracking-[-0.02em] text-ink-900">
+            Nesta página
+          </h2>
+          <ol className="mt-4 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
             {sections.map((section, index) => (
               <li key={section.id}>
                 <a
                   href={`#${section.id}`}
                   className="flex gap-3 text-[14px] text-ink-600 transition-colors hover:text-ink-900"
                 >
-                  <span className="numeric shrink-0 text-ember-700">
-                    {String(index + 1).padStart(2, '0')}
+                  <span className="numeric shrink-0 font-semibold text-ember-700">
+                    {index + 1}
                   </span>
                   {section.title}
                 </a>
@@ -342,19 +356,28 @@ const PrivacyPolicy = () => {
           </ol>
         </nav>
 
-        <div className="mt-4 max-w-2xl">
+        <div className="max-w-2xl">
           {sections.map((section, index) => (
             <section
               key={section.id}
               id={section.id}
-              className="scroll-mt-24 border-t border-paper-200 py-9 last:border-b"
+              className="scroll-mt-24 border-b border-paper-200 py-9 last:border-b-0"
             >
-              <span className="numeric text-[11px] font-semibold uppercase tracking-[0.18em] text-ember-700">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <h2 className="mt-3 font-display text-[22px] font-extrabold leading-tight tracking-[-0.03em] text-ink-900 sm:text-[26px]">
-                {section.title}
-              </h2>
+              {/* Numeral em degradê ao lado do título, como nas seções
+                  do site. Ele era um "01" em caixa alta com tracking
+                  aberto por cima do título — o mesmo formato de rótulo
+                  que saiu de todo o resto. */}
+              <div className="flex items-baseline gap-4">
+                <span
+                  aria-hidden="true"
+                  className="numeric shrink-0 bg-brand bg-clip-text font-display text-[26px] font-extrabold leading-none tracking-[-0.05em] text-transparent sm:text-[30px]"
+                >
+                  {index + 1}
+                </span>
+                <h2 className="font-display text-[22px] font-extrabold leading-tight tracking-[-0.03em] text-ink-900 sm:text-[26px]">
+                  {section.title}
+                </h2>
+              </div>
               <div className="mt-4 space-y-4 text-[15px] leading-relaxed text-ink-600 text-pretty">
                 {section.body}
               </div>

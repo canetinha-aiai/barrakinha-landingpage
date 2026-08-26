@@ -15,40 +15,41 @@ module.exports = {
 		},
 		extend: {
 			colors: {
-				/* Papel — fundo da página. Creme, não branco: branco puro
-				   deixa a página com cara de documento. */
+				/* Papel — fundo da página. Creme quente, os mesmos valores do app:
+				   o site e o produto têm que parecer a mesma coisa. */
 				paper: {
-					DEFAULT: '#FAF7F0',
-					100: '#F3EEE3',
-					200: '#E7E0D0',
+					DEFAULT: '#FBF7F2',
+					100: '#F4EEE7',
+					200: '#EFE7DE',
 				},
-				/* Tinta — texto e as poucas superfícies escuras (CTA, rodapé) */
+				/* Tinta — texto e as poucas superfícies escuras */
 				ink: {
-					950: '#0F0E0A',
-					900: '#16150F',
-					800: '#24221A',
-					700: '#3F3B30',
-					600: '#57513F',
+					950: '#0F0C09',
+					900: '#1D1611',
+					800: '#2A211A',
+					700: '#453B31',
+					600: '#6B6560',
 				},
 				/* Neutros quentes de apoio */
 				sand: {
-					300: '#BDB5A4',
-					400: '#9A9282',
-					500: '#6E6858',
+					300: '#DFD5C9',
+					400: '#A8A096',
+					500: '#6B6560',
 				},
-				/* Acento único.
-				   O 700 é o único tom que passa em contraste sobre papel
-				   (5.1), então é ele que carrega texto e ícone. O 600 e o
-				   500 só entram em preenchimento — nunca atrás de texto. */
+				/* Laranja da marca, nos mesmos valores do app.
+				   O 700 é o único tom que passa em contraste sobre papel (4.6),
+				   então é ele que carrega texto e ícone. O 500 e o 600 são as
+				   pontas do degradê e só entram em preenchimento. */
 				ember: {
-					700: '#B8420F',
-					600: '#D9531E',
-					500: '#F0632B',
-					100: '#FBE7DB',
+					700: '#C43D1C',
+					600: '#F43F1E',
+					500: '#FF8A3D',
+					400: '#F85A35',
+					100: '#FFE8DD',
 				},
 				signal: {
-					open: '#2F7D51',
-					dim: '#DCEFE2',
+					open: '#0E9F6E',
+					dim: '#DCF5EC',
 				},
 
 				border: 'hsl(var(--border))',
@@ -94,10 +95,34 @@ module.exports = {
 				'display-md': ['3.5rem', { lineHeight: '0.92', letterSpacing: '-0.045em' }],
 				'display-lg': ['4.75rem', { lineHeight: '0.9', letterSpacing: '-0.05em' }],
 			},
+			/* Escala do app: o arredondado generoso é parte da cara da marca,
+			   e 8px chapado era o que dava ao site um ar de documento. */
 			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)',
+				sm: '10px',
+				md: '12px',
+				lg: '16px',
+				xl: '20px',
+				'2xl': '24px',
+				'3xl': '28px',
+			},
+
+			/* O degradê da marca e a faixa de toldo, os dois gestos que o site
+			   herda do app. A faixa é `repeating-linear-gradient` — listra é
+			   retângulo repetido, não desenho. */
+			backgroundImage: {
+				brand: 'linear-gradient(135deg, #FF8A3D 0%, #F43F1E 100%)',
+				'brand-soft': 'linear-gradient(135deg, #FFF3EC 0%, #FFE4D6 100%)',
+				awning:
+					'repeating-linear-gradient(-20deg, rgba(255,255,255,0.18) 0 14px, transparent 14px 28px)',
+				'awning-lg':
+					'repeating-linear-gradient(-20deg, rgba(255,255,255,0.08) 0 30px, transparent 30px 60px)',
+			},
+
+			boxShadow: {
+				soft: '0 5px 14px rgba(58,30,16,0.07)',
+				lift: '0 10px 28px rgba(58,30,16,0.10)',
+				float: '0 14px 36px rgba(90,26,8,0.22)',
+				glow: '0 8px 22px rgba(248,90,53,0.35)',
 			},
 			maxWidth: {
 				/* Medida curta de propósito: força frase curta. */

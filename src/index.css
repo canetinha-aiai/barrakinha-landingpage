@@ -5,39 +5,41 @@
 /*
   Barrakinha — sistema visual
   ---------------------------
-  1. Nenhum gradiente. Cor chapada sempre.
-  2. Uma cor de acento só (ember). Precisar de uma segunda é sinal de
-     que a hierarquia está errada.
-  3. Botão principal é preto, não laranja: branco sobre ember-600 dá
-     4.03 de contraste, abaixo do mínimo para texto. O laranja fica
-     reservado a ícone, número e destaque.
+  1. O degradê da marca é o gesto de energia da página, e aparece com
+     parcimônia: topo, fechamento e botão principal. Fora deles, cor
+     chapada.
+  2. Uma família de acento só (ember). Precisar de uma segunda é sinal
+     de que a hierarquia está errada.
+  3. O ember-700 é o único tom que passa em contraste sobre papel, então
+     é ele que carrega texto. As outras pontas só preenchem.
   4. Texto curto. A medida da coluna é 52ch de propósito — se a frase
      não couber em duas linhas, ela está longa demais.
-  5. Sombra só onde há elevação real. Divisão é hairline.
+  5. Nada de rótulo em caixa alta como chapéu de seção. O título é uma
+     frase, e é ele que abre a seção sozinho.
 */
 
 @layer base {
   :root {
-    --background: 41 43% 96%;
-    --foreground: 48 19% 7%;
+    --background: 33 50% 97%;
+    --foreground: 24 27% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 48 19% 7%;
+    --card-foreground: 24 27% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 48 19% 7%;
-    --primary: 48 19% 7%;
-    --primary-foreground: 41 43% 96%;
-    --secondary: 40 27% 92%;
-    --secondary-foreground: 48 19% 7%;
-    --muted: 40 27% 92%;
-    --muted-foreground: 43 12% 39%;
-    --accent: 18 85% 39%;
-    --accent-foreground: 41 43% 96%;
+    --popover-foreground: 24 27% 9%;
+    --primary: 24 27% 9%;
+    --primary-foreground: 33 50% 97%;
+    --secondary: 33 33% 93%;
+    --secondary-foreground: 24 27% 9%;
+    --muted: 33 33% 93%;
+    --muted-foreground: 27 6% 40%;
+    --accent: 14 75% 44%;
+    --accent-foreground: 33 50% 97%;
     --destructive: 0 72% 41%;
-    --destructive-foreground: 41 43% 96%;
-    --border: 40 24% 86%;
-    --input: 40 24% 86%;
-    --ring: 18 85% 39%;
-    --radius: 0.5rem;
+    --destructive-foreground: 33 50% 97%;
+    --border: 30 32% 90%;
+    --input: 30 32% 90%;
+    --ring: 14 75% 44%;
+    --radius: 1rem;
   }
 }
 
@@ -90,26 +92,128 @@
 
 @layer components {
   /*
-    Seção do tamanho da tela, para o encaixe do scroll ter onde parar.
+    Textura de pontos — para as seções mais planas do site.
 
-    Desconta os 4rem do header fixo. O `svh` é o que resolve o pulo da
-    barra de endereço no celular: com `vh`, a seção fica maior que a
-    área visível enquanto a barra está aberta. A linha com `vh` fica
-    como reserva para navegador que não conhece `svh`.
+    Não é ilustração: é `radial-gradient` repetido, a mesma lógica do
+    `.awning-band` (padrão via CSS, não desenho). Fica atrás do
+    conteúdo a 6% de opacidade — presente o bastante pra a seção não
+    ser um retângulo de cor lisa, discreto o bastante pra não competir
+    com o texto por cima.
+  */
+  .dot-grid {
+    background-image: radial-gradient(currentColor 1px, transparent 0);
+    background-size: 20px 20px;
+  }
 
-    É `min-height`, não `height`: seção com conteúdo maior que a tela
-    precisa poder crescer.
+  /*
+    Seção do tamanho exato da tela.
+
+    Chegou a descontar 4rem do header fixo, pensando em não empurrar o
+    conteúdo pra baixo dele — mas o header é `position: fixed`, ele
+    *sobrepõe* a página, não ocupa espaço nela. Descontar o quê não
+    existia só encolhia toda seção 64px a menos que a tela, e no hero
+    (a única onde o conteúdo bate perto do teto do min-height) isso
+    aparecia como uma tira do fundo da próxima seção vazando no rodapé
+    da primeira tela, antes de rolar.
+
+    Quem cuida do header é o `scroll-padding-top: 4rem` ali em cima:
+    ele desloca o PONTO de encaixe do scroll, não a altura da seção —
+    é o jeito certo de garantir que o título de uma seção não fique
+    escondido atrás do header ao rolar até ela, sem mentir sobre o
+    tamanho da seção.
+
+    `svh` evita o pulo da barra de endereço do celular; a linha com
+    `vh` é reserva para navegador que não conhece `svh`.
   */
   .screen-section {
-    min-height: calc(100vh - 4rem);
-    min-height: calc(100svh - 4rem);
+    min-height: 100vh;
+    min-height: 100svh;
     scroll-snap-align: start;
   }
 
-  /* Régua fina + rótulo: marca de seção editorial, no lugar das
-     "pills" decorativas do design anterior. */
-  .eyebrow {
-    @apply font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sand-500;
+  /*
+    Véu do lado do texto.
+
+    Branco sobre o laranja da marca dá 2,7:1 — abaixo dos 3:1 que o
+    título grande exige e longe dos 4,5:1 do texto corrido. Medido, não
+    estimado: a rampa do degradê é conhecida e o cálculo está no
+    histórico desta mudança.
+
+    Em vez de escurecer a marca inteira (que mataria justamente o que
+    ela tem de vivo), o véu é horizontal: pesa onde a tipografia mora e
+    some antes da metade direita, que é onde os cartões flutuam e onde
+    o laranja precisa continuar aberto. Do lado do texto o contraste
+    sobe para ~4,5:1.
+  */
+  .brand-scrim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(
+      90deg,
+      rgba(90, 26, 8, 0.4) 0%,
+      rgba(90, 26, 8, 0.34) 45%,
+      rgba(90, 26, 8, 0.12) 72%,
+      rgba(90, 26, 8, 0) 88%
+    );
+  }
+
+  /*
+    Faixa de toldo — a assinatura da marca, a mesma do app.
+
+    É `repeating-linear-gradient`: listra é retângulo repetido, não
+    desenho, então ela escala para qualquer largura sem deformar e não
+    custa nem um byte de imagem. Fecha os blocos laranjas no lugar do
+    canto arredondado.
+
+    O `.eyebrow` que morava aqui — rótulo em CAIXA ALTA abrindo cada
+    seção — saiu junto: repetido em toda seção, ele vira moldura, e
+    moldura não é hierarquia.
+  */
+  .awning-band {
+    height: 14px;
+    width: 100%;
+    /*
+      Duas camadas: a listra por cima, e embaixo a emenda com o bloco.
+
+      A emenda é um degradê horizontal, não uma cor chapada. O bloco de
+      cima corre na diagonal (135deg), então na aresta de baixo ele já
+      percorreu metade da rampa: vai de um laranja médio na esquerda até
+      o vermelho no canto direito. Uma faixa chapada no tom final casava
+      só no canto direito e abria um degrau visível na esquerda.
+    */
+    background-image:
+      repeating-linear-gradient(
+        -20deg,
+        rgba(255, 255, 255, 0.18) 0 14px,
+        transparent 14px 28px
+      ),
+      linear-gradient(90deg, #fa642e 0%, #f43f1e 100%);
+  }
+
+  /*
+    Faixa de toldo embaixo de um bloco que leva véu.
+
+    O véu escurece o bloco só do lado do texto, e a faixa vive fora
+    dele — sem esta variante, a esquerda da faixa nasce clara embaixo de
+    um bloco escurecido e abre uma emenda visível. Aqui ela repete o
+    mesmo degradê de escurecimento, na mesma proporção.
+  */
+  .awning-band-scrim {
+    background-image:
+      repeating-linear-gradient(
+        -20deg,
+        rgba(255, 255, 255, 0.18) 0 14px,
+        transparent 14px 28px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(90, 26, 8, 0.4) 0%,
+        rgba(90, 26, 8, 0.34) 45%,
+        rgba(90, 26, 8, 0.12) 72%,
+        rgba(90, 26, 8, 0) 88%
+      ),
+      linear-gradient(90deg, #fa642e 0%, #f43f1e 100%);
   }
 }
 
@@ -132,17 +236,17 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF7F0;
+  background: #FBF7F2;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E7E0D0;
-  border: 3px solid #FAF7F0;
+  background: #EFE7DE;
+  border: 3px solid #FBF7F2;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #BDB5A4;
+  background: #DFD5C9;
 }
 
 @media (prefers-reduced-motion: reduce) {

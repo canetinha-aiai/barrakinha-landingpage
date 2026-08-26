@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 /**
- * Cabeçalho de seção: régua fina + rótulo curto + título.
+ * Cabeçalho de seção: título e, quando faz falta, uma frase de apoio.
  *
- * A descrição virou opcional e ficou limitada a uma frase. O trabalho
- * de explicar passou pros próprios componentes — ícone, número, ordem —
- * em vez de parágrafo de apoio embaixo de cada título.
+ * O rótulo em CAIXA ALTA com régua fina que abria cada seção saiu. Ele
+ * dizia "Pra quem come" logo acima de um título que já dizia a mesma
+ * coisa, e repetido em quatro seções virava moldura — o olho aprende a
+ * pular. Sem ele, o título abre a seção sozinho, que é o trabalho dele.
  */
 const SectionHeading = ({
-  eyebrow,
   title,
   description,
   tone = 'light',
@@ -28,22 +28,24 @@ const SectionHeading = ({
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className={cn(centered && 'mx-auto text-center', className)}
     >
-      {eyebrow ? (
-        <div className={cn('flex items-center gap-3', centered && 'justify-center')}>
-          <span
-            className={cn('h-px w-8', isDark ? 'bg-ink-700' : 'bg-paper-200')}
-            aria-hidden="true"
-          />
-          <span className={cn('eyebrow', isDark && 'text-sand-400')}>{eyebrow}</span>
-        </div>
-      ) : null}
+      {/* Tamanho fluido, não fixo por tier de largura.
+          Este título abre as três seções que precisam caber inteiras
+          numa tela — celular ou PC — sem rolar. A primeira tentativa
+          travava um tamanho por breakpoint de largura; pra caber no
+          celular mais baixo (SE, 667px de altura) esse tamanho saiu
+          pequeno demais — e como largura não sabe nada sobre altura,
+          ficou do mesmo jeito pequeno num celular alto ou num monitor,
+          onde sobra espaço de verdade.
 
-      {/* 32px no celular e só depois o display-sm: 40px com 20px de
-          margem lateral quebra mal em telas de 375px. */}
+          `clamp(mín, valor-fluido-em-vh, máx)` resolve isso: o
+          tamanho cresce com a altura da tela, não com a largura. Em
+          667px de altura ele fica perto do mínimo (26px, o que já
+          provou caber); num celular alto ou PC ele sobe até o teto de
+          40px — sem nunca estourar a seção, porque é a própria altura
+          da tela que dirige o cálculo. */}
       <h2
         className={cn(
-          'mt-5 max-w-3xl text-[32px] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance',
-          'sm:text-display-sm md:text-display-md',
+          'max-w-3xl text-[clamp(26px,4.2vh,40px)] font-extrabold leading-[1.02] tracking-[-0.035em] text-balance',
           centered && 'mx-auto',
           isDark ? 'text-paper' : 'text-ink-900',
         )}
