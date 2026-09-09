@@ -21,7 +21,26 @@ import { cn } from '@/lib/utils';
   fundo dentro do mesmo contexto).
 */
 const EyebrowMarquee = ({ label, tone = 'on-dark', className }) => {
-  const items = Array.from({ length: 8 }, () => label);
+  /*
+    No pré-render (Node, sem `window`) esta faixa não escreve nada.
+
+    Ela repete o mesmo rótulo 16 vezes pra o laço não ter emenda — o
+    que na tela é textura girando, e no HTML entregue a um buscador
+    vira "Pra quem compra" treze vezes seguidas no meio do conteúdo.
+    Numa página com ~2.500 caracteres de texto, isso é um quinto de
+    tudo sendo a mesma expressão: parece enchimento de palavra-chave,
+    que é exatamente o que não se quer.
+
+    `aria-hidden` já tira a faixa de quem ouve a página, mas robô de
+    busca lê texto independentemente disso — então quem tem que ficar
+    de fora do HTML é o texto mesmo.
+
+    A montagem no cliente devolve tudo: a página é renderizada com
+    `createRoot`, que descarta a marcação pré-renderizada e monta a
+    árvore do zero, então nada aqui depende de casar com o servidor.
+  */
+  const items =
+    typeof window === 'undefined' ? [] : Array.from({ length: 8 }, () => label);
 
   return (
     <div
