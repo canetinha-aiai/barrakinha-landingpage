@@ -22,10 +22,10 @@ const SectionHeading = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, y: 32, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
       className={cn(centered && 'mx-auto text-center', className)}
     >
       {/* Tamanho fluido, não fixo por tier de largura.

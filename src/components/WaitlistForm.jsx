@@ -90,13 +90,13 @@ const WaitlistForm = ({
           disabled={loading}
           className={cn(
             'group inline-flex h-14 w-full shrink-0 items-center justify-center gap-2',
-            'rounded-full text-base font-semibold transition-all disabled:opacity-60',
+            'rounded-full text-base font-semibold transition-all duration-300 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60',
             'sm:h-11 sm:w-auto sm:px-7 sm:text-[15px]',
             isDark
-              ? 'bg-paper text-ink-900 hover:bg-white'
+              ? 'bg-paper text-ink-900 hover:brightness-110'
               : isBrand
-                ? 'border-2 border-white/95 bg-brand text-white shadow-float hover:brightness-105 sm:border-transparent sm:shadow-glow'
-                : 'bg-brand text-white shadow-glow hover:brightness-105',
+                ? 'border-2 border-white/95 bg-brand text-white shadow-float hover:brightness-110 sm:border-transparent sm:shadow-glow'
+                : 'bg-brand text-white shadow-glow hover:brightness-110',
           )}
         >
           {loading ? (

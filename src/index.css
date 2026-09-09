@@ -3,19 +3,24 @@
 @tailwind utilities;
 
 /*
-  Barrakinha — sistema visual
-  ---------------------------
+  Barrakinha — sistema visual (modo escuro)
+  ------------------------------------------
+  Referência estrutural: smartserialnumber.com — fundo quase preto,
+  cor de marca só como acento (texto, botão, glow), pílulas, cartões
+  com borda sutil em vez de sombra. A paleta continua sendo a do app
+  (ink/ember/sand/paper); só o papel de cada tom trocou de lugar: o que
+  era "as poucas superfícies escuras" (ink-950/900) virou o fundo
+  padrão, e o papel virou o texto.
+
   1. O degradê da marca é o gesto de energia da página, e aparece com
-     parcimônia: topo, fechamento e botão principal. Fora deles, cor
-     chapada.
+     parcimônia: botão principal, números e o bloco de fechamento. Fora
+     deles, cor chapada.
   2. Uma família de acento só (ember). Precisar de uma segunda é sinal
      de que a hierarquia está errada.
-  3. O ember-700 é o único tom que passa em contraste sobre papel, então
-     é ele que carrega texto. As outras pontas só preenchem.
+  3. ember-500 é o tom que carrega texto de acento sobre fundo escuro —
+     é ele que tem contraste de sobra contra ink-950.
   4. Texto curto. A medida da coluna é 52ch de propósito — se a frase
      não couber em duas linhas, ela está longa demais.
-  5. Nada de rótulo em caixa alta como chapéu de seção. O título é uma
-     frase, e é ele que abre a seção sozinho.
 */
 
 @layer base {
@@ -55,24 +60,38 @@
   }
 
   /*
-    Encaixe magnético entre seções.
+    Encaixe rígido entre seções — mas SÓ no desktop.
 
-    É `proximity`, não `mandatory`, de propósito: com `mandatory` uma
-    seção mais alta que a janela prende o usuário no meio do caminho e
-    parte do conteúdo fica inalcançável — acontece com teclado aberto,
-    fonte aumentada ou celular pequeno. Com `proximity` o navegador só
-    ajuda quando a rolagem já parou perto de um limite.
+    O encaixe obrigatório (`y mandatory`) parte do princípio de que
+    toda seção cabe inteira na tela: ele só oferece dois destinos, o
+    topo desta seção e o topo da próxima. Quando a seção é mais alta
+    que a janela, o que sobra fica preso *entre* dois pontos de
+    encaixe — o dedo rola, o navegador puxa de volta, e o pedaço do
+    meio nunca para no lugar.
 
-    Fica desligado para quem pediu menos movimento no sistema.
+    No celular era exatamente esse o caso: metade das seções passava
+    da altura da tela (o hero em 929px contra 812px de janela, a
+    comparação antes/depois em 1310px), e o conteúdo que sobrava
+    ficava escorregadio. Medido, não suposto.
+
+    Dali pra cima cada seção volta a caber numa tela, e o encaixe faz
+    o que foi feito pra fazer. Continua desligado pra quem pediu menos
+    movimento no sistema.
   */
-  @media (prefers-reduced-motion: no-preference) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
     html {
-      scroll-snap-type: y proximity;
+      scroll-snap-type: y mandatory;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    html {
+      scroll-behavior: auto;
     }
   }
 
   body {
-    @apply bg-paper text-ink-900 font-sans antialiased;
+    @apply bg-ink-950 text-paper font-sans antialiased;
     font-feature-settings: 'cv11', 'ss01';
     text-rendering: optimizeLegibility;
   }
@@ -82,11 +101,11 @@
   }
 
   ::selection {
-    @apply bg-ember-100 text-ember-700;
+    @apply bg-ember-500/30 text-paper;
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-ember-700 ring-offset-2 ring-offset-paper;
+    @apply outline-none ring-2 ring-ember-500 ring-offset-2 ring-offset-ink-950;
   }
 }
 
@@ -126,9 +145,53 @@
     `vh` é reserva para navegador que não conhece `svh`.
   */
   .screen-section {
-    min-height: 100vh;
-    min-height: 100svh;
-    scroll-snap-align: start;
+    /*
+      No celular a seção NÃO tem altura de tela.
+
+      Travar 100svh aqui só fazia sentido junto do encaixe obrigatório
+      — e o encaixe agora é de desktop pra cima. Sem ele, uma altura
+      mínima de tela inteira não organiza nada: nas seções curtas ela
+      abria 300~400px de fundo vazio acima do título (a de "dores"
+      abria exatamente isso), e nas longas não impedia nada, porque o
+      conteúdo já passava da tela de qualquer jeito.
+
+      O que dá ritmo no celular é respiro consistente, não altura
+      travada: cada seção ocupa o que o conteúdo pede, com a mesma
+      folga em cima e embaixo.
+    */
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .screen-section {
+      min-height: 100vh;
+      min-height: 100svh;
+      padding-top: 0;
+      padding-bottom: 0;
+      scroll-snap-align: start;
+    }
+  }
+
+  /*
+    Área segura do iPhone — a faixa do indicador de home na base.
+    Usada pela barra de ação fixa (ver MobileCTABar), que sem isso
+    nasce por baixo do indicador.
+  */
+  .pb-safe {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  /*
+    Realce de toque do Android/iOS — o retângulo cinza que o navegador
+    pinta sozinho em cima de qualquer coisa clicável. Ele briga com os
+    estados de `:active` que os botões daqui já desenham (escala e
+    brilho), então sai; quem dá o retorno do toque é o componente.
+  */
+  a,
+  button,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
   }
 
   /*
@@ -199,6 +262,50 @@
     um bloco escurecido e abre uma emenda visível. Aqui ela repete o
     mesmo degradê de escurecimento, na mesma proporção.
   */
+  /*
+    Máscara nas pontas da faixa de chips rolando (ver ProblemsMarquee).
+    O conteúdo entra e sai da vista em vez de ser cortado num limite
+    reto — o mesmo truque de qualquer marquee de mercado.
+  */
+  .edge-fade {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 64px,
+      #000 calc(100% - 64px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 64px,
+      #000 calc(100% - 64px),
+      transparent 100%
+    );
+  }
+
+  /*
+    Máscara vertical do ticker de dificuldades (ver ProblemsMarquee) —
+    o item no topo e no fim da janela esmaece em vez de ser cortado
+    reto, igual ao ticker do smartserialnumber.com.
+  */
+  .ticker-fade {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 18%,
+      #000 82%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 18%,
+      #000 82%,
+      transparent 100%
+    );
+  }
+
   .awning-band-scrim {
     background-image:
       repeating-linear-gradient(
@@ -222,6 +329,46 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /*
+    Letra vazada — só o contorno, miolo transparente.
+
+    É o par da letra cheia na faixa de dificuldades (ver
+    ProblemsMarquee): duas linhas do mesmo texto correndo em sentidos
+    opostos, uma sólida e uma vazada. O contraste entre as duas dá
+    profundidade e ritmo sem precisar de mais nenhuma caixa, borda ou
+    cor — que era o problema das cápsulas que moravam ali.
+
+    Duas armadilhas que esta regra já pagou:
+
+    1. O nome era `.text-outline`. Some antes de chegar na tela: o
+       `cn()` do projeto passa por `tailwind-merge`, que lê qualquer
+       classe começando em `text-` como utilitário de cor/tamanho de
+       texto — então ele via `text-outline` e `text-sand-400` como o
+       mesmo grupo e descartava a primeira, por ser a mais antiga.
+       Nome sem prefixo de utilitário do Tailwind não entra nessa
+       disputa.
+
+    2. O contorno era `currentColor`. Mas `currentColor` é a
+       propriedade `color` do próprio elemento — que aqui é
+       `transparent`, justamente pra vazar o miolo. O contorno saía
+       transparente também, ou seja, texto invisível. A cor do traço
+       precisa ser literal.
+  */
+  .hollow {
+    color: transparent;
+    /* sand-400 (#A8A096): o mesmo cinza quente do texto de apoio, pra
+       a linha vazada ficar um degrau abaixo da cheia, não competir. */
+    -webkit-text-stroke: 1px #a8a096;
+  }
+
+  /* Sem suporte a contorno, a linha vazada vira uma linha cheia no
+     tom do traço — discreta, mas visível. Melhor que sumir. */
+  @supports not (-webkit-text-stroke: 1px #a8a096) {
+    .hollow {
+      color: #a8a096;
+    }
+  }
+
   .text-balance {
     text-wrap: balance;
   }
@@ -236,17 +383,65 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #FBF7F2;
+  background: #0F0C09;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #EFE7DE;
-  border: 3px solid #FBF7F2;
+  background: #2A211A;
+  border: 3px solid #0F0C09;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #DFD5C9;
+  background: #453B31;
+}
+
+/*
+  Blobs do hero — as mesmas 5 trajetórias (matriz de rotação leve +
+  translação em vh/vw, medidas direto no smartserialnumber.com), só a
+  cor que muda pro laranja da marca. É o que dá o glow "vivo" atrás do
+  celular, em vez de um brilho parado.
+*/
+@keyframes orbit1 {
+  0% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translate(-12vw); }
+  25% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translateY(-8vh); }
+  50% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translate(12vw); }
+  75% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translateY(8vh); }
+  100% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translate(-12vw); }
+}
+@keyframes orbit2 {
+  0% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translateY(-8vh); }
+  25% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translate(12vw); }
+  50% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translateY(8vh); }
+  75% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translate(-12vw); }
+  100% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translateY(-8vh); }
+}
+@keyframes orbit3 {
+  0% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translate(12vw); }
+  25% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translateY(8vh); }
+  50% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translate(-12vw); }
+  75% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translateY(-8vh); }
+  100% { transform: matrix(0.98, -0.18, 0.17, 0.98, 0, 0) translate(12vw); }
+}
+@keyframes orbit4 {
+  0% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translate(8vw, -6vh); }
+  25% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translate(8vw, 6vh); }
+  50% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translate(-8vw, 6vh); }
+  75% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translate(-8vw, -6vh); }
+  100% { transform: matrix(0.95, -0.32, 0.3, 0.95, 0, 0) translate(8vw, -6vh); }
+}
+@keyframes orbit5 {
+  0% { transform: matrix(0.97, 0.24, -0.22, 0.98, 0, 0) translateY(8vh); }
+  25% { transform: matrix(0.97, 0.24, -0.22, 0.98, 0, 0) translate(-12vw); }
+  50% { transform: matrix(0.97, 0.24, -0.22, 0.98, 0, 0) translateY(-8vh); }
+  75% { transform: matrix(0.97, 0.24, -0.22, 0.98, 0, 0) translate(12vw); }
+  100% { transform: matrix(0.97, 0.24, -0.22, 0.98, 0, 0) translateY(8vh); }
+}
+
+/* Entrada do menu mobile em tela cheia — fade + leve queda de cima. */
+@keyframes menu-in {
+  0% { opacity: 0; translate: 0 -1rem; }
+  100% { opacity: 1; translate: 0 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

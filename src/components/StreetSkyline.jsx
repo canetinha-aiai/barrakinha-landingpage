@@ -63,7 +63,7 @@ const StreetSkyline = ({ className }) => (
           width={b.w}
           height={b.h}
           rx={2.5}
-          className={i % 2 === 0 ? 'fill-sand-300' : 'fill-paper-200'}
+          className={i % 2 === 0 ? 'fill-ink-700' : 'fill-ink-800'}
         />
       ))}
     </svg>

@@ -64,17 +64,29 @@ const HowItWorks = () => {
   return (
     <section
       id="como-funciona"
-      className="screen-section relative flex flex-col overflow-hidden bg-paper-100 pb-12 pt-16 lg:pt-20"
+      className="screen-section relative flex flex-col overflow-hidden bg-ink-900 !pb-0 lg:!pt-20"
     >
       <div
         aria-hidden="true"
-        className="dot-grid pointer-events-none absolute inset-0 text-ember-700/[0.07]"
+        className="dot-grid pointer-events-none absolute inset-0 text-ember-500/[0.08]"
       />
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-5 lg:px-8">
-        <SectionHeading title="Da conta criada ao espetinho na mão" />
+        {/* A linha de apoio diz de QUAL lado é este caminho.
 
-        <ol className="mt-6 lg:mt-8 lg:grid lg:grid-cols-3 lg:gap-10">
+            Sem ela, a seção vinha logo depois de uma faixa que nomeia
+            os dois públicos e começava a listar passos sem avisar de
+            quem eram — e "crie sua conta" serve pros dois. Nomear o
+            lado aqui é o que deixa a seção seguinte ("pra quem
+            compra") ler como continuação, e a de depois ("pra quem
+            vende") como a outra metade. */}
+        <SectionHeading
+          title="Da conta criada ao espetinho na mão"
+          description="O caminho de quem compra — do primeiro acesso até retirar o pedido."
+          tone="dark"
+        />
+
+        <ol className="mt-7 lg:mt-8 lg:grid lg:grid-cols-3 lg:gap-10">
           {steps.map((step, index) => {
             const isLast = index === steps.length - 1;
 
@@ -83,50 +95,69 @@ const HowItWorks = () => {
                 key={step.title}
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
+                viewport={{ once: true, amount: 0.4 }}
                 transition={{
                   duration: 0.5,
                   delay: index * 0.08,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="relative flex gap-5 pb-9 last:pb-0 lg:block lg:pb-0"
+                className="relative flex gap-4 pb-8 last:pb-0 sm:gap-5 lg:block lg:pb-0"
               >
                 {/* Régua vertical no celular: sai de baixo da bolinha e
-                    vai até o próximo passo.
-
-                    Era `bg-paper-200` — contraste de 1,06:1 contra o
-                    `paper-100` da seção, quase a mesma cor do fundo.
-                    `sand-300` sobe pra 1,26:1; visível sem virar régua
-                    de destaque. */}
+                    vai até o próximo passo — "desenha" (scaleY 0→1) ao
+                    entrar na tela, não aparece pronta. */}
                 {!isLast ? (
-                  <span
+                  <motion.span
                     aria-hidden="true"
-                    className="absolute bottom-1 left-[21px] top-[52px] w-px bg-sand-300 lg:hidden"
+                    initial={{ scaleY: 0 }}
+                    whileInView={{ scaleY: 1 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.7, delay: index * 0.08 + 0.2, ease: 'easeOut' }}
+                    style={{ originY: 0 }}
+                    className="absolute bottom-0 left-[19px] top-[48px] w-px bg-gradient-to-b from-ember-500/40 to-ink-700 sm:left-[21px] sm:top-[52px] lg:hidden"
                   />
                 ) : null}
 
                 {/* Régua horizontal no desktop, saindo da bolinha até a
-                    borda da coluna. */}
+                    borda da coluna — mesmo desenho, no eixo X. */}
                 {!isLast ? (
-                  <span
+                  <motion.span
                     aria-hidden="true"
-                    className="absolute left-[60px] right-0 top-[21px] hidden h-px bg-sand-300 lg:block"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.7, delay: index * 0.08 + 0.2, ease: 'easeOut' }}
+                    style={{ originX: 0 }}
+                    className="absolute left-[60px] right-0 top-[21px] hidden h-px bg-ink-700 lg:block"
                   />
                 ) : null}
 
-                {/* Disco no degradê da marca. O numeral vai em branco
-                    e em negrito sobre o fim da rampa, que é o tom mais
+                {/* Disco no degradê da marca — entra com um pop de
+                    mola, não só um fade, pra marcar cada passo como um
+                    "clique" na sequência. O numeral vai em branco e em
+                    negrito sobre o fim da rampa, que é o tom mais
                     fundo — sobre a ponta clara ele não teria contraste
                     para caractere. */}
-                <span className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand font-display text-[16px] font-extrabold text-white shadow-glow">
+                <motion.span
+                  initial={{ scale: 0, rotate: -90 }}
+                  whileInView={{ scale: 1, rotate: 0 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 260,
+                    damping: 18,
+                    delay: index * 0.08,
+                  }}
+                  className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand font-display text-[15px] font-extrabold text-white shadow-glow sm:h-11 sm:w-11 sm:text-[16px]"
+                >
                   <span className="numeric">{index + 1}</span>
-                </span>
+                </motion.span>
 
                 <div className="min-w-0 flex-1 lg:mt-8">
-                  <h3 className="font-display text-[22px] font-extrabold leading-none tracking-[-0.035em] text-ink-900 sm:text-[26px]">
+                  <h3 className="font-display text-[21px] font-extrabold leading-none tracking-[-0.035em] text-paper sm:text-[26px]">
                     {step.title}
                   </h3>
-                  <p className="mt-2.5 max-w-prose text-[15px] leading-relaxed text-ink-600 text-pretty">
+                  <p className="mt-2.5 max-w-prose text-[15px] leading-relaxed text-sand-300 text-pretty">
                     {step.description}
                   </p>
                 </div>
@@ -136,7 +167,7 @@ const HowItWorks = () => {
         </ol>
       </div>
 
-      <StreetSkyline className="bg-paper-100" />
+      <StreetSkyline className="mt-12 bg-ink-900 lg:mt-0" />
     </section>
   );
 };

@@ -12,43 +12,23 @@ const links = [
 
 const easeOutExpo = [0.16, 1, 0.3, 1];
 
-/* O painel abre pela altura e os itens entram escalonados atrás dele. */
-const panel = {
-  hidden: { height: 0, opacity: 0 },
-  visible: {
-    height: 'auto',
-    opacity: 1,
-    transition: {
-      height: { duration: 0.38, ease: easeOutExpo },
-      opacity: { duration: 0.2 },
-      staggerChildren: 0.05,
-      delayChildren: 0.08,
-    },
-  },
-  exit: {
-    height: 0,
-    opacity: 0,
-    transition: { height: { duration: 0.28, ease: easeOutExpo }, opacity: { duration: 0.15 } },
-  },
-};
+/*
+  Header em vidro fosco permanente — não um estado que só aparece ao
+  rolar. Medido direto no smartserialnumber.com: a barra fixa já nasce
+  com `bg-black/[0.11] backdrop-blur-[19px] border-b border-white/[0.05]`,
+  igual em qualquer posição de scroll. A versão anterior daqui só ligava
+  isso depois de 24px rolados; virou permanente porque é o que o site de
+  referência faz — e porque simplifica: um header, uma aparência.
 
-const item = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: easeOutExpo } },
-  exit: { opacity: 0, transition: { duration: 0.1 } },
-};
-
+  Menu mobile também copiado de lá: não é mais um painel-sanfona que
+  empurra a página, é um overlay de tela cheia (escuro, com o próprio
+  desfoque) que entra com um único fade + leve queda de cima
+  (`menu-in`, 0.2s ease-out, ver index.css) — sem stagger por item,
+  porque não tem lá.
+*/
 const Header = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(null);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   /* Menu aberto trava a rolagem do fundo e fecha no Esc — sem isso, o
      usuário rola a página atrás do painel e se perde. */
@@ -89,17 +69,6 @@ const Header = () => {
     return () => cancelAnimationFrame(frame);
   }, [pending, open]);
 
-  /*
-    O header é transparente e o hero é laranja, então no topo da página
-    ele flutua sobre a cor da marca — e ali tinta escura sobre laranja
-    não se lê. Como o hero é a primeira seção, "não rolou" e "está sobre
-    o hero" são a mesma condição, e uma variável resolve as duas.
-
-    Com o menu aberto o painel traz o fundo de papel junto, então nesse
-    caso vale a versão escura mesmo no topo.
-  */
-  const onHero = !scrolled && !open;
-
   const go = (event, href) => {
     event.preventDefault();
 
@@ -113,37 +82,8 @@ const Header = () => {
   };
 
   return (
-    <header
-      className={cn(
-        'fixed inset-x-0 top-0 z-50 transition-colors duration-300',
-        scrolled || open
-          ? 'border-b border-paper-200 bg-paper/95 backdrop-blur-sm'
-          : 'border-b border-transparent',
-      )}
-    >
-      {/*
-        Véu por baixo do texto branco, só sobre o hero.
-
-        O header é fixo e sobrepõe o hero de fora — ele não é filho do
-        gradiente, então não herda o `.brand-scrim` que escurece o
-        conteúdo do hero por dentro. Sem véu próprio, "Como funciona" /
-        "Pra você" / "Pra vendedor" (13px, branco) caíam a 2,5–3,1:1 de
-        contraste contra o laranja claro do canto esquerdo — abaixo do
-        4,5:1 que texto desse tamanho pede.
-
-        41% do mesmo tom quente do `.brand-scrim` (não preto puro, pra
-        não destoar) resolve o pior caso (canto esquerdo, perto do
-        logo) e sobra folga no resto da faixa.
-      */}
-      <div
-        aria-hidden="true"
-        className={cn(
-          'pointer-events-none absolute inset-0 transition-opacity duration-300',
-          onHero ? 'opacity-100' : 'opacity-0',
-        )}
-        style={{ backgroundColor: 'rgba(90, 26, 8, 0.41)' }}
-      />
-
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.05] bg-black/[0.11] backdrop-blur-[19px] transition-colors duration-300">
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
         {/* O "B" do ícone do app ao lado do nome: o site e o produto
             assinam igual. */}
@@ -153,12 +93,7 @@ const Header = () => {
           className="flex items-center gap-2.5"
         >
           <BrandMark size={30} />
-          <span
-            className={cn(
-              'font-display text-lg font-extrabold tracking-[-0.04em] transition-colors',
-              onHero ? 'text-white' : 'text-ink-900',
-            )}
-          >
+          <span className="font-display text-lg font-extrabold tracking-[-0.04em] text-paper">
             Barrakinha
           </span>
         </a>
@@ -169,12 +104,7 @@ const Header = () => {
               key={link.href}
               href={link.href}
               onClick={(event) => go(event, link.href)}
-              className={cn(
-                'text-[13px] transition-colors',
-                onHero
-                  ? 'text-white/85 hover:text-white'
-                  : 'text-ink-600 hover:text-ink-900',
-              )}
+              className="text-[13px] tracking-wide text-sand-300 transition-colors duration-300 hover:text-ember-500"
             >
               {link.label}
             </a>
@@ -182,12 +112,7 @@ const Header = () => {
           <a
             href="#lista"
             onClick={(event) => go(event, '#lista')}
-            className={cn(
-              'rounded-full px-5 py-2.5 text-[13px] font-semibold transition-all',
-              onHero
-                ? 'bg-white text-ember-700 hover:bg-white/90'
-                : 'bg-brand text-white shadow-glow hover:brightness-105',
-            )}
+            className="inline-flex items-center justify-center rounded-full bg-brand px-5 py-2.5 text-[13px] font-semibold text-white shadow-glow transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
           >
             Entrar na lista
           </a>
@@ -201,17 +126,14 @@ const Header = () => {
           aria-label={open ? 'Fechar menu' : 'Abrir menu'}
           aria-expanded={open}
           aria-controls="menu-mobile"
-          className="-mr-2 flex h-11 w-11 items-center justify-center md:hidden"
+          className="-mr-2 flex h-11 w-11 items-center justify-center rounded-md transition-colors duration-300 hover:bg-white/[0.03] md:hidden"
         >
           <span className="relative block h-5 w-[22px]">
             {[0, 1].map((index) => (
               <motion.span
                 key={index}
                 aria-hidden="true"
-                className={cn(
-                  'absolute left-0 block h-[1.5px] w-full rounded-full transition-colors',
-                  onHero ? 'bg-white' : 'bg-ink-900',
-                )}
+                className="absolute left-0 block h-[1.5px] w-full rounded-full bg-paper transition-colors"
                 style={{ top: 'calc(50% - 0.75px)' }}
                 initial={false}
                 animate={
@@ -225,51 +147,95 @@ const Header = () => {
           </span>
         </button>
       </div>
+      </header>
 
-      <AnimatePresence initial={false}>
+      {/*
+        Fora do `<header>` de propósito: `backdrop-filter` (o vidro
+        fosco do cabeçalho) cria um novo bloco de contenção pra
+        descendentes `fixed` — como o `<header>` só tem 64px de altura,
+        um menu `fixed` filho dele herdava esse contexto e colapsava
+        pra caber ali dentro, em vez de esticar até o fim da tela. Como
+        irmão do header, o menu volta a se posicionar contra a janela.
+      */}
+      <AnimatePresence>
         {open ? (
           <motion.nav
             id="menu-mobile"
-            key="menu"
-            variants={panel}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="overflow-hidden border-t border-paper-200 bg-paper md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col bg-ink-950/95 p-6 backdrop-blur-md md:hidden"
           >
-            <div className="px-5 pb-6 pt-2">
-              {links.map((link) => (
-                <motion.a
-                  key={link.href}
-                  variants={item}
-                  href={link.href}
-                  onClick={(event) => go(event, link.href)}
-                  className="group flex items-center justify-between border-b border-paper-200 py-4"
-                >
-                  <span className="font-display text-[22px] font-extrabold tracking-[-0.03em] text-ink-900">
-                    {link.label}
-                  </span>
-                  <ArrowUpRight
-                    size={20}
-                    aria-hidden="true"
-                    className="shrink-0 text-sand-400 transition-transform duration-300 ease-out-expo group-active:translate-x-0.5 group-active:-translate-y-0.5"
-                  />
-                </motion.a>
-              ))}
+            {/*
+              O menu ganhou o mesmo glow das seções — aberto, ele era
+              um retângulo preto liso com três palavras, a única tela
+              da página sem nenhuma cor da marca.
+            */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-10 left-1/2 h-[320px] w-[320px] -translate-x-1/2 rounded-full bg-ember-600/[0.16] blur-[110px]"
+            />
 
-              <motion.a
-                variants={item}
-                href="#lista"
-                onClick={(event) => go(event, '#lista')}
-                className="mt-6 flex h-14 items-center justify-center rounded-full bg-brand text-base font-semibold text-white shadow-glow"
-              >
-                Entrar na lista
-              </motion.a>
-            </div>
+            <ul className="relative mb-10 mt-4 flex w-full flex-col items-stretch gap-1">
+              {links.map((link, index) => (
+                <li key={link.href} className="list-none">
+                  {/*
+                    Aqui SIM entra em cascata, um item depois do outro.
+
+                    O menu de tela cheia foi copiado do
+                    smartserialnumber.com, e lá o painel inteiro entra
+                    num fade só — mas lá o menu é um detalhe de um site
+                    de desktop. No celular ele é a navegação inteira, a
+                    única tela cheia que a página abre a pedido do
+                    usuário, e é o momento em que dá pra gastar 200ms
+                    mostrando que os destinos são uma lista com ordem,
+                    não um bloco de texto que apareceu.
+                  */}
+                  <motion.a
+                    href={link.href}
+                    onClick={(event) => go(event, link.href)}
+                    initial={{ opacity: 0, x: -18 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: 0.06 + index * 0.06,
+                      ease: easeOutExpo,
+                    }}
+                    className="flex items-center justify-between rounded-2xl px-2 py-3.5 text-[24px] font-extrabold tracking-[-0.03em] text-sand-200 outline-none transition-colors duration-300 hover:text-ember-500 focus-visible:text-ember-500 focus-visible:ring-1 focus-visible:ring-ember-500 active:bg-white/[0.04]"
+                  >
+                    {link.label}
+                    <ArrowUpRight
+                      size={20}
+                      aria-hidden="true"
+                      className="shrink-0 text-ember-500/60"
+                    />
+                  </motion.a>
+
+                  {/* Régua entre os destinos: sem ela três frases
+                      grandes empilhadas leem como um parágrafo. */}
+                  {index < links.length - 1 ? (
+                    <span aria-hidden="true" className="block h-px bg-white/[0.06]" />
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+
+            <motion.a
+              href="#lista"
+              onClick={(event) => go(event, '#lista')}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.24, ease: easeOutExpo }}
+              className="relative inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand py-4 text-center text-base font-semibold text-white shadow-glow transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+            >
+              Entrar na lista
+              <ArrowUpRight size={18} aria-hidden="true" />
+            </motion.a>
           </motion.nav>
         ) : null}
       </AnimatePresence>
-    </header>
+    </>
   );
 };
 

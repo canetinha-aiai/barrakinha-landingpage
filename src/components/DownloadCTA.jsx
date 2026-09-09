@@ -1,75 +1,59 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import WaitlistForm from '@/components/WaitlistForm';
-import BrandMark from '@/components/BrandMark';
 
 /*
-  Fechamento no laranja da marca, fechado pela faixa de toldo.
-
-  Era um bloco preto: numa página inteira de papel, a inversão dava
-  peso, mas deixava a única cor forte da página fora do momento em que
-  se pede a ação. Agora o fechamento tem a cor da marca — e o hero e o
-  rodapé da página passam a rimar, com o mesmo bloco e a mesma faixa.
-
-  O rótulo "Lançamento" em caixa alta saiu junto com os outros: o título
-  já diz que é lista de espera.
-
-  O botão falso de Google Play continua fora: botão que só abre um toast
-  é ruído, não CTA.
+  Fechamento igual ao do smartserialnumber.com: não é mais um bloco de
+  cor cheia como antes — é a mesma seção escura do resto da página,
+  centralizada, com um glow suave atrás do título e o trecho principal
+  da frase pintado na cor da marca. O peso vem da tipografia grande, não
+  de uma caixa colorida.
 */
 const DownloadCTA = () => {
   return (
-    <section className="screen-section flex items-center bg-paper pb-16 pt-20 lg:pb-20 lg:pt-24">
-      <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="overflow-hidden rounded-2xl shadow-lift"
-        >
-          <div className="relative overflow-hidden bg-brand px-6 py-10 sm:px-8 sm:py-12 lg:px-14 lg:py-16">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-awning-lg"
-            />
-            <div className="brand-scrim" aria-hidden="true" />
+    <section
+      id="lista"
+      className="screen-section relative flex flex-col items-center justify-center overflow-hidden bg-ink-950 px-5 text-center scroll-mt-16 lg:py-20"
+    >
+      {/* Glow pulsando devagar, sem parar — o único movimento contínuo
+          (não ligado a scroll nem a entrada) da seção, pra fechar a
+          página com um pouco de vida em vez de um fundo parado. */}
+      <motion.div
+        aria-hidden="true"
+        animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[300px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-600/[0.12] blur-[120px]"
+      />
 
-            <div className="relative grid grid-cols-1 items-end gap-9 lg:grid-cols-12 lg:gap-16">
-              <div className="lg:col-span-7">
-                <BrandMark size={48} />
+      <motion.div
+        initial={{ opacity: 0, y: 32, scale: 0.94 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 flex w-full max-w-xl flex-col items-center"
+      >
+        <h2 className="text-[34px] font-extrabold leading-[1.02] tracking-[-0.035em] text-paper text-balance sm:text-[44px] lg:text-[52px]">
+          Entre na lista e{' '}
+          <span className="text-ember-500">coma primeiro</span>
+        </h2>
 
-                {/* No celular o título usa um corpo menor que o
-                    display-sm: 40px dentro de um bloco com 24px de
-                    padding lateral estoura em telas de 375px. */}
-                <h2 className="mt-6 text-[32px] font-extrabold leading-[0.98] tracking-[-0.04em] text-white text-balance sm:text-display-sm md:text-[3rem] md:leading-[0.95] md:tracking-[-0.045em]">
-                  Entre na lista e coma primeiro
-                </h2>
+        <p className="mt-5 max-w-[36ch] text-[16px] leading-relaxed text-sand-300 text-pretty lg:text-lg">
+          Chega primeiro no Android. Vale pra quem quer comprar e pra quem
+          quer vender.
+        </p>
 
-                <p className="mt-5 max-w-prose text-[15px] leading-relaxed text-white text-pretty md:text-base">
-                  Chega primeiro no Android. Vale pra quem quer comprar e pra
-                  quem quer vender.
-                </p>
-              </div>
-
-              <div className="lg:col-span-5">
-                <WaitlistForm
-                  tone="brand"
-                  label="Quero o convite"
-                  helper="Um e-mail só, no dia do lançamento."
-                  messages={{
-                    successTitle: 'Você está na lista',
-                    successDescription:
-                      'Assim que o app entrar no ar, o convite chega no seu e-mail.',
-                  }}
-                  className="max-w-none"
-                />
-              </div>
-            </div>
-          </div>
-
-        </motion.div>
-      </div>
+        <WaitlistForm
+          tone="dark"
+          label="Quero o convite"
+          helper="Um e-mail só, no dia do lançamento."
+          messages={{
+            successTitle: 'Você está na lista',
+            successDescription:
+              'Assim que o app entrar no ar, o convite chega no seu e-mail.',
+          }}
+          className="mx-auto mt-9 text-center"
+        />
+      </motion.div>
     </section>
   );
 };

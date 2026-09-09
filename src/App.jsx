@@ -1,43 +1,52 @@
 import React from 'react';
 import { Toaster } from '@/components/ui/toaster';
+import ScrollProgress from '@/components/ScrollProgress';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
+import ProblemsMarquee from '@/components/ProblemsMarquee';
 import CustomerBenefits from '@/components/CustomerBenefits';
 import HowItWorks from '@/components/HowItWorks';
 import VendorBenefits from '@/components/VendorBenefits';
+import BeforeAfter from '@/components/BeforeAfter';
 import DownloadCTA from '@/components/DownloadCTA';
 import Footer from '@/components/Footer';
+import MobileCTABar from '@/components/MobileCTABar';
 
 /*
-  Ritmo: papel do começo ao fim, com um degrau de tom no "Como funciona"
-  (paper-100) e um único bloco escuro no CTA final. Fundo muda por
-  significado, não por variedade.
+  Estrutura copiada seção a seção do smartserialnumber.com, só trocando
+  conteúdo e cor: hero com mockup do produto → faixa rolando com as
+  dores do público (no lugar do "com o reconhecimento de", que a
+  Barrakinha não tem) → como funciona → os dois blocos de público, um
+  do lado do outro, alternando cor cheia da marca e fundo escuro — a
+  mesma alternância que lá é Fabricante (lima) / Marca (escuro) /
+  Consumidor (lima) — → comparação antes/depois → CTA final escuro e
+  centralizado. O case de sucesso do site de referência ficou de fora:
+  a Barrakinha ainda não tem um caso real pra mostrar.
 
-  A navegação entre os dois públicos vive só no header — ter os mesmos
-  dois destinos repetidos em cards logo abaixo do hero era redundância,
+  A navegação entre os dois públicos vive só no header; repetir os
+  mesmos dois destinos em card logo abaixo do hero seria redundância,
   não orientação.
-
-  O `StreetSkyline` que marcava a virada entre "Como funciona" e "Pra
-  quem vende" morou aqui, solto entre as duas seções — e por isso o
-  scroll magnético nunca parava nele: sem `scroll-snap-align` próprio,
-  ele não é destino de encaixe, então a rolagem pula direto de uma
-  seção pra outra e a faixa fica invisível na navegação normal. Mudou
-  de casa: agora vive dentro do HowItWorks, no fim da seção — visível
-  sempre que ela está em foco, porque faz parte dela.
 */
 function App() {
   return (
     <>
-      <div className="min-h-screen bg-paper">
+      <div className="min-h-screen bg-ink-950">
+        <ScrollProgress />
         <Header />
         <main>
           <Hero />
-          <CustomerBenefits />
+          <ProblemsMarquee />
           <HowItWorks />
+          <CustomerBenefits />
           <VendorBenefits />
+          <BeforeAfter />
           <DownloadCTA />
         </main>
         <Footer />
+        {/* Barra de ação fixa na base, só no celular — ver
+            MobileCTABar. No desktop o botão do header cumpre esse
+            papel, e ali ele está visível o tempo todo. */}
+        <MobileCTABar />
       </div>
       <Toaster />
     </>
