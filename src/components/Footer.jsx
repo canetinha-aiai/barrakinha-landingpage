@@ -39,8 +39,18 @@ const Footer = () => {
     },
   ];
 
+  /* Rede que já existe leva `href` e vira link de verdade; a que não
+     existe continua avisando que ainda não está no ar. O link não é só
+     cortesia com quem clica: é ele que associa o site ao perfil, e essa
+     associação é o que faz um buscador entender "Barrakinha" como nome
+     próprio em vez de erro de digitação de "barraquinha". O `sameAs` do
+     JSON-LD em index.html declara a mesma coisa; os dois se apoiam. */
   const socials = [
-    { icon: Instagram, label: 'Instagram' },
+    {
+      icon: Instagram,
+      label: 'Instagram',
+      href: 'https://www.instagram.com/barrakinha.app/',
+    },
     { icon: Music2, label: 'TikTok' },
   ];
 
@@ -117,17 +127,34 @@ const Footer = () => {
           </p>
 
           <div className="flex items-center gap-1">
-            {socials.map((social) => (
-              <button
-                key={social.label}
-                type="button"
-                onClick={() => soon(`O nosso ${social.label}`)}
-                aria-label={`${social.label} — em breve`}
-                className="flex h-10 w-10 items-center justify-center rounded-sm text-sand-400 transition-colors hover:bg-ink-900 hover:text-paper"
-              >
-                <social.icon size={18} aria-hidden="true" />
-              </button>
-            ))}
+            {socials.map((social) =>
+              social.href ? (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  /* `me` diz que o perfil do outro lado é a MESMA
+                     entidade que publica este site — é a convenção que
+                     buscadores leem pra ligar identidades. `noopener` e
+                     `noreferrer` são higiene de link em aba nova. */
+                  rel="me noopener noreferrer"
+                  aria-label={`${social.label} da Barrakinha`}
+                  className="flex h-10 w-10 items-center justify-center rounded-sm text-sand-400 transition-colors hover:bg-ink-900 hover:text-paper active:text-paper"
+                >
+                  <social.icon size={18} aria-hidden="true" />
+                </a>
+              ) : (
+                <button
+                  key={social.label}
+                  type="button"
+                  onClick={() => soon(`O nosso ${social.label}`)}
+                  aria-label={`${social.label} — em breve`}
+                  className="flex h-10 w-10 items-center justify-center rounded-sm text-sand-400 transition-colors hover:bg-ink-900 hover:text-paper"
+                >
+                  <social.icon size={18} aria-hidden="true" />
+                </button>
+              ),
+            )}
           </div>
         </div>
 
