@@ -3,9 +3,8 @@ import { Toaster } from '@/components/ui/toaster';
 import ScrollProgress from '@/components/ScrollProgress';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
-import ProblemsMarquee from '@/components/ProblemsMarquee';
+import NearMiss from '@/components/NearMiss';
 import CustomerBenefits from '@/components/CustomerBenefits';
-import HowItWorks from '@/components/HowItWorks';
 import VendorBenefits from '@/components/VendorBenefits';
 import BeforeAfter from '@/components/BeforeAfter';
 import DownloadCTA from '@/components/DownloadCTA';
@@ -35,8 +34,7 @@ function App() {
         <Header />
         <main>
           <Hero />
-          <ProblemsMarquee />
-          <HowItWorks />
+          <NearMiss />
           <CustomerBenefits />
           <VendorBenefits />
           <BeforeAfter />

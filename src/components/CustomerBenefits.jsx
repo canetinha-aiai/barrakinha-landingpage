@@ -18,9 +18,15 @@ import { useIsMobile } from '@/hooks/useMediaQuery';
   que precisasse combinar com a seção.
 */
 const statements = [
-  'Você vê quem está vendendo agora',
-  'Você sabe o preço antes de sair de casa',
-  'Você pede pelo app e chega na hora de retirar',
+  { text: 'Você vê quem está vendendo agora', accent: 'agora' },
+  {
+    text: 'Você sabe o preço antes de sair de casa',
+    accent: 'antes de sair de casa',
+  },
+  {
+    text: 'Você pede pelo app e chega na hora de retirar',
+    accent: 'na hora de retirar',
+  },
 ];
 
 const CustomerBenefits = () => {

@@ -26,7 +26,6 @@ const Footer = () => {
     {
       title: 'Navegar',
       items: [
-        { label: 'Como funciona', onClick: () => navigate('#como-funciona') },
         { label: 'Pra você', onClick: () => navigate('#pra-voce') },
         { label: 'Pra vendedor', onClick: () => navigate('#pra-vendedor') },
       ],

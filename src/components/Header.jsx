@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 import BrandMark from '@/components/BrandMark';
 
 const links = [
-  { label: 'Como funciona', href: '#como-funciona' },
   { label: 'Pra você', href: '#pra-voce' },
   { label: 'Pra vendedor', href: '#pra-vendedor' },
 ];
@@ -29,7 +28,6 @@ const easeOutExpo = [0.16, 1, 0.3, 1];
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(null);
-
   /* Menu aberto trava a rolagem do fundo e fecha no Esc — sem isso, o
      usuário rola a página atrás do painel e se perde. */
   useEffect(() => {

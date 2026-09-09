@@ -111,20 +111,6 @@
 
 @layer components {
   /*
-    Textura de pontos — para as seções mais planas do site.
-
-    Não é ilustração: é `radial-gradient` repetido, a mesma lógica do
-    `.awning-band` (padrão via CSS, não desenho). Fica atrás do
-    conteúdo a 6% de opacidade — presente o bastante pra a seção não
-    ser um retângulo de cor lisa, discreto o bastante pra não competir
-    com o texto por cima.
-  */
-  .dot-grid {
-    background-image: radial-gradient(currentColor 1px, transparent 0);
-    background-size: 20px 20px;
-  }
-
-  /*
     Seção do tamanho exato da tela.
 
     Chegou a descontar 4rem do header fixo, pensando em não empurrar o
@@ -252,6 +238,38 @@
         transparent 14px 28px
       ),
       linear-gradient(90deg, #fa642e 0%, #f43f1e 100%);
+  }
+
+  /*
+    Toldo em pé — a mesma listra da `.awning-band`, adaptada pra uma
+    aresta de cartão em vez de uma faixa deitada.
+
+    Serve pra dar à lista de benefícios (ver PillList) um pedaço da
+    assinatura da marca em vez de mais uma borda cinza. A listra é
+    `repeating-linear-gradient`, ou seja, retângulo repetido: funciona
+    igual num bloco de 900px de largura e numa tira de 7px, sem
+    deformar e sem custar imagem.
+
+    O ângulo aqui é +20deg, e não os -20deg da faixa deitada, porque o
+    que importa é a listra atravessar o lado CURTO do retângulo. Na
+    faixa deitada (larga e baixa) o lado curto é a altura, então a
+    listra corre quase de pé; nesta tira (alta e estreita) o lado
+    curto é a largura, então ela precisa correr quase deitada. A
+    primeira tentativa manteve a listra de pé numa tira de 7px de
+    largura: cada faixa cobria a tira inteira antes de completar um
+    período, e o padrão saía como uma barra de cor chapada — que era
+    justamente a borda genérica que se queria evitar.
+
+    A inclinação de 20° é a mesma nos dois casos; só o eixo muda.
+  */
+  .awning-edge {
+    background-image:
+      repeating-linear-gradient(
+        20deg,
+        rgba(255, 255, 255, 0.32) 0 5px,
+        transparent 5px 10px
+      ),
+      linear-gradient(180deg, #ff8a3d 0%, #f43f1e 100%);
   }
 
   /*
