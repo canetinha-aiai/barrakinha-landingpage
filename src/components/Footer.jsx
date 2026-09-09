@@ -8,6 +8,30 @@ import BrandMark from '@/components/BrandMark';
   propósito: o mesmo campo três vezes na página não aumenta conversão,
   só dilui o CTA e triplica o código a manter.
 */
+/*
+  O logo do X, desenhado aqui.
+
+  O lucide tem um ícone chamado `X`, mas ele é o "fechar" — duas linhas
+  cruzadas. Usá-lo colocaria um botão de fechar no meio das redes
+  sociais. Tem também um `Twitter`, que é o passarinho: correto até
+  2023, hoje marca errada.
+
+  A assinatura (`size`, `aria-hidden`) imita a dos ícones do lucide pra
+  este componente entrar na mesma lista que os outros sem tratamento
+  especial.
+*/
+const XLogo = ({ size = 18, ...props }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    {...props}
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
 const Footer = () => {
   const { toast } = useToast();
 
@@ -50,6 +74,13 @@ const Footer = () => {
       icon: Instagram,
       label: 'Instagram',
       href: 'https://www.instagram.com/barrakinha.app/',
+    },
+    {
+      icon: XLogo,
+      label: 'X',
+      /* `x.com` e não `twitter.com`: o antigo redireciona pro novo, e
+         link que já nasce no destino final poupa um salto. */
+      href: 'https://x.com/barrakinha_app',
     },
     { icon: Music2, label: 'TikTok' },
   ];
