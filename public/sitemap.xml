@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Só a home. `privacidade.html` fica de fora porque está marcada como
+  `noindex`: listar no sitemap uma página que pede pra não ser
+  indexada é uma contradição que o Search Console reporta como erro.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://barrakinha.com.br/</loc>
+    <lastmod>2026-09-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

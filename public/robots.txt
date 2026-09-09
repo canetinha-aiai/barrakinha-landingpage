@@ -1,0 +1,11 @@
+# Tudo liberado: a página existe pra ser encontrada.
+User-agent: *
+Allow: /
+
+# `privacidade.html` NÃO entra aqui como Disallow de propósito. Ela já
+# se marca como `noindex` na própria página — e pra respeitar isso o
+# robô precisa poder BAIXAR a página e ler a tag. Bloquear no
+# robots.txt teria o efeito contrário: o robô não leria o noindex e o
+# endereço ainda poderia aparecer na busca, só que sem descrição.
+
+Sitemap: https://barrakinha.com.br/sitemap.xml

@@ -13,13 +13,73 @@
       content="Ache as barracas de comida de rua abertas perto de você, peça pelo app e retire pronto. Sem fila, sem troco, sem mensalidade pro vendedor."
     />
 
+    <!-- Endereço canônico. Sem ele, o mesmo conteúdo servido em
+         barrakinha.com.br, www.barrakinha.com.br e no domínio de
+         pré-visualização da Vercel conta como três páginas iguais, e o
+         buscador escolhe sozinho qual mostrar. -->
+    <link rel="canonical" href="https://barrakinha.com.br/" />
+
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Barrakinha" />
+    <meta property="og:url" content="https://barrakinha.com.br/" />
     <meta property="og:title" content="Barrakinha — toda rua tem uma barraca. Agora tem mapa." />
     <meta
       property="og:description"
       content="Ache as barracas de comida de rua abertas perto de você, peça pelo app e retire pronto."
     />
+    <!-- A imagem do compartilhamento precisa de URL ABSOLUTA: quem lê
+         essa tag (WhatsApp, Instagram, Twitter) não está no site e não
+         tem como resolver um caminho relativo. Largura e altura
+         declaradas fazem o cartão já nascer no tamanho certo, sem o
+         pulo de layout enquanto a imagem carrega. -->
+    <meta property="og:image" content="https://barrakinha.com.br/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Barrakinha — toda rua tem uma barraca. Agora tem mapa. Ao lado, a tela do app mostrando o mapa de barracas abertas por perto."
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Barrakinha — toda rua tem uma barraca. Agora tem mapa." />
+    <meta
+      name="twitter:description"
+      content="Ache as barracas de comida de rua abertas perto de você, peça pelo app e retire pronto."
+    />
+    <meta name="twitter:image" content="https://barrakinha.com.br/og.png" />
+
+    <!--
+      Dados estruturados. Descrevem só o que existe hoje: uma
+      organização e o site dela. Nada de `SoftwareApplication` nem de
+      nota de avaliação — o app ainda não foi lançado, e declarar
+      produto ou estrela que não existe é o tipo de coisa que rende
+      penalidade manual, não resultado enriquecido.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://barrakinha.com.br/#org",
+            "name": "Barrakinha",
+            "url": "https://barrakinha.com.br/",
+            "logo": "https://barrakinha.com.br/icon.png",
+            "email": "contato@barrakinha.com",
+            "description": "O mapa da comida de rua do seu bairro."
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://barrakinha.com.br/#site",
+            "url": "https://barrakinha.com.br/",
+            "name": "Barrakinha",
+            "inLanguage": "pt-BR",
+            "publisher": { "@id": "https://barrakinha.com.br/#org" }
+          }
+        ]
+      }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

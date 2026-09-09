@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import { Helmet } from 'react-helmet';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import PhoneModel from '@/components/PhoneModelLazy';
@@ -143,15 +142,6 @@ const Hero = () => {
   };
 
   return (
-    <>
-      <Helmet>
-        <title>Barrakinha — toda rua tem uma barraca. Agora tem mapa.</title>
-        <meta
-          name="description"
-          content="Veja no mapa quais barracas de comida de rua estão abertas perto de você, monte o pedido pelo cardápio e retire pronto."
-        />
-      </Helmet>
-
       <section
         ref={sectionRef}
         id="top"
@@ -282,7 +272,6 @@ const Hero = () => {
           </motion.div>
         ) : null}
       </section>
-    </>
   );
 };
 
