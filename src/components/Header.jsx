@@ -90,7 +90,7 @@ const Header = () => {
           onClick={(event) => go(event, '#top')}
           className="flex items-center gap-2.5"
         >
-          <BrandMark size={30} />
+          <BrandMark size={40} />
           <span className="font-display text-lg font-extrabold tracking-[-0.04em] text-paper">
             Barrakinha
           </span>
