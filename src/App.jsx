@@ -1,4 +1,5 @@
 import React from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
 import ScrollProgress from '@/components/ScrollProgress';
 import Header from '@/components/Header';
@@ -47,6 +48,7 @@ function App() {
         <MobileCTABar />
       </div>
       <Toaster />
+      <Analytics />
     </>
   );
 }
