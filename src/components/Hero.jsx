@@ -160,9 +160,9 @@ const Hero = () => {
               custom={0}
               className="max-w-2xl text-[40px] font-extrabold leading-[0.94] tracking-[-0.045em] text-paper text-balance sm:text-display-md lg:text-display-lg"
             >
-              Toda rua tem uma barraca.{' '}
+              O mapa da comida de rua{' '}
               <span className="bg-brand bg-clip-text text-transparent">
-                Agora tem mapa.
+                do seu bairro.
               </span>
             </motion.h1>
 
