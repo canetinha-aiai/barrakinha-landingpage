@@ -1,37 +1,21 @@
 import React from 'react';
-import { Instagram, Music2, Mail } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import BrandMark from '@/components/BrandMark';
 
 /*
-  Rodapé claro, separado por hairline. Não tem formulário aqui de
-  propósito: o mesmo campo três vezes na página não aumenta conversão,
-  só dilui o CTA e triplica o código a manter.
+  Rodapé em noite — a página fecha escura depois do laranja da lista,
+  como o fim do expediente da barraca. Não tem formulário aqui de
+  propósito: o mesmo campo duas vezes na página não aumenta conversão,
+  só dilui o convite.
+
+  As redes viraram texto em vez de ícone. Três ícones de traço fino
+  soltos num canto eram o detalhe mais genérico da página, e o nome
+  escrito é mais rápido de reconhecer do que um logo de 18px.
+
+  O crédito do modelo 3D saiu junto com o modelo: a página não usa
+  mais o `.glb`, e a licença CC BY pede atribuição só onde a obra
+  aparece.
 */
-/*
-  O logo do X, desenhado aqui.
-
-  O lucide tem um ícone chamado `X`, mas ele é o "fechar" — duas linhas
-  cruzadas. Usá-lo colocaria um botão de fechar no meio das redes
-  sociais. Tem também um `Twitter`, que é o passarinho: correto até
-  2023, hoje marca errada.
-
-  A assinatura (`size`, `aria-hidden`) imita a dos ícones do lucide pra
-  este componente entrar na mesma lista que os outros sem tratamento
-  especial.
-*/
-const XLogo = ({ size = 18, ...props }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    {...props}
-  >
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </svg>
-);
-
 const Footer = () => {
   const { toast } = useToast();
 
@@ -50,8 +34,9 @@ const Footer = () => {
     {
       title: 'Navegar',
       items: [
-        { label: 'Pra você', onClick: () => navigate('#pra-voce') },
-        { label: 'Pra vendedor', onClick: () => navigate('#pra-vendedor') },
+        { label: 'Pra quem compra', onClick: () => navigate('#pra-quem-compra') },
+        { label: 'Pra quem vende', onClick: () => navigate('#pra-quem-vende') },
+        { label: 'Lista de espera', onClick: () => navigate('#lista') },
       ],
     },
     {
@@ -64,84 +49,57 @@ const Footer = () => {
   ];
 
   /* Rede que já existe leva `href` e vira link de verdade; a que não
-     existe continua avisando que ainda não está no ar. O link não é só
-     cortesia com quem clica: é ele que associa o site ao perfil, e essa
-     associação é o que faz um buscador entender "Barrakinha" como nome
-     próprio em vez de erro de digitação de "barraquinha". O `sameAs` do
-     JSON-LD em index.html declara a mesma coisa; os dois se apoiam. */
+     existe continua avisando que ainda não está no ar. O link associa
+     o site ao perfil — é o que faz um buscador entender "Barrakinha"
+     como nome próprio e não como erro de digitação de "barraquinha".
+     O `sameAs` do JSON-LD em index.html declara a mesma coisa. */
   const socials = [
-    {
-      icon: Instagram,
-      label: 'Instagram',
-      href: 'https://www.instagram.com/barrakinha.app/',
-    },
-    {
-      icon: XLogo,
-      label: 'X',
-      /* `x.com` e não `twitter.com`: o antigo redireciona pro novo, e
-         link que já nasce no destino final poupa um salto. */
-      href: 'https://x.com/barrakinha_app',
-    },
-    { icon: Music2, label: 'TikTok' },
+    { label: 'Instagram', href: 'https://www.instagram.com/barrakinha.app/' },
+    /* `x.com` e não `twitter.com`: o antigo redireciona pro novo. */
+    { label: 'X', href: 'https://x.com/barrakinha_app' },
+    { label: 'TikTok' },
   ];
 
-  return (
-    // O `html` usa `scroll-snap-type: y mandatory` (igual ao SSN) — sem
-    // um ponto de encaixe próprio, o rodapé nunca é um destino válido
-    // pra parar, e a rolagem sempre voltava pro CTA final antes dele.
-    // `scroll-snap-align: end` faz o fim da página (a base do rodapé)
-    // virar um destino de encaixe também.
-    <footer className="bg-ink-950 [scroll-snap-align:end]">
-      {/* A mesma listra do hero e do CTA final, só que fina: o rodapé
-          fecha a página com o mesmo gesto que abre e encerra as duas
-          outras seções de cor cheia. */}
-      <div className="awning-band" aria-hidden="true" />
+  const linkClass =
+    '-my-1 block rounded py-1 text-left text-[15px] text-night-muted transition-colors duration-150 hover:text-cream active:text-cream';
 
+  return (
+    <footer className="bg-night text-cream">
       {/* `pb-28` no celular reserva a faixa que a barra de ação fixa
-          ocupa (ver MobileCTABar) — ela pode voltar a aparecer aqui
-          embaixo quando o formulário sai da tela, e sem essa reserva
-          ela cobriria os últimos links do rodapé. */}
-      <div className="mx-auto max-w-6xl px-5 pb-28 pt-12 sm:pb-14 sm:pt-14 lg:px-8">
-        <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-4">
-          <div className="col-span-2">
+          ocupa (ver MobileCTABar) — sem essa reserva ela cobriria os
+          últimos links do rodapé. */}
+      <div className="mx-auto max-w-6xl px-5 pb-28 pt-14 sm:pb-14 lg:px-8">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-12">
+          <div className="col-span-2 md:col-span-6">
             <div className="flex items-center gap-2.5">
-              <BrandMark size={32} />
-              <span className="font-display text-xl font-extrabold tracking-[-0.04em] text-paper">
+              <BrandMark size={28} />
+              <span className="text-[17px] font-bold tracking-[-0.02em] text-cream">
                 Barrakinha
               </span>
             </div>
-            <p className="mt-3 max-w-[32ch] text-[14px] leading-relaxed text-sand-400">
+            <p className="mt-3 max-w-[32ch] text-[15px] leading-relaxed text-night-muted">
               O mapa da comida de rua do seu bairro.
             </p>
-
             <a
               href="mailto:contato@barrakinha.com"
-              className="mt-5 inline-flex items-center gap-2 text-[14px] text-sand-400 transition-colors hover:text-paper"
+              className="mt-5 inline-block rounded text-[15px] text-cream underline decoration-night-line underline-offset-[5px] transition-colors duration-150 hover:decoration-cream"
             >
-              <Mail size={15} aria-hidden="true" />
               contato@barrakinha.com
             </a>
           </div>
 
           {sections.map((section) => (
-            <nav key={section.title}>
-              <h3 className="text-[13px] font-semibold text-paper">{section.title}</h3>
-              <ul className="mt-5 space-y-3">
+            <nav key={section.title} className="md:col-span-3">
+              <h3 className="text-label font-semibold text-cream">{section.title}</h3>
+              <ul className="mt-4 space-y-3">
                 {section.items.map((item) => (
                   <li key={item.label}>
                     {item.href ? (
-                      <a
-                        href={item.href}
-                        className="-my-1 block py-1 text-left text-[14px] text-sand-400 transition-colors hover:text-paper active:text-paper"
-                      >
+                      <a href={item.href} className={linkClass}>
                         {item.label}
                       </a>
                     ) : (
-                      <button
-                        type="button"
-                        onClick={item.onClick}
-                        className="-my-1 block py-1 text-left text-[14px] text-sand-400 transition-colors hover:text-paper active:text-paper"
-                      >
+                      <button type="button" onClick={item.onClick} className={linkClass}>
                         {item.label}
                       </button>
                     )}
@@ -152,66 +110,38 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col-reverse items-start justify-between gap-6 border-t border-ink-800 pt-8 sm:flex-row sm:items-center">
-          <p className="text-[13px] text-sand-400">
+        <div className="mt-12 flex flex-col-reverse items-start justify-between gap-5 border-t border-night-line pt-6 sm:flex-row sm:items-center">
+          <p className="text-[14px] text-night-muted">
             © {new Date().getFullYear()} Barrakinha
           </p>
 
-          <div className="flex items-center gap-1">
-            {socials.map((social) =>
-              social.href ? (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  /* `me` diz que o perfil do outro lado é a MESMA
-                     entidade que publica este site — é a convenção que
-                     buscadores leem pra ligar identidades. `noopener` e
-                     `noreferrer` são higiene de link em aba nova. */
-                  rel="me noopener noreferrer"
-                  aria-label={`${social.label} da Barrakinha`}
-                  className="flex h-10 w-10 items-center justify-center rounded-sm text-sand-400 transition-colors hover:bg-ink-900 hover:text-paper active:text-paper"
-                >
-                  <social.icon size={18} aria-hidden="true" />
-                </a>
-              ) : (
-                <button
-                  key={social.label}
-                  type="button"
-                  onClick={() => soon(`O nosso ${social.label}`)}
-                  aria-label={`${social.label} — em breve`}
-                  className="flex h-10 w-10 items-center justify-center rounded-sm text-sand-400 transition-colors hover:bg-ink-900 hover:text-paper"
-                >
-                  <social.icon size={18} aria-hidden="true" />
-                </button>
-              ),
-            )}
-          </div>
+          <ul className="flex items-center gap-6">
+            {socials.map((social) => (
+              <li key={social.label}>
+                {social.href ? (
+                  <a
+                    href={social.href}
+                    target="_blank"
+                    /* `me` diz que o perfil do outro lado é a MESMA
+                       entidade que publica este site. */
+                    rel="me noopener noreferrer"
+                    className="rounded text-[14px] text-night-muted transition-colors duration-150 hover:text-cream"
+                  >
+                    {social.label}
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => soon(`O nosso ${social.label}`)}
+                    className="rounded text-[14px] text-night-muted/70 transition-colors duration-150 hover:text-cream"
+                  >
+                    {social.label} (em breve)
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
-
-        {/* Crédito do modelo 3D — a licença CC BY exige atribuição,
-            não destaque. Menor que o copyright acima dele, de propósito. */}
-        <p className="mt-6 text-[11px] leading-relaxed text-sand-500/70">
-          Modelo 3D "Samsung Phone" por{' '}
-          <a
-            href="https://skfb.ly/pFTxN"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-sand-500/40 underline-offset-2 transition-colors hover:text-sand-400"
-          >
-            DAKSH_2009
-          </a>
-          , licenciado sob{' '}
-          <a
-            href="http://creativecommons.org/licenses/by/4.0/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-sand-500/40 underline-offset-2 transition-colors hover:text-sand-400"
-          >
-            CC BY 4.0
-          </a>
-          .
-        </p>
       </div>
     </footer>
   );

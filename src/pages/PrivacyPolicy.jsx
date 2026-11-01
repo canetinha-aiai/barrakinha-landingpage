@@ -292,47 +292,38 @@ const PrivacyPolicy = () => {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
           <a href="/" className="flex items-center gap-2.5">
             <BrandMark size={30} />
-            <span className="font-display text-lg font-extrabold tracking-[-0.04em] text-ink-900">
-              barrakinha
+            <span className="text-[17px] font-bold tracking-[-0.02em] text-ink-900">
+              Barrakinha
             </span>
           </a>
           <a
             href="/"
-            className="text-[13px] text-ink-600 transition-colors hover:text-ink-900"
+            className="rounded text-[14px] text-ink-600 transition-colors hover:text-ink-900"
           >
             Voltar para o site
           </a>
         </div>
       </header>
 
-      {/* Mesmo bloco de marca do site, em versão baixa: o suficiente
-          para a página pertencer ao produto, sem virar pitch — o que
-          vem abaixo é documento. O rótulo "Legal" com régua saiu junto
-          com os outros do site. */}
-      <div className="relative overflow-hidden bg-brand">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-awning-lg"
-        />
-        <div className="brand-scrim" aria-hidden="true" />
-
-        <div className="relative mx-auto max-w-6xl px-5 py-12 lg:px-8 lg:py-16">
-          <h1 className="max-w-3xl text-[34px] font-extrabold leading-[0.98] tracking-[-0.04em] text-white text-balance sm:text-display-sm">
+      {/* Cabeçalho de documento: papel, título e data, separados do
+          corpo por filete. O bloco laranja com toldo e véu que morava
+          aqui saiu junto com os do site. */}
+      <div className="border-b border-line">
+        <div className="mx-auto max-w-6xl px-5 py-12 lg:px-8 lg:py-16">
+          <h1 className="max-w-3xl text-[34px] font-extrabold leading-[1.02] tracking-[-0.03em] text-ink text-balance sm:text-display-sm">
             Política de privacidade
           </h1>
 
-          <p className="mt-5 max-w-2xl text-[16px] leading-relaxed text-white text-pretty">
+          <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-ink-muted text-pretty">
             Aqui explicamos, sem juridiquês, quais dados a Barrakinha coleta
             no site e nos apps, para que servem e como você pode controlá-los.
           </p>
 
-          <p className="mt-4 text-[14px] text-white/85">
+          <p className="mt-4 text-[14px] text-ink-muted">
             Última atualização: {LAST_UPDATED}
           </p>
         </div>
       </div>
-
-      <div className="awning-band awning-band-scrim" aria-hidden="true" />
 
       <main className="mx-auto max-w-6xl px-5 pb-24 pt-14 lg:px-8 lg:pt-16">
         <nav aria-label="Seções desta política" className="max-w-2xl border-b border-paper-200 pb-8">
@@ -346,7 +337,7 @@ const PrivacyPolicy = () => {
                   href={`#${section.id}`}
                   className="flex gap-3 text-[14px] text-ink-600 transition-colors hover:text-ink-900"
                 >
-                  <span className="numeric shrink-0 font-semibold text-ember-700">
+                  <span className="numeric shrink-0 font-semibold text-ember-text">
                     {index + 1}
                   </span>
                   {section.title}
@@ -363,14 +354,12 @@ const PrivacyPolicy = () => {
               id={section.id}
               className="scroll-mt-24 border-b border-paper-200 py-9 last:border-b-0"
             >
-              {/* Numeral em degradê ao lado do título, como nas seções
-                  do site. Ele era um "01" em caixa alta com tracking
-                  aberto por cima do título — o mesmo formato de rótulo
-                  que saiu de todo o resto. */}
+              {/* Numeral tabular ao lado do título, no tom de apoio —
+                  dá a ordem sem disputar com o título. */}
               <div className="flex items-baseline gap-4">
                 <span
                   aria-hidden="true"
-                  className="numeric shrink-0 bg-brand bg-clip-text font-display text-[26px] font-extrabold leading-none tracking-[-0.05em] text-transparent sm:text-[30px]"
+                  className="numeric shrink-0 text-[22px] font-bold leading-none tracking-[-0.02em] text-ink-muted sm:text-[26px]"
                 >
                   {index + 1}
                 </span>

@@ -1,61 +1,42 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import WaitlistForm from '@/components/WaitlistForm';
+import Awning from '@/components/Awning';
 
 /*
-  Fechamento igual ao do smartserialnumber.com: não é mais um bloco de
-  cor cheia como antes — é a mesma seção escura do resto da página,
-  centralizada, com um glow suave atrás do título e o trecho principal
-  da frase pintado na cor da marca. O peso vem da tipografia grande, não
-  de uma caixa colorida.
+  O fechamento volta ao laranja do hero: a página abre e fecha na
+  mesma barraca, com o toldo pendurado no topo do bloco.
 */
-const DownloadCTA = () => {
-  return (
-    <section
-      id="lista"
-      className="screen-section relative flex flex-col items-center justify-center overflow-hidden bg-ink-950 px-5 text-center scroll-mt-16 lg:py-20"
-    >
-      {/* Glow pulsando devagar, sem parar — o único movimento contínuo
-          (não ligado a scroll nem a entrada) da seção, pra fechar a
-          página com um pouco de vida em vez de um fundo parado. */}
-      <motion.div
-        aria-hidden="true"
-        animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[300px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-600/[0.12] blur-[120px]"
-      />
+const DownloadCTA = () => (
+  <section id="lista" className="scroll-mt-16 bg-ember text-night">
+    <Awning stripe="#F85A35" between="#FBF7F2" unroll />
 
-      <motion.div
-        initial={{ opacity: 0, y: 32, scale: 0.94 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 flex w-full max-w-xl flex-col items-center"
-      >
-        <h2 className="text-[34px] font-extrabold leading-[1.02] tracking-[-0.035em] text-paper text-balance sm:text-[44px] lg:text-[52px]">
-          Entre na lista e{' '}
-          <span className="text-ember-500">coma primeiro</span>
-        </h2>
-
-        <p className="mt-5 max-w-[36ch] text-[16px] leading-relaxed text-sand-300 text-pretty lg:text-lg">
-          Chega primeiro no Android. Vale pra quem quer comprar e pra quem
-          quer vender.
-        </p>
+    <div className="section !pt-14 lg:!pt-20">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-5 lg:grid-cols-12 lg:items-end lg:gap-8 lg:px-8">
+        <div className="lg:col-span-7">
+          <p className="text-label font-semibold">Lista de espera</p>
+          <h2 className="display-wide mt-4 max-w-[13ch] text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-balance sm:text-[4rem] lg:text-[5rem]">
+            Guarde seu lugar na estreia.
+          </h2>
+          <p className="mt-6 max-w-[40ch] text-[18px] font-medium leading-relaxed text-night/80 text-pretty">
+            Deixe seu e-mail e a gente avisa quando o app chegar no Android. Vale pra
+            quem compra e pra quem vende.
+          </p>
+        </div>
 
         <WaitlistForm
-          tone="dark"
-          label="Quero o convite"
-          helper="Um e-mail só, no dia do lançamento."
+          tone="ember"
+          className="lg:col-span-5"
+          label="Entrar na lista"
+          helper="Mandamos um e-mail só, no dia do lançamento."
           messages={{
             successTitle: 'Você está na lista',
             successDescription:
-              'Assim que o app entrar no ar, o convite chega no seu e-mail.',
+              'Quando o app entrar no ar, o convite chega no seu e-mail.',
           }}
-          className="mx-auto mt-9 text-center"
         />
-      </motion.div>
-    </section>
-  );
-};
+      </div>
+    </div>
+  </section>
+);
 
 export default DownloadCTA;

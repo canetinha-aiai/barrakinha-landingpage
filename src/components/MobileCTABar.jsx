@@ -1,29 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
 
 /*
   Barra de ação fixa na base — só no celular.
 
   A página tem um convite só, o formulário do fecho, e no celular ele
-  mora a mais de 6.000px do topo: quem se convence no meio do caminho
-  não tem o que tocar. No desktop isso não pesa (o botão do header
-  fica visível o tempo todo, e a página inteira é bem mais curta em
-  telas largas); no celular o header só tem o hambúrguer, então não
-  sobra nenhuma ação à mão.
+  mora longe do topo: quem se convence no meio do caminho precisa ter o
+  que tocar. No desktop o botão do header cumpre esse papel.
 
   Regras de aparição, nas duas pontas:
 
-  1. Só entra depois que o hero sai — antes disso o botão grande do
-     hero já está na tela, e repetir o mesmo destino a 80px dele é
-     ruído, não ajuda.
-  2. Some quando o formulário de verdade entra na tela. Uma barra
-     dizendo "entrar na lista" flutuando por cima do campo de entrar
-     na lista é a própria definição de atrapalhar.
+  1. Só entra depois que o hero sai — antes disso o botão do hero já
+     está na tela.
+  2. Some quando o formulário de verdade entra na tela.
 
   As duas decisões saem de `IntersectionObserver`, não de contas com
-  `scrollY`: o navegador já sabe responder "esse elemento está
-  visível?" sem acordar o JavaScript a cada quadro de rolagem.
+  `scrollY`: o navegador responde "esse elemento está visível?" sem
+  acordar o JavaScript a cada quadro de rolagem.
+
+  Entra e sai pelo mesmo caminho — de baixo, pela própria altura
+  (`100%`) —, com mola sem quique: é interrompível, então se a pessoa
+  rola pra cima e pra baixo rápido a barra inverte de onde está em vez
+  de terminar a animação antiga primeiro.
+
+  Era uma cápsula flutuante com sombra, degradê por cima e botão em
+  degradê. Agora é uma faixa de papel com filete em cima, encostada na
+  base — o mesmo material do header.
 */
 const MobileCTABar = () => {
   const [pastHero, setPastHero] = useState(false);
@@ -36,8 +38,6 @@ const MobileCTABar = () => {
 
     const heroObserver = new IntersectionObserver(
       ([entry]) => setPastHero(!entry.isIntersecting),
-      // Um pedacinho do hero ainda visível já conta como "no hero":
-      // a barra só aparece quando ele saiu de vez.
       { threshold: 0, rootMargin: '-20% 0px 0px 0px' },
     );
     heroObserver.observe(hero);
@@ -65,37 +65,17 @@ const MobileCTABar = () => {
     <AnimatePresence>
       {visible ? (
         <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="pb-safe fixed inset-x-0 bottom-0 z-40 px-4 pt-3 md:hidden"
+          initial={{ y: '100%' }}
+          animate={{ y: 0 }}
+          exit={{ y: '100%' }}
+          transition={{ type: 'spring', bounce: 0, duration: 0.35 }}
+          className="glass pb-safe fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-line bg-paper/90 px-5 pt-3 backdrop-blur-md md:hidden"
         >
-          {/* Degradê acima da barra: sem ele o conteúdo da página
-              encosta na cápsula e some por baixo dela num corte reto. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 bottom-0 -top-10 bg-gradient-to-t from-ink-950 via-ink-950/90 to-transparent"
-          />
-
-          <a
-            href="#lista"
-            onClick={go}
-            className="relative flex items-center justify-between gap-3 rounded-full border border-white/10 bg-ink-900/90 py-2 pl-5 pr-2 shadow-float backdrop-blur-xl transition-transform duration-200 active:scale-[0.98]"
-          >
-            <span className="min-w-0">
-              <span className="block text-[13px] font-semibold leading-tight text-paper">
-                Chega primeiro no Android
-              </span>
-              <span className="block truncate text-[11px] leading-tight text-sand-400">
-                Comprar ou vender — é a mesma lista
-              </span>
-            </span>
-
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand px-4 py-2.5 text-[13px] font-semibold text-white shadow-glow">
-              Entrar
-              <ArrowRight size={15} aria-hidden="true" />
-            </span>
+          <span className="min-w-0 text-[14px] leading-tight text-ink-muted">
+            Chega primeiro no Android
+          </span>
+          <a href="#lista" onClick={go} className="btn-primary h-11 shrink-0 text-[15px]">
+            Entrar na lista
           </a>
         </motion.div>
       ) : null}

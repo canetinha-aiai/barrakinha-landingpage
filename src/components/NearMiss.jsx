@@ -1,221 +1,175 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { animate, motion, useInView, useReducedMotion } from 'framer-motion';
 
 /*
-  O respiro entre o hero e a explicação do produto — o lugar da página
-  onde o problema precisa doer antes de a solução aparecer.
+  A cena do problema, entre o hero e a explicação do produto.
 
-  ------------------------------------------------------------------
-  Aqui já moraram três versões, e as três falharam pelo mesmo motivo.
+  A seção não argumenta, conta: a barraca abriu e voltou com metade do
+  isopor cheio, você pediu no aplicativo e chegou morno, e vocês
+  estavam a 180 metros um do outro. A virada está na última linha, e
+  ela só funciona porque as duas primeiras são lidas separadas — por
+  isso são duas colunas com a distância entre elas.
 
-  Primeiro foram fichas arredondadas com ícone rolando em duas faixas.
-  Depois as mesmas frases em tipografia grande, cheia e vazada,
-  correndo em sentidos opostos. E por cima disso um título que
-  resumia tudo: "Quem vende não aparece. Quem compra não encontra."
-
-  O texto estava certo e a seção continuava sem atrair ninguém, porque
-  o problema não era o acabamento — era o registro. Tudo ali era
-  ABSTRAÇÃO: uma proposição lógica sobre visibilidade, ilustrada por
-  uma lista de outras proposições, passando de lado numa velocidade
-  em que ninguém lê frase inteira. Texto correndo é textura, não
-  informação. E "quem vende não aparece" é uma constatação, não uma
-  perda: ninguém se reconhece numa constatação.
-
-  Comida de rua não é um problema de visibilidade, é uma noite
-  específica. Então a seção deixa de argumentar e passa a contar o que
-  aconteceu:
-
-    a barraca abriu e voltou com metade do isopor cheio,
-    você pediu no aplicativo e chegou morno,
-    e vocês estavam a 180 metros um do outro.
-
-  A virada está na terceira linha, e ela só funciona porque as duas
-  primeiras foram lidas separadas — por isso são dois cartões
-  distantes, com a distância desenhada entre eles, e não dois itens de
-  uma lista. O leitor monta a conta sozinho; a seção só entrega as
-  duas pontas.
-
-  É a mesma dupla de públicos que a versão anterior nomeava ("quem
-  vende" / "quem compra"), agora vivida em vez de anunciada — o que
-  também mantém o encadeamento com as seções seguintes, que respondem
-  cada uma a uma das metades.
+  A distância é medida na frente do leitor: quando a cena entra na
+  tela, o tracejado corre de um ponto ao outro e o número conta de 0 a
+  180. É explicação, não enfeite — é a medida que transforma duas
+  reclamações num desencontro. Uma vez só; com menos movimento, já
+  nasce pronta.
 
   Nada aqui é dado: é uma cena, e o rótulo diz isso ("uma terça
-  qualquer"). Por isso também não tem preço de concorrente nem nome de
-  vendedor inventado — "pagou a taxa" e "a barraca" bastam pra cena e
-  não afirmam nada sobre ninguém.
+  qualquer").
 */
+/*
+  As duas pontas da cena, cada uma com o seu desenho: a barraca (quem
+  vende) e o celular esperando a entrega (quem compra). O desenho diz
+  de quem é cada lado antes de qualquer palavra — o rótulo pequeno de
+  antes não dava conta disso.
+*/
+const Stall = () => (
+  <svg viewBox="0 0 200 140" className="h-full w-full" aria-hidden="true">
+    {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+      <g key={i}>
+        <rect x={20 + i * 20} y={18} width={20} height={28} fill={i % 2 ? '#FBF7F2' : '#F85A35'} />
+        <circle cx={30 + i * 20} cy={46} r={10} fill={i % 2 ? '#FBF7F2' : '#F85A35'} />
+      </g>
+    ))}
+    <rect x={28} y={56} width={4} height={74} fill="#FBF7F2" />
+    <rect x={168} y={56} width={4} height={74} fill="#FBF7F2" />
+    <rect x={36} y={96} width={128} height={34} rx={4} fill="#FBF7F2" />
+    {/* Os pastéis que sobraram e o isopor ainda cheio. */}
+    <path d="M48 96 a12 12 0 0 1 24 0 z" fill="#E9B872" />
+    <path d="M70 96 a12 12 0 0 1 24 0 z" fill="#E9B872" />
+    <rect x={112} y={72} width={40} height={24} rx={3} fill="none" stroke="#FBF7F2" strokeWidth={3} />
+    <path d="M118 84 h28" stroke="#FBF7F2" strokeWidth={3} />
+  </svg>
+);
+
+const Phone = () => (
+  <svg viewBox="0 0 200 140" className="h-full w-full" aria-hidden="true">
+    <rect x={68} y={6} width={64} height={128} rx={10} fill="#2A211A" stroke="#FBF7F2" strokeWidth={3} />
+    <text x={100} y={34} textAnchor="middle" fontSize="9" fill="#A29C94" className="font-sans">
+      Chega em
+    </text>
+    <text x={100} y={70} textAnchor="middle" fontSize="26" fontWeight="800" fill="#F85A35" className="font-sans">
+      40
+    </text>
+    <text x={100} y={84} textAnchor="middle" fontSize="10" fontWeight="700" fill="#FBF7F2" className="font-sans">
+      minutos
+    </text>
+    <rect x={80} y={100} width={40} height={4} rx={2} fill="#453B31" />
+    <rect x={80} y={100} width={10} height={4} rx={2} fill="#F85A35" />
+    <text x={100} y={120} textAnchor="middle" fontSize="8" fill="#A29C94" className="font-sans">
+      + taxa
+    </text>
+  </svg>
+);
+
 const sides = [
   {
-    label: 'Quem vende',
-    lead: 'A barraca abriu às seis da tarde.',
+    role: 'Quem vende',
+    Art: Stall,
+    lead: 'A barraca de pastel abriu às seis da tarde.',
     detail:
-      'Fritou, esperou, guardou tudo de volta. Metade do isopor voltou cheia.',
+      'Fritou, esperou e quase ninguém passou. Voltou pra casa com metade do isopor cheio.',
   },
   {
-    label: 'Quem compra',
-    lead: 'Você pediu pelo aplicativo.',
-    detail: 'Pagou a taxa, esperou quarenta minutos. Chegou morno.',
+    role: 'Quem compra',
+    Art: Phone,
+    lead: 'A duas quadras dali, alguém com fome pediu pelo aplicativo.',
+    detail: 'Pagou a taxa, esperou quarenta minutos e o pastel chegou frio.',
   },
 ];
 
-const ease = [0.16, 1, 0.3, 1];
-
-const SideCard = ({ side, delay, from }) => (
-  <motion.div
-    initial={{ opacity: 0, x: from, y: 12 }}
-    whileInView={{ opacity: 1, x: 0, y: 0 }}
-    viewport={{ once: true, amount: 0.5 }}
-    transition={{ duration: 0.7, delay, ease }}
-    className="relative flex-1 overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.025] py-5 pl-[26px] pr-5"
-  >
-    {/* A mesma tira de toldo das listas de benefício: os dois lados da
-        história são da mesma marca, mesmo sendo pessoas diferentes. */}
-    <span
-      aria-hidden="true"
-      className="awning-edge absolute inset-y-0 left-0 w-[7px]"
-    />
-
-    <span className="block text-[11px] font-bold uppercase tracking-[0.16em] text-ember-500">
-      {side.label}
-    </span>
-
-    <p className="mt-2.5 font-display text-[19px] font-extrabold leading-[1.15] tracking-[-0.03em] text-paper text-balance sm:text-[21px]">
+const Side = ({ side }) => (
+  <div className="flex-1">
+    <div className="h-40 rounded bg-[#2A211A] p-4 sm:h-44">
+      <side.Art />
+    </div>
+    <p className="display-wide mt-6 text-[15px] uppercase tracking-[0.04em] text-ember">
+      {side.role}
+    </p>
+    <p className="display-wide mt-2 text-[22px] leading-[1.12] tracking-[-0.02em] text-cream text-balance sm:text-[26px]">
       {side.lead}
     </p>
-    <p className="mt-2 text-[14.5px] leading-relaxed text-sand-400 text-pretty">
+    <p className="mt-3 max-w-[36ch] text-[16px] leading-relaxed text-night-muted text-pretty">
       {side.detail}
     </p>
-  </motion.div>
-);
-
-/*
-  A distância entre os dois cartões, desenhada.
-
-  É o elemento que faz a seção funcionar: sem ela os dois cartões são
-  duas reclamações soltas; com ela, são dois pontos no mapa que nunca
-  se encontraram. O tracejado "cresce" de um cartão até o outro
-  (`scaleY`/`scaleX` de 0 a 1) em vez de já nascer pronto, porque o
-  que se quer mostrar é a separação entre eles, e separação é uma
-  medida — medida se percorre.
-
-  O numeral vai vazado, o mesmo `.hollow` dos numerais da seção "como
-  funciona": número grande e oco lê como distância, e não como
-  quantidade de alguma coisa.
-*/
-const Distance = () => (
-  /* O vão é generoso de propósito: é ele que representa os 180
-     metros. Apertado, o tracejado vira um tracinho entre dois cartões
-     colados e a seção volta a ser uma lista de dois itens. */
-  <div className="relative flex shrink-0 items-center justify-center py-9 lg:w-44 lg:py-0">
-    {/* Vertical no celular, horizontal no desktop. São dois elementos
-        e não um girado: tracejado que gira fica com o traço na
-        diagonal, e o que se quer é a linha na direção da leitura. */}
-    <motion.span
-      aria-hidden="true"
-      initial={{ scaleY: 0 }}
-      whileInView={{ scaleY: 1 }}
-      viewport={{ once: true, amount: 0.6 }}
-      transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
-      style={{ originY: 0 }}
-      className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 lg:hidden"
-    >
-      <span className="block h-full w-full bg-[repeating-linear-gradient(to_bottom,rgba(255,255,255,0.28)_0_5px,transparent_5px_11px)]" />
-    </motion.span>
-
-    <motion.span
-      aria-hidden="true"
-      initial={{ scaleX: 0 }}
-      whileInView={{ scaleX: 1 }}
-      viewport={{ once: true, amount: 0.6 }}
-      transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
-      style={{ originX: 0 }}
-      className="absolute left-0 top-1/2 hidden h-px w-full -translate-y-1/2 lg:block"
-    >
-      <span className="block h-full w-full bg-[repeating-linear-gradient(to_right,rgba(255,255,255,0.28)_0_5px,transparent_5px_11px)]" />
-    </motion.span>
-
-    {/* O rótulo tapa o tracejado no meio — a medida sempre é escrita
-        em cima da linha que ela mede. `bg-ink-950` é o fundo da seção. */}
-    <motion.span
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, amount: 0.6 }}
-      transition={{ duration: 0.5, delay: 1.05, ease }}
-      className="relative flex items-baseline gap-1.5 bg-ink-950 px-3"
-    >
-      <span
-        className="hollow numeric font-display text-[38px] font-extrabold leading-none tracking-[-0.04em] sm:text-[44px]"
-        style={{ WebkitTextStrokeWidth: '1.5px' }}
-      >
-        180
-      </span>
-      <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-sand-500">
-        metros
-      </span>
-    </motion.span>
   </div>
 );
 
-const NearMiss = () => {
+const Distance = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.8 });
+  const reduceMotion = useReducedMotion();
+  // No pré-render (sem `window`) o HTML já sai com a medida certa.
+  const [meters, setMeters] = useState(() =>
+    typeof window === 'undefined' || reduceMotion ? 180 : 0,
+  );
+
+  useEffect(() => {
+    if (!inView || reduceMotion) return undefined;
+    const controls = animate(0, 180, {
+      duration: 1.1,
+      delay: 0.2,
+      ease: [0.23, 1, 0.32, 1],
+      onUpdate: (value) => setMeters(Math.round(value)),
+    });
+    return () => controls.stop();
+  }, [inView, reduceMotion]);
+
+  const drawn = inView || reduceMotion;
+
   return (
-    <section className="screen-section relative flex flex-col justify-center overflow-hidden bg-ink-950 lg:py-16">
-      {/* Glow ambiente — sem ele a seção é um retângulo preto liso. */}
-      <motion.div
+    <div ref={ref} className="relative flex items-center justify-center py-12 lg:mt-[4.5rem] lg:w-52 lg:shrink-0 lg:py-0">
+      {/* Vertical no celular, horizontal no desktop. */}
+      <motion.span
         aria-hidden="true"
-        animate={{ opacity: [0.35, 0.65, 0.35] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[340px] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-600/[0.12] blur-[100px] sm:h-[520px] sm:w-[520px] sm:blur-[140px]"
+        initial={false}
+        animate={{ scaleY: drawn ? 1 : 0 }}
+        transition={{ duration: 1.1, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
+        style={{ originY: 0 }}
+        className="absolute inset-y-0 left-1/2 w-0.5 bg-[repeating-linear-gradient(to_bottom,#F85A35_0_8px,transparent_8px_16px)] lg:hidden"
       />
-
-      <div className="relative z-10 mx-auto w-full max-w-5xl px-5 lg:px-8">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.8 }}
-          transition={{ duration: 0.5, ease }}
-          className="text-center text-[12px] font-bold uppercase tracking-[0.2em] text-sand-500"
-        >
-          Uma terça qualquer, 20h40
-        </motion.p>
-
-        <div className="mt-7 flex flex-col lg:mt-10 lg:flex-row lg:items-stretch">
-          <SideCard side={sides[0]} delay={0} from={-28} />
-          <Distance />
-          <SideCard side={sides[1]} delay={0.15} from={28} />
-        </div>
-
-        {/* A virada. É o `h2` da seção: as duas frases acima montam a
-            conta, esta cobra. */}
-        <motion.h2
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.8, delay: 1.25, ease }}
-          className="mx-auto mt-10 max-w-2xl text-center text-[27px] font-extrabold leading-[1.08] tracking-[-0.04em] text-paper text-balance sm:text-[36px] lg:mt-14 lg:text-[44px]"
-        >
-          E nenhum dos dois sabia{' '}
-          <span className="bg-brand bg-clip-text text-transparent">
-            do outro.
-          </span>
-        </motion.h2>
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.6, delay: 1.6, ease: 'easeOut' }}
-        className="relative z-10 mt-10 flex flex-col items-center gap-3 lg:mt-14"
-      >
-        <span className="text-center text-[13px] font-semibold uppercase leading-tight tracking-[0.06em] text-ember-400 sm:text-[14px]">
-          É isso que a Barrakinha resolve
+      <motion.span
+        aria-hidden="true"
+        initial={false}
+        animate={{ scaleX: drawn ? 1 : 0 }}
+        transition={{ duration: 1.1, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
+        style={{ originX: 0 }}
+        className="absolute inset-x-0 top-1/2 hidden h-0.5 bg-[repeating-linear-gradient(to_right,#F85A35_0_8px,transparent_8px_16px)] lg:block"
+      />
+      <span className="relative flex items-baseline gap-1.5 bg-night px-4 py-1">
+        <span className="numeric display-wide text-[56px] leading-none tracking-[-0.03em] text-ember">
+          {meters}
         </span>
-        <ChevronDown size={22} aria-hidden="true" className="animate-bounce text-ember-400" />
-      </motion.div>
-    </section>
+        <span className="text-label font-semibold text-night-muted">metros</span>
+        <span className="sr-only">de distância</span>
+      </span>
+    </div>
   );
 };
+
+const NearMiss = () => (
+  <section className="section bg-night text-cream">
+    <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
+      <p className="text-label font-semibold text-ember">Uma terça qualquer, 20h40</p>
+
+      <div className="mt-10 flex flex-col lg:mt-14 lg:flex-row lg:items-start">
+        <Side side={sides[0]} />
+        <Distance />
+        <Side side={sides[1]} />
+      </div>
+
+      <div className="mt-14 border-t border-night-line pt-10 lg:mt-20 lg:pt-14">
+        <h2 className="display-wide max-w-[18ch] text-[2.25rem] leading-[1.0] tracking-[-0.03em] text-cream text-balance sm:text-[3rem] lg:text-[4rem]">
+          Estavam a 180 metros. Nenhum dos dois sabia do outro.
+        </h2>
+        <p className="mt-5 max-w-[44ch] text-[18px] leading-relaxed text-night-muted">
+          A Barrakinha põe a barraca aberta no mapa de quem está por perto.
+        </p>
+      </div>
+    </div>
+  </section>
+);
 
 export default NearMiss;

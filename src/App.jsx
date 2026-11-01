@@ -1,9 +1,10 @@
 import React from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
-import ScrollProgress from '@/components/ScrollProgress';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
+import Awning from '@/components/Awning';
+import FoodMarquee from '@/components/FoodMarquee';
 import NearMiss from '@/components/NearMiss';
 import CustomerBenefits from '@/components/CustomerBenefits';
 import VendorBenefits from '@/components/VendorBenefits';
@@ -13,28 +14,27 @@ import Footer from '@/components/Footer';
 import MobileCTABar from '@/components/MobileCTABar';
 
 /*
-  Estrutura copiada seção a seção do smartserialnumber.com, só trocando
-  conteúdo e cor: hero com mockup do produto → faixa rolando com as
-  dores do público (no lugar do "com o reconhecimento de", que a
-  Barrakinha não tem) → como funciona → os dois blocos de público, um
-  do lado do outro, alternando cor cheia da marca e fundo escuro — a
-  mesma alternância que lá é Fabricante (lima) / Marca (escuro) /
-  Consumidor (lima) — → comparação antes/depois → CTA final escuro e
-  centralizado. O case de sucesso do site de referência ficou de fora:
-  a Barrakinha ainda não tem um caso real pra mostrar.
+  A página alterna as três superfícies da marca: hero laranja com o
+  toldo → faixa das comidas e a cena do problema em noite → pra quem
+  compra em papel → pra quem vende em noite, debaixo do toldo → antes e
+  depois em papel → lista de espera de volta no laranja → rodapé noite.
 
-  A navegação entre os dois públicos vive só no header; repetir os
-  mesmos dois destinos em card logo abaixo do hero seria redundância,
-  não orientação.
+  Sem barra de progresso de rolagem: o navegador já mostra onde a
+  pessoa está, e uma segunda barra colorida no topo era só mais uma
+  coisa se mexendo.
 */
 function App() {
   return (
     <>
-      <div className="min-h-screen bg-ink-950">
-        <ScrollProgress />
+      <div className="min-h-screen bg-paper">
         <Header />
         <main>
           <Hero />
+          {/* O toldo do hero pendura sobre a faixa escura de baixo. */}
+          <div className="bg-night">
+            <Awning stripe="#F85A35" between="#FBF7F2" />
+          </div>
+          <FoodMarquee />
           <NearMiss />
           <CustomerBenefits />
           <VendorBenefits />
