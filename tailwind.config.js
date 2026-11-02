@@ -134,15 +134,49 @@ module.exports = {
 					from: { transform: 'translateX(0)' },
 					to: { transform: 'translateX(-50%)' },
 				},
+				/* A palavra do título do hero saindo de trás da máscara.
+				   É CSS, não Motion, pra rodar já no HTML pré-renderizado,
+				   antes do JavaScript chegar. */
+				'word-rise': {
+					from: { transform: 'translateY(140%)' },
+					to: { transform: 'translateY(0)' },
+				},
+				/* Vapor subindo do pastel e sumindo. */
+				steam: {
+					'0%': { opacity: 0, transform: 'translateY(6px) scaleY(0.8)' },
+					'35%': { opacity: 0.7 },
+					'100%': { opacity: 0, transform: 'translateY(-14px) scaleY(1.1)' },
+				},
+				/* Lâmpada do varal da barraca. */
+				twinkle: {
+					'0%, 100%': { opacity: 1 },
+					'50%': { opacity: 0.35 },
+				},
+				/* Onda do "você" no mapa: sai do ponto e some. */
+				ripple: {
+					from: { opacity: 0.5, transform: 'scale(0.4)' },
+					to: { opacity: 0, transform: 'scale(2.2)' },
+				},
 			},
 			animation: {
 				enter: 'enter 500ms cubic-bezier(0.23, 1, 0.32, 1) both',
 				marquee: 'marquee 40s linear infinite',
+				'word-rise': 'word-rise 800ms cubic-bezier(0.23, 1, 0.32, 1) both',
+				steam: 'steam 2.4s cubic-bezier(0.23, 1, 0.32, 1) infinite',
+				twinkle: 'twinkle 2.2s ease-in-out infinite',
+				ripple: 'ripple 2.4s cubic-bezier(0.23, 1, 0.32, 1) infinite',
 			},
 			transitionTimingFunction: {
 				out: 'cubic-bezier(0.23, 1, 0.32, 1)',
 			},
 		},
 	},
-	plugins: [require('tailwindcss-animate')],
+	plugins: [
+		require('tailwindcss-animate'),
+		/* `hover-fine:` — hover só com mouse de verdade. No toque o
+		   navegador dispara hover no próprio toque e o estado gruda. */
+		({ addVariant }) => {
+			addVariant('hover-fine', '@media (hover: hover) and (pointer: fine)');
+		},
+	],
 };

@@ -16,15 +16,15 @@ import PhotoStrip from '@/components/PhotoStrip';
 const items = [
   {
     title: 'Quem está vendendo agora',
-    detail: 'O mapa mostra só as barracas abertas neste momento, perto de você.',
+    detail: 'Só aparecem no mapa as barracas que estão abertas agora.',
   },
   {
-    title: 'O preço antes de sair de casa',
-    detail: 'Cardápio e valores de cada barraca, direto no app.',
+    title: 'Cardápio e preço no app',
+    detail: 'Cada barraca mostra o que vende e quanto custa.',
   },
   {
     title: 'Pedido pronto quando você chega',
-    detail: 'Você pede pelo app e retira na barraca, sem fila e sem troco.',
+    detail: 'Você pede pelo app e retira na barraca, sem pegar fila nem precisar de troco.',
   },
 ];
 
@@ -34,8 +34,8 @@ const CustomerBenefits = () => (
       <div className="lg:col-span-6">
         <SectionHeading
           kicker="Pra quem compra"
-          title="A comida da sua rua, sem depender da sorte"
-          description="Veja no mapa quem está vendendo perto de você e escolha antes de sair de casa."
+          title="Escolha a barraca antes de sair de casa"
+          description="O mapa mostra quem está vendendo perto de você neste momento."
         />
         <BenefitList items={items} className="mt-10" />
       </div>

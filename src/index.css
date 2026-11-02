@@ -233,3 +233,14 @@
     backdrop-filter: none !important;
   }
 }
+
+/*
+  Loops que saíram da tela ficam parados. O vapor, as lâmpadas e a
+  onda do mapa só rodam enquanto alguém pode ver — quem liga e
+  desliga a classe é `useInView` (sem `once`) no componente de cada
+  cena.
+*/
+.loops-off,
+.loops-off * {
+  animation-play-state: paused !important;
+}

@@ -33,6 +33,16 @@ let markup = render();
 const hidden = (markup.match(/opacity:0(?=[;"])/g) || []).length;
 markup = markup.replace(/opacity:0(?=[;"])/g, 'opacity:1');
 
+/*
+  Os títulos que sobem palavra por palavra (RevealText) nascem com a
+  palavra empurrada pra baixo da máscara, `translateY(140%)`. Com
+  máscara, isso esconde — então, ao contrário dos outros deslocamentos,
+  este precisa ser reaberto. O valor 140% só existe ali, por isso a
+  troca pode ser exata.
+*/
+const masked = (markup.match(/translateY\(140%\)/g) || []).length;
+markup = markup.replace(/transform:\s*translateY\(140%\)/g, 'transform:none');
+
 const html = await readFile(htmlPath, 'utf8');
 const marker = '<div id="root"></div>';
 
@@ -49,5 +59,5 @@ await writeFile(
 );
 
 console.log(
-  `prerender: ${markup.length} bytes no #root (${hidden} estilos opacity:0 reabertos)`,
+  `prerender: ${markup.length} bytes no #root (${hidden} estilos opacity:0 e ${masked} palavras mascaradas reabertos)`,
 );

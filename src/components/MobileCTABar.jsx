@@ -72,7 +72,7 @@ const MobileCTABar = () => {
           className="glass pb-safe fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-line bg-paper/90 px-5 pt-3 backdrop-blur-md md:hidden"
         >
           <span className="min-w-0 text-[14px] leading-tight text-ink-muted">
-            Chega primeiro no Android
+            Lançamento no Android
           </span>
           <a href="#lista" onClick={go} className="btn-primary h-11 shrink-0 text-[15px]">
             Entrar na lista

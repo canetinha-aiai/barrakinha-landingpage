@@ -14,10 +14,13 @@ export function useWaitlist(messages = {}) {
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  // Sobe a cada inscrição que deu certo; quem desenha a comemoração
+  // (ver PinBurst) escuta a troca.
+  const [successes, setSuccesses] = useState(0);
 
   const {
     successTitle = 'Pronto, você está na lista',
-    successDescription = 'Avisamos assim que o Barrakinha estiver no ar na sua região.',
+    successDescription = 'A gente avisa quando a Barrakinha chegar na sua região.',
   } = messages;
 
   const submit = async (event) => {
@@ -49,6 +52,7 @@ export function useWaitlist(messages = {}) {
 
       toast({ title: successTitle, description: successDescription });
       setEmail('');
+      setSuccesses((value) => value + 1);
     } catch (error) {
       console.error(error);
       toast({
@@ -61,5 +65,5 @@ export function useWaitlist(messages = {}) {
     }
   };
 
-  return { email, setEmail, loading, submit };
+  return { email, setEmail, loading, submit, successes };
 }

@@ -26,7 +26,7 @@ const Footer = () => {
   const soon = (label) => {
     toast({
       title: 'Ainda não está no ar',
-      description: `${label} entra junto com o lançamento do app.`,
+      description: `${label} vai ao ar junto com o app.`,
     });
   };
 

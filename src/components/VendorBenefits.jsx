@@ -17,19 +17,19 @@ import Awning from '@/components/Awning';
 const items = [
   {
     title: 'No mapa só enquanto vende',
-    detail: 'Abriu, apareceu. Fechou, saiu. Ninguém vai até você à toa.',
+    detail: 'A barraca aparece quando você abre e some quando você fecha, então ninguém vai até lá à toa.',
   },
   {
-    title: 'Mudou de esquina, o mapa acompanha',
-    detail: 'A localização da barraca atualiza junto com você.',
+    title: 'Trocou de esquina, o mapa acompanha',
+    detail: 'A localização da barraca muda junto com você.',
   },
   {
     title: 'Cardápio no celular',
-    detail: 'Foto, item e preço, editados de onde você estiver.',
+    detail: 'Você muda fotos, itens e preços de onde estiver.',
   },
   {
     title: 'Quanto rendeu o dia',
-    detail: 'Você acompanha o que saiu e quanto entrou.',
+    detail: 'Você vê o que vendeu e quanto entrou.',
   },
 ];
 
@@ -44,7 +44,7 @@ const VendorBenefits = () => (
             tone="night"
             kicker="Pra quem vende"
             title="Sem ponto fixo, com endereço no mapa"
-            description="Abriu a barraca, entrou no mapa. Sem mensalidade e sem burocracia."
+            description="Quando você abre a barraca, ela aparece no mapa. Não tem mensalidade nem burocracia."
           />
           <BenefitList tone="night" items={items} className="mt-10" />
         </div>

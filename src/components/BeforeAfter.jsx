@@ -27,23 +27,23 @@ const MODES = [
 const rows = [
   {
     topic: 'Achar a barraca',
-    before: 'Só acha quem passa na frente do ponto.',
+    before: 'Só encontra a barraca quem passa na frente.',
     after: 'Toda barraca aberta aparece no mapa, perto de você.',
   },
   {
     topic: 'Saber se abriu',
     before: 'Vai até lá pra descobrir que fechou.',
-    after: 'Pino laranja é barraca aberta agora.',
+    after: 'O pino laranja mostra que a barraca está aberta agora.',
   },
   {
     topic: 'Escolher',
-    before: 'Cardápio e preço, só chegando lá.',
+    before: 'Você só vê o cardápio e o preço quando chega lá.',
     after: 'Cardápio e preço antes de sair de casa.',
   },
   {
     topic: 'Pedir',
-    before: 'Fila, troco e espera na hora.',
-    after: 'Pede pelo app e retira pronto.',
+    before: 'Na hora tem fila, espera e conta de troco.',
+    after: 'Você pede pelo app e retira pronto.',
   },
 ];
 
@@ -211,7 +211,7 @@ const BeforeAfter = () => {
         <SectionHeading
           kicker="Antes e depois"
           title="O que muda com a Barrakinha"
-          description="Troque a chave e veja o mesmo bairro com e sem o mapa."
+          description="Use a chave pra ver o mesmo bairro com e sem o mapa."
         />
 
         <div className="mt-10">
