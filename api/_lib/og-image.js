@@ -21,6 +21,8 @@ const AWNING_HEIGHT = 86;
 const TEXT_WIDTH = 520;
 const STRIPE = 60;
 const CORNER_LOGO = 136;
+// Altura da faixa do conteúdo: do toldo até um pouco acima da logo do canto.
+const CONTENT_HEIGHT = OG_HEIGHT - AWNING_HEIGHT - 70;
 
 let fontsPromise;
 let logoPromise;
@@ -149,9 +151,6 @@ export function buildStoreOgElement({ name, photoDataUri, logoDataUri }) {
       width: OG_WIDTH,
       height: OG_HEIGHT,
       backgroundColor: BRASA,
-      alignItems: 'center',
-      padding: `${AWNING_HEIGHT}px 72px 0`,
-      gap: 56,
     },
     [
       awning(),
@@ -161,40 +160,57 @@ export function buildStoreOgElement({ name, photoDataUri, logoDataUri }) {
         { position: 'absolute', left: OG_WIDTH - 40 - CORNER_LOGO, top: OG_HEIGHT - 32 - CORNER_LOGO },
         logo(logoDataUri, CORNER_LOGO),
       ),
+      // Foto e texto centralizados na faixa entre o toldo e a linha da logo,
+      // para o bloco não descer para a borda de baixo.
       el(
         'div',
         {
-          width: photoSize + 24,
-          height: photoSize + 24,
-          borderRadius: (photoSize + 24) / 2,
-          backgroundColor: CREAM,
+          position: 'absolute',
+          left: 0,
+          top: AWNING_HEIGHT,
+          width: OG_WIDTH,
+          height: CONTENT_HEIGHT,
           alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
+          padding: '0 72px',
+          gap: 56,
         },
-        photo,
+        [
+          el(
+            'div',
+            {
+              width: photoSize + 24,
+              height: photoSize + 24,
+              borderRadius: (photoSize + 24) / 2,
+              backgroundColor: CREAM,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            },
+            photo,
+          ),
+          el('div', { flexDirection: 'column', width: TEXT_WIDTH }, [
+            el(
+              'div',
+              { fontFamily: 'Archivo Body', fontSize: 30, color: NIGHT, opacity: 0.8 },
+              'Peça pelo app',
+            ),
+            el(
+              'div',
+              {
+                fontFamily: 'Archivo Display',
+                fontSize: nameFontSize(safeName),
+                lineHeight: 1.02,
+                letterSpacing: -1,
+                color: CREAM,
+                marginTop: 10,
+                maxHeight: nameFontSize(safeName) * 1.02 * 4,
+                overflow: 'hidden',
+              },
+              safeName,
+            ),
+          ]),
+        ],
       ),
-      el('div', { flexDirection: 'column', width: TEXT_WIDTH }, [
-        el(
-          'div',
-          { fontFamily: 'Archivo Body', fontSize: 30, color: NIGHT, opacity: 0.8 },
-          'Peça pelo app',
-        ),
-        el(
-          'div',
-          {
-            fontFamily: 'Archivo Display',
-            fontSize: nameFontSize(safeName),
-            lineHeight: 1.02,
-            letterSpacing: -1,
-            color: CREAM,
-            marginTop: 10,
-            maxHeight: nameFontSize(safeName) * 1.02 * 4,
-            overflow: 'hidden',
-          },
-          safeName,
-        ),
-      ]),
     ],
   );
 }
