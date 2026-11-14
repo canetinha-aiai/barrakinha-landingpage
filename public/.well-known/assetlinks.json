@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.barrakinha.vendedor",
+      "sha256_cert_fingerprints": [
+        "40:95:C6:2F:57:CA:8D:84:57:7C:C3:2A:4F:EE:F3:83:C8:06:0F:F8:05:37:FC:6B:0E:52:CA:D0:40:F4:10:93"
+      ]
+    }
+  }
+]
