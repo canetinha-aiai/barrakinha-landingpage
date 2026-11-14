@@ -34,16 +34,11 @@ export function playStoreUrl(slug) {
 }
 
 /*
-  No Android, um link `intent://` abre o app se ele estiver instalado e,
-  se não estiver, cai no `browser_fallback_url` (a Play Store com o
-  referrer). No iPhone não existe isso: o esquema `barrakinha://` só
-  funciona com o app instalado.
+  O botão "Abrir no app" usa o esquema `barrakinha://` em todo aparelho.
+  Quando o App Link do Android não resolve (app ainda não verificado,
+  navegador dentro de outro app), é esse link que abre a barraca. Sem o
+  app instalado, o botão da Play logo abaixo resolve.
 */
-export function androidIntentUrl(slug) {
-  const fallback = encodeURIComponent(playStoreUrl(slug));
-  return `intent://b/${slug}#Intent;scheme=${APP_SCHEME};package=${ANDROID_PACKAGE};S.browser_fallback_url=${fallback};end`;
-}
-
 export function appSchemeUrl(slug) {
   return `${APP_SCHEME}://b/${slug}`;
 }
@@ -163,6 +158,7 @@ const STYLES = `
     font: inherit; font-size: 17px; font-weight: 700;
     text-decoration: none; cursor: pointer; border: 0;
   }
+  .btn svg { width: 20px; height: 20px; flex: none; }
   .btn-primary { background: var(--brasa); color: #fff; }
   .btn-primary:active { background: var(--brasa-dark); }
   .btn-secondary { background: var(--ink); color: #fff; }
@@ -176,6 +172,10 @@ const STYLES = `
   /* Sem JavaScript tudo aparece; com ele, só o que serve para o aparelho. */
   html.js [data-show]:not(.on) { display: none; }
 `;
+
+// Ícones dos botões: traço em currentColor, sem cor própria.
+const ICON_OPEN_APP = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h0.01"/><path d="M13 11h8"/><path d="M18 8l3 3-3 3"/></svg>`;
+const ICON_GOOGLE_PLAY = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5v17a.6.6 0 0 0 .9.5l14-8.5a.6.6 0 0 0 0-1L5.9 3a.6.6 0 0 0-.9.5Z"/><path d="M5.3 3.3 15 12l-9.7 8.7"/></svg>`;
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=Figtree:wght@400;600;700&display=swap';
@@ -271,10 +271,8 @@ export function renderStorePage(store) {
       <p class="lead">Os pedidos desta barraca são feitos pelo app da Barrakinha. Você pede pelo celular e retira na hora.</p>
 
       <div class="actions">
-        <a class="btn btn-primary" data-show="android" href="${escapeHtml(androidIntentUrl(slug))}">Abrir no app</a>
-        <a class="btn btn-secondary" data-show="android desktop" href="${escapeHtml(playStoreUrl(slug))}">Baixar na Google Play</a>
-
-        <a class="btn btn-primary" data-show="ios" href="${escapeHtml(appSchemeUrl(slug))}">Abrir no app</a>
+        <a class="btn btn-primary" href="${escapeHtml(appSchemeUrl(slug))}">${ICON_OPEN_APP}Abrir no app</a>
+        <a class="btn btn-secondary" data-show="android desktop" href="${escapeHtml(playStoreUrl(slug))}">${ICON_GOOGLE_PLAY}Baixar na Google Play</a>
         <p class="soon" data-show="ios">O app para iPhone está chegando. Por enquanto, a Barrakinha está disponível só para Android.</p>
       </div>
 
