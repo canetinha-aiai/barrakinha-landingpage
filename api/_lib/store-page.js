@@ -204,6 +204,9 @@ const DEVICE_SCRIPT = `
 
 function layout({ title, description, image, url, body, status = 200 }) {
   const ogImage = image || `${SITE_URL}/og.png`;
+  // Toda capa (a da barraca e a padrão) é 1200×630.
+  const ogImageSize = `<meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />`;
   return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -223,7 +226,9 @@ function layout({ title, description, image, url, body, status = 200 }) {
   <meta property="og:title" content="${escapeHtml(title)}" />
   <meta property="og:description" content="${escapeHtml(description)}" />
   <meta property="og:image" content="${escapeHtml(ogImage)}" />
-  <meta name="twitter:card" content="${image ? 'summary' : 'summary_large_image'}" />
+  <meta property="og:image:type" content="image/png" />
+  ${ogImageSize}
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@barrakinha_app" />
   <meta name="twitter:title" content="${escapeHtml(title)}" />
   <meta name="twitter:description" content="${escapeHtml(description)}" />
@@ -280,7 +285,8 @@ export function renderStorePage(store) {
   return layout({
     title: `${store.name} na Barrakinha`,
     description: 'Faça seu pedido pelo app da Barrakinha e retire na barraca.',
-    image: store.photo,
+    // Capa gerada com a identidade da Barrakinha (api/og/[slug].js).
+    image: `${url}/capa.png`,
     url,
     body,
   });
