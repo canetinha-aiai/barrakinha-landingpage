@@ -6,8 +6,8 @@ import { EASE_OUT } from '@/lib/motion';
 /*
   "Pra quem compra" — o app em três passos, lidos em cinco segundos.
 
-  Entrou no lugar da história da terça à noite (NearMiss) e do mapa
-  ilustrado, que subiu pro hero. Cada passo é um número grande, um
+  Entrou no lugar da história da terça à noite (NearMiss). Cada passo é
+  um número grande, um
   título curto, uma frase e o pedaço da tela do app que faz aquilo —
   capturas do app de verdade no simulador, com uma barraca de teste
   aberta na Praça Cívica (ponto público, nada de endereço de ninguém).
@@ -22,21 +22,21 @@ const steps = [
     text: 'O mapa mostra as barracas abertas agora, perto de você.',
     img: '/models/passo-mapa',
     alt: 'Mapa do app da Barrakinha com uma barraca aberta perto de você e o cartão dela: Espetinhos do Pedro, aberta, a 380 m, com o botão Ver cardápio',
-    size: [720, 776],
+    size: [720, 1278],
   },
   {
     title: 'Peça pelo app',
     text: 'Escolha no cardápio, já vendo o preço, e faça o pedido.',
     img: '/models/passo-pedir',
     alt: 'Cardápio da barraca Espetinhos do Pedro no app, aberta agora, com batata frita a R$ 20,00',
-    size: [720, 776],
+    size: [720, 1278],
   },
   {
     title: 'Retire pronto',
     text: 'Acompanhe o pedido e pegue na barraca, sem fila.',
     img: '/models/passo-retirar',
     alt: 'Pedido de R$ 20,00 na Espetinhos do Pedro acompanhado no app, com o status Aguardando a loja e as etapas até a retirada',
-    size: [720, 776],
+    size: [720, 1278],
   },
 ];
 
@@ -74,9 +74,12 @@ const HowItWorks = () => {
                 {step.title}
               </h3>
               <p className="mt-2 max-w-[30ch] text-[17px] leading-relaxed text-ink-muted">{step.text}</p>
-              {/* Os três recortes têm o mesmo tamanho, pra fileira alinhar. */}
-              <figure className="mt-6 overflow-hidden rounded border-2 border-ink bg-paper [aspect-ratio:720/776]">
-                <picture>
+              {/* A tela inteira do app (sem a barra de status e sem a barra
+                  de abas), dentro de uma moldura simples de celular: borda
+                  de tinta e cantos redondos. As três têm o mesmo tamanho,
+                  pra fileira alinhar no desktop. */}
+              <figure className="mx-auto mt-6 w-full max-w-[320px] rounded-[30px] bg-ink p-[6px] md:max-w-none">
+                <picture className="block overflow-hidden rounded-[24px] bg-paper [aspect-ratio:720/1278]">
                   <source type="image/avif" srcSet={`${step.img}.avif`} />
                   <source type="image/webp" srcSet={`${step.img}.webp`} />
                   <img

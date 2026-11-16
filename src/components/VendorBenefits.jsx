@@ -55,10 +55,10 @@ const VendorBenefits = () => (
             beforeSrc="/models/vendor-fechada.png"
             formats={['avif', 'webp']}
             width={1206}
-            height={1130}
+            height={944}
             alt="Topo da tela inicial do app do vendedor da Barrakinha: a barraca está aberta e os clientes por perto estão vendo ela no mapa"
             className="w-full max-w-[340px] -rotate-2 border-2 border-cream lg:sticky lg:top-28"
-            crop="1206 / 1130"
+            crop="1206 / 944"
           />
         </div>
       </div>

@@ -72,7 +72,7 @@ const Footer = ({ modelCredit = false }) => {
           <div className="col-span-2 md:col-span-6">
             {/* Uma marca só: o selo (que já escreve BARRAKINHA) faz o papel
                 do ícone + nome que ficavam aqui embaixo. */}
-            <MorphLogo size={96} start="view" label="Barrakinha" className="text-ember" />
+            <MorphLogo size={96} start="view" label="Barrakinha" className="text-white" />
             <p className="mt-5 max-w-[32ch] text-[15px] leading-relaxed text-night-muted">
               O mapa da comida de rua do seu bairro.
             </p>
