@@ -10,6 +10,7 @@ import {
   useTransform,
   useVelocity,
 } from 'framer-motion';
+import { FOOD_ICONS, HOT } from '@/components/FoodIcons';
 
 /*
   A faixa do cardápio da rua: o nome das comidas passando em letra
@@ -48,6 +49,80 @@ const wrap = (min, max, value) => {
   return ((((value - min) % range) + range) % range) + min;
 };
 
+/*
+  Entre um nome e outro, a comida desenhada (FoodIcons, no traço da
+  barraquinha do hero). Passar o mouse ou tocar faz ela pular com
+  mola — e, se é quente, sair vapor. A faixa já para no hover, então
+  dá pra brincar com ela parada. Com menos movimento, não pula.
+*/
+const FoodIcon = ({ food }) => {
+  const reduceMotion = useReducedMotion();
+  const [hops, setHops] = useState(0);
+  const Icon = FOOD_ICONS[food];
+  const hop = () => setHops((n) => n + 1);
+  const live = hops > 0 && !reduceMotion;
+
+  return (
+    <span
+      aria-hidden="true"
+      onPointerEnter={hop}
+      onClick={hop}
+      className="relative mx-1 block h-12 w-12 shrink-0 cursor-pointer sm:h-16 sm:w-16 lg:h-[4.5rem] lg:w-[4.5rem]"
+    >
+      <motion.span
+        key={hops}
+        className="block h-full w-full"
+        initial={false}
+        animate={live ? { y: [0, -20, 0], rotate: [0, -12, 8, 0] } : { y: 0, rotate: 0 }}
+        transition={{ duration: 0.6, times: [0, 0.35, 0.7, 1], ease: 'easeOut' }}
+      >
+        <svg viewBox="0 0 64 64" className="block h-full w-full overflow-visible">
+          <Icon />
+        </svg>
+      </motion.span>
+      {live && HOT.has(food) ? (
+        <svg key={`v${hops}`} viewBox="0 0 64 64" className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
+          {[22, 34, 44].map((x, i) => (
+            <g key={x} className="stall-steam-burst" style={{ animationDelay: `${i * 70}ms` }}>
+              <circle cx={x} cy={8} r={5} fill="#FBF7F2" />
+              <circle cx={x + 4} cy={5} r={3.5} fill="#FBF7F2" />
+            </g>
+          ))}
+        </svg>
+      ) : null}
+      {live && food === 'Caldo de cana' ? (
+        <svg key={`b${hops}`} viewBox="0 0 64 64" className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
+          {[[26, 3], [34, 4.5], [40, 2.5], [30, 2]].map(([x, r], i) => (
+            <motion.circle
+              key={i}
+              cx={x}
+              cy={20}
+              r={r}
+              fill="none"
+              stroke="#C9D86B"
+              strokeWidth={1.5}
+              initial={{ y: 0, opacity: 1 }}
+              animate={{ y: -26 - i * 4, opacity: 0 }}
+              transition={{ duration: 0.8, delay: i * 0.08, ease: 'easeOut' }}
+            />
+          ))}
+        </svg>
+      ) : null}
+      {live && food === 'Açaí' ? (
+        <svg key={`g${hops}`} viewBox="0 0 64 64" className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
+          <motion.path
+            d="M48 50 q3 5 0 8 q-3 -3 0 -8 Z"
+            fill="#7A3D8F"
+            initial={{ y: 0, opacity: 1 }}
+            animate={{ y: 16, opacity: 0 }}
+            transition={{ duration: 0.7, delay: 0.25, ease: 'easeIn' }}
+          />
+        </svg>
+      ) : null}
+    </span>
+  );
+};
+
 const Row = ({ hidden, outline }) => (
   <ul aria-hidden={hidden || undefined} className="flex shrink-0 items-center">
     {foods.map((food) => (
@@ -58,7 +133,7 @@ const Row = ({ hidden, outline }) => (
         >
           {food}
         </span>
-        <span aria-hidden="true" className="block h-3 w-3 rounded-full bg-ember sm:h-4 sm:w-4" />
+        <FoodIcon food={food} />
       </li>
     ))}
   </ul>

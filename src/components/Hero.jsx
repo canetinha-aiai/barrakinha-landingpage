@@ -41,7 +41,7 @@ const Hero = () => {
   return (
     <section id="top" className="relative bg-paper pt-16 text-ink">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-5 pb-14 pt-10 lg:grid-cols-12 lg:items-center lg:gap-8 lg:px-8 lg:pb-20 lg:pt-16">
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-6">
           <h1 className="display-wide max-w-[13ch] text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-balance sm:text-[4rem] lg:text-[4.6rem]">
             {words.map((word, index) => (
               <React.Fragment key={`${word}-${index}`}>
@@ -95,7 +95,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <HeroStall className="mx-auto w-full max-w-[460px] lg:col-span-5 lg:mr-0 lg:max-w-none" />
+        <HeroStall className="mx-auto w-full max-w-[460px] lg:col-span-6 lg:-mr-4 lg:max-w-none" />
       </div>
     </section>
   );

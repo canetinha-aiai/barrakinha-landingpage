@@ -1,25 +1,22 @@
 import React from 'react';
 import WaitlistForm from '@/components/WaitlistForm';
-import Awning from '@/components/Awning';
 import RevealText from '@/components/fluid/TextReveal';
 
 /*
-  O fechamento volta ao laranja do hero: a página abre e fecha na
-  mesma barraca, com o toldo pendurado no topo do bloco. O título sobe
+  O fechamento é laranja chapado, como o header: o título grande em
+  branco com sombra chapada de tinta, estilo letreiro; o texto menor, o campo
+  e o botão em tinta, onde o contraste precisa ser maior. O título sobe
   palavra por palavra como o do hero, e quem se inscreve ganha a rajada
   de pinos do botão (ver PinBurst).
 */
 const DownloadCTA = () => (
   <section id="lista" className="scroll-mt-16 bg-ember text-night">
-    <Awning stripe="#F85A35" between="#FBF7F2" unroll />
-
-    <div className="section !pt-14 lg:!pt-20">
+    <div className="section">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-5 lg:grid-cols-12 lg:items-end lg:gap-8 lg:px-8">
         <div className="lg:col-span-7">
-          <p className="text-label font-semibold">Lista de espera</p>
           <RevealText
             text="Guarde seu lugar na estreia."
-            className="display-wide mt-4 max-w-[13ch] text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-balance sm:text-[4rem] lg:text-[5rem]"
+            className="display-wide max-w-[13ch] text-white [text-shadow:3px_3px_0_#1D1611] sm:[text-shadow:5px_5px_0_#1D1611] text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-balance sm:text-[4rem] lg:text-[5rem]"
           />
           <p className="mt-6 max-w-[40ch] text-[18px] font-medium leading-relaxed text-night/80 text-pretty">
             Deixe seu e-mail e a gente avisa quando o app chegar no Android, tanto

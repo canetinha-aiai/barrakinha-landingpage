@@ -56,7 +56,7 @@ const HowItWorks = () => {
   return (
     <section id="pra-quem-compra" className="section bg-paper text-ink">
       <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
-        <SectionHeading kicker="Pra quem compra" title="Do mapa à barraca em três passos" />
+        <SectionHeading title="Do mapa à barraca em três passos" />
 
         <motion.ol
           variants={list}

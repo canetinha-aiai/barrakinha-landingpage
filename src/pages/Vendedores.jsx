@@ -20,7 +20,7 @@ import { jump } from '@/lib/nav';
   Abre no papel, como a home (é a mesma marca): o laranja fica nos
   elementos — o botão e a palavra-chave do título —, não no fundo. O
   título da página é o h1; logo abaixo vem a seção do vendedor que antes ficava
-  no meio da home (VendorBenefits, com o toldo e as telas do app do
+  no meio da home (VendorBenefits, com as telas do app do
   vendedor), e fecha com a mesma lista de espera.
 */
 const VendorHero = () => (

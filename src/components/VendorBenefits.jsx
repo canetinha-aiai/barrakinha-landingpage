@@ -2,7 +2,6 @@ import React from 'react';
 import SectionHeading from '@/components/SectionHeading';
 import BenefitList from '@/components/BenefitList';
 import PhoneFrame from '@/components/PhoneFrame';
-import Awning from '@/components/Awning';
 
 /*
   "Pra quem vende" — a seção do vendedor é a barraca por dentro: fundo
@@ -35,14 +34,11 @@ const items = [
 
 const VendorBenefits = () => (
   <section id="pra-quem-vende" className="bg-night text-cream">
-    <Awning stripe="#F85A35" between="#FBF7F2" unroll />
-
-    <div className="section !pt-16 lg:!pt-24">
+    <div className="section">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-5 lg:grid-cols-12 lg:items-start lg:gap-10 lg:px-8">
         <div className="lg:col-span-6 lg:col-start-7 lg:row-start-1">
           <SectionHeading
             tone="night"
-            kicker="Pra quem vende"
             title="Sem ponto fixo, com endereço no mapa"
             description="Quando você abre a barraca, ela aparece no mapa. Não tem mensalidade nem burocracia."
           />

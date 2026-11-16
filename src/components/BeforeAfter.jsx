@@ -111,7 +111,7 @@ const Card = ({ positive, title, delay }) => {
 const BeforeAfter = () => (
   <section id="antes-depois" className="section bg-paper">
     <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
-      <SectionHeading kicker="Antes e depois" title="O que muda com a Barrakinha" />
+      <SectionHeading title="O que muda com a Barrakinha" />
 
       <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
         <Card positive={false} title="Sair na sorte." delay={0} />
