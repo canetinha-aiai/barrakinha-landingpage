@@ -1,10 +1,11 @@
 import React from 'react';
+import HeroStall from '@/components/HeroStall';
 import Magnetic from '@/components/Magnetic';
 import WordCycle from '@/components/fluid/WordCycle';
 import SpringPress from '@/components/fluid/SpringPress';
 
 /*
-  O hero: título, frase e as duas ações, numa coluna só.
+  O hero: título de um lado, a barraquinha do app do outro.
 
   Fundo de papel, o mesmo do resto da página e do app. O laranja da
   marca vai nos elementos, não na superfície: o botão principal, a
@@ -12,8 +13,10 @@ import SpringPress from '@/components/fluid/SpringPress';
   laranja sobre o papel usa `ember-text` (#C43D1C, 4,6:1); o #F85A35
   puro só pinta preenchimento, como o botão.
 
-  Sem imagem do lado: o título grande, em letra larga, é a figura. As
-  telas do app vêm logo abaixo, nos três passos de "Pra quem compra".
+  Do lado, a barraquinha isométrica da home do app (ver HeroStall),
+  em SVG, pronta no HTML pré-renderizado e com brincadeiras que ligam
+  depois. No celular ela vem depois do título e do botão, então o
+  botão continua sendo a primeira ação da tela.
 
   O título sobe palavra por palavra de trás de uma máscara. É CSS
   (`animate-word-rise`), não Motion: roda já no HTML pré-renderizado e
@@ -37,9 +40,9 @@ const Hero = () => {
 
   return (
     <section id="top" className="relative bg-paper pt-16 text-ink">
-      <div className="mx-auto w-full max-w-6xl px-5 pb-16 pt-12 sm:pb-20 sm:pt-16 lg:px-8 lg:pb-28 lg:pt-24">
-        <div>
-          <h1 className="display-wide max-w-[13ch] text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-balance sm:text-[4.4rem] lg:text-[6rem]">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-5 pb-14 pt-10 lg:grid-cols-12 lg:items-center lg:gap-8 lg:px-8 lg:pb-20 lg:pt-16">
+        <div className="lg:col-span-7">
+          <h1 className="display-wide max-w-[13ch] text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-balance sm:text-[4rem] lg:text-[4.6rem]">
             {words.map((word, index) => (
               <React.Fragment key={`${word}-${index}`}>
                 <span className="-mb-[0.14em] inline-block overflow-hidden pb-[0.14em] align-top">
@@ -92,6 +95,7 @@ const Hero = () => {
           </div>
         </div>
 
+        <HeroStall className="mx-auto w-full max-w-[460px] lg:col-span-5 lg:mr-0 lg:max-w-none" />
       </div>
     </section>
   );
