@@ -11,6 +11,7 @@ import {
   useVelocity,
 } from 'framer-motion';
 import { FOOD_ICONS, HOT } from '@/components/FoodIcons';
+import Reveal from '@/components/Reveal';
 
 /*
   A faixa do cardápio da rua: o nome das comidas passando em letra
@@ -180,8 +181,8 @@ const FoodMarquee = () => {
       onPointerLeave={() => setHovered(false)}
       className="flex flex-col gap-2 overflow-hidden bg-night py-10 text-cream sm:gap-3 sm:py-14"
     >
-      <Track direction={1} speedFactor={speedFactor} skew={reduceMotion ? 0 : skew} running={running} />
-      <Track direction={-1} outline speedFactor={speedFactor} skew={reduceMotion ? 0 : skew} running={running} />
+      <Reveal x={-48} y={0}><Track direction={1} speedFactor={speedFactor} skew={reduceMotion ? 0 : skew} running={running} /></Reveal>
+      <Reveal x={48} y={0} delay={0.08}><Track direction={-1} outline speedFactor={speedFactor} skew={reduceMotion ? 0 : skew} running={running} /></Reveal>
     </section>
   );
 };

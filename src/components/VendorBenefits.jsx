@@ -2,6 +2,7 @@ import React from 'react';
 import SectionHeading from '@/components/SectionHeading';
 import BenefitList from '@/components/BenefitList';
 import PhoneFrame from '@/components/PhoneFrame';
+import Reveal from '@/components/Reveal';
 
 /*
   "Pra quem vende" — a seção do vendedor é a barraca por dentro: fundo
@@ -45,7 +46,7 @@ const VendorBenefits = () => (
           <BenefitList tone="night" items={items} className="mt-10" />
         </div>
 
-        <div className="flex justify-center lg:col-span-5 lg:row-start-1 lg:justify-start">
+        <Reveal y={48} amount={0.05} className="flex justify-center lg:col-span-5 lg:row-start-1 lg:justify-start">
           <PhoneFrame
             src="/models/vendor-aberta.png"
             beforeSrc="/models/vendor-fechada.png"
@@ -56,7 +57,7 @@ const VendorBenefits = () => (
             className="w-full max-w-[340px] -rotate-2 border-2 border-cream lg:sticky lg:top-28"
             crop="1206 / 944"
           />
-        </div>
+        </Reveal>
       </div>
     </div>
   </section>

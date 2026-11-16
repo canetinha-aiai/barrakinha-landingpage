@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import SectionHeading from '@/components/SectionHeading';
 import { EASE_OUT } from '@/lib/motion';
+import Reveal from '@/components/Reveal';
 
 /*
   "O que muda com a Barrakinha" — dois cartões lado a lado, lidos de
@@ -87,9 +88,12 @@ const Card = ({ positive, title, delay }) => {
       </p>
 
       <ul className="mt-6">
-        {rows.map((row) => (
-          <li
+        {rows.map((row, index) => (
+          <Reveal
+            as="li"
             key={row.topic}
+            y={16}
+            delay={0.1 + index * 0.06}
             className={`flex gap-4 border-t py-5 last:pb-0 ${positive ? 'border-night-line' : 'border-line-strong'}`}
           >
             <Mark positive={positive} />
@@ -101,7 +105,7 @@ const Card = ({ positive, title, delay }) => {
                 {positive ? row.after : row.before}
               </p>
             </div>
-          </li>
+          </Reveal>
         ))}
       </ul>
     </motion.div>

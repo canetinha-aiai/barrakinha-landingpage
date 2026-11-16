@@ -2,6 +2,7 @@ import React from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import MorphLogo from '@/components/fluid/MorphLogo';
 import { jump } from '@/lib/nav';
+import Reveal from '@/components/Reveal';
 
 /*
   Rodapé em noite — a página fecha escura depois do laranja da lista,
@@ -69,7 +70,7 @@ const Footer = ({ modelCredit = false }) => {
           últimos links do rodapé. */}
       <div className="mx-auto max-w-6xl px-5 pb-28 pt-14 sm:pb-14 lg:px-8">
         <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-12">
-          <div className="col-span-2 md:col-span-6">
+          <Reveal className="col-span-2 md:col-span-6">
             {/* Uma marca só: o selo (que já escreve BARRAKINHA) faz o papel
                 do ícone + nome que ficavam aqui embaixo. */}
             <MorphLogo size={96} start="view" label="Barrakinha" className="text-white" />
@@ -82,10 +83,10 @@ const Footer = ({ modelCredit = false }) => {
             >
               contato@barrakinha.com
             </a>
-          </div>
+          </Reveal>
 
-          {sections.map((section) => (
-            <nav key={section.title} className="md:col-span-3">
+          {sections.map((section, index) => (
+            <Reveal as="nav" key={section.title} delay={0.08 * (index + 1)} className="md:col-span-3">
               <h3 className="text-label font-semibold text-cream">{section.title}</h3>
               <ul className="mt-4 space-y-3">
                 {section.items.map((item) => (
@@ -102,7 +103,7 @@ const Footer = ({ modelCredit = false }) => {
                   </li>
                 ))}
               </ul>
-            </nav>
+            </Reveal>
           ))}
         </div>
 

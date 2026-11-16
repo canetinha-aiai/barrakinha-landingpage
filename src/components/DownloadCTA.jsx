@@ -1,6 +1,7 @@
 import React from 'react';
 import WaitlistForm from '@/components/WaitlistForm';
 import RevealText from '@/components/fluid/TextReveal';
+import Reveal from '@/components/Reveal';
 
 /*
   O fechamento é laranja chapado, como o header: o título grande em
@@ -18,15 +19,15 @@ const DownloadCTA = () => (
             text="Guarde seu lugar na estreia."
             className="display-wide max-w-[13ch] text-white [text-shadow:3px_3px_0_#1D1611] sm:[text-shadow:5px_5px_0_#1D1611] text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-balance sm:text-[4rem] lg:text-[5rem]"
           />
-          <p className="mt-6 max-w-[40ch] text-[18px] font-medium leading-relaxed text-night/80 text-pretty">
+          <Reveal as="p" delay={0.1} className="mt-6 max-w-[40ch] text-[18px] font-medium leading-relaxed text-night/80 text-pretty">
             Deixe seu e-mail e a gente avisa quando o app chegar no Android, tanto
             pra quem compra quanto pra quem vende.
-          </p>
+          </Reveal>
         </div>
 
+        <Reveal delay={0.15} className="lg:col-span-5">
         <WaitlistForm
           tone="ember"
-          className="lg:col-span-5"
           label="Entrar na lista"
           helper="A gente manda um e-mail só, no dia do lançamento."
           messages={{
@@ -35,6 +36,7 @@ const DownloadCTA = () => (
               'Quando o app entrar no ar, o convite chega no seu e-mail.',
           }}
         />
+        </Reveal>
       </div>
     </div>
   </section>
