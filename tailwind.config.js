@@ -157,6 +157,26 @@ module.exports = {
 					from: { opacity: 0.5, transform: 'scale(0.4)' },
 					to: { opacity: 0, transform: 'scale(2.2)' },
 				},
+				/* Pino do mapa do hero caindo e espetando, com um quique
+				   curto. Só transform: o pino nunca fica invisível, nem no
+				   HTML pré-renderizado. */
+				'pin-drop': {
+					'0%': { transform: 'translateY(-44px)' },
+					'62%': { transform: 'translateY(3px)' },
+					'82%': { transform: 'translateY(-2px)' },
+					'100%': { transform: 'translateY(0)' },
+				},
+				/* Cartão do pino: 6px vindo do pino, sem escala. */
+				'card-in': {
+					from: { opacity: 0, translate: '0 6px' },
+					to: { opacity: 1, translate: '0 0' },
+				},
+				/* Caminho a pé de "você" até a barraca: os pontinhos andam
+				   uma vez na direção da barraca enquanto aparecem. */
+				'route-draw': {
+					from: { opacity: 0, strokeDashoffset: 18 },
+					to: { opacity: 1, strokeDashoffset: 0 },
+				},
 			},
 			animation: {
 				enter: 'enter 500ms cubic-bezier(0.23, 1, 0.32, 1) both',
@@ -165,6 +185,9 @@ module.exports = {
 				steam: 'steam 2.4s cubic-bezier(0.23, 1, 0.32, 1) infinite',
 				twinkle: 'twinkle 2.2s ease-in-out infinite',
 				ripple: 'ripple 2.4s cubic-bezier(0.23, 1, 0.32, 1) infinite',
+				'pin-drop': 'pin-drop 620ms cubic-bezier(0.33, 1, 0.68, 1) both',
+				'card-in': 'card-in 200ms cubic-bezier(0.23, 1, 0.32, 1) both',
+				'route-draw': 'route-draw 600ms cubic-bezier(0.23, 1, 0.32, 1) both',
 			},
 			transitionTimingFunction: {
 				out: 'cubic-bezier(0.23, 1, 0.32, 1)',

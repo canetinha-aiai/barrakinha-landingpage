@@ -1,7 +1,7 @@
 import React from 'react';
 import WaitlistForm from '@/components/WaitlistForm';
 import Awning from '@/components/Awning';
-import RevealText from '@/components/RevealText';
+import RevealText from '@/components/fluid/TextReveal';
 
 /*
   O fechamento volta ao laranja do hero: a página abre e fecha na

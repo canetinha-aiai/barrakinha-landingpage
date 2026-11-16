@@ -59,9 +59,13 @@
     Modo escuro pela preferência do sistema, com os valores escuros
     que o app já tem. O laranja de texto sobe pro #F85A35 porque no
     escuro é ele que tem contraste (5,8:1 sobre #12100E).
+
+    DESLIGADO: só vale com a classe `theme-auto` no <html>, que o
+    vite.config.js põe apenas com DARK_MODE_ENABLED = true
+    (src/config.js). Sem ela a página é sempre clara.
   */
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root.theme-auto {
       --paper: 18 16 14;           /* #12100E */
       --paper-raised: 28 25 22;    /* #1C1916 */
       --ink: 247 244 240;          /* #F7F4F0 */
@@ -171,11 +175,33 @@
     transform: scale(0.97);
   }
 
+  /* Botão de convite em laranja da marca. Texto em tinta, não em
+     branco: tinta sobre #F85A35 dá 5,4:1; branco daria 3:1, abaixo do
+     mínimo pra texto desse tamanho. */
+  .btn-ember {
+    @apply inline-flex items-center justify-center gap-2 rounded bg-ember px-5 font-semibold text-ink;
+    transition: transform 100ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms ease;
+  }
+
+  .btn-ember:hover {
+    background-color: #ef4d27;
+  }
+
+  .btn-ember:active {
+    transform: scale(0.97);
+  }
+
   /* Título largo: o eixo de largura da Archivo esticado. É a voz da
      marca nos títulos grandes — letreiro de barraca, não manchete. */
   .display-wide {
     font-stretch: 118%;
     font-weight: 850;
+  }
+
+  /* Foco dentro do header laranja: anel branco com folga laranja. */
+  .header-ember :focus-visible {
+    --tw-ring-color: #fff;
+    --tw-ring-offset-color: rgb(var(--ember));
   }
 
   /* Área segura do iPhone, pra barra fixa não nascer sob o indicador. */

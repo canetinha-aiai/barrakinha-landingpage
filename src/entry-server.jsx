@@ -1,6 +1,7 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import App from '@/App';
+import Vendedores from '@/pages/Vendedores';
 
 /*
   Entrada usada só no build, nunca no navegador.
@@ -12,6 +13,6 @@ import App from '@/App';
   robô que não renderize — encontre o conteúdo já escrito, em vez do
   `<div>` vazio que a versão anterior entregava.
 */
-export function render() {
-  return renderToString(<App />);
+export function render(page = 'home') {
+  return renderToString(page === 'vendedores' ? <Vendedores /> : <App />);
 }

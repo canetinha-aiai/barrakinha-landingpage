@@ -1,6 +1,6 @@
 import React from 'react';
 import Footer from '@/components/Footer';
-import BrandMark from '@/components/BrandMark';
+import MorphLogo from '@/components/fluid/MorphLogo';
 
 /*
   Página de política de privacidade.
@@ -288,17 +288,19 @@ const sections = [
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-paper">
-      <header className="border-b border-paper-200 bg-paper">
+      {/* O mesmo header laranja do site (selo e nome em branco sobre o
+          #F85A35), mas sem a navegação: só a volta pro site. */}
+      <header className="header-ember bg-ember text-white">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
-          <a href="/" className="flex items-center gap-2.5">
-            <BrandMark size={30} />
-            <span className="text-[17px] font-bold tracking-[-0.02em] text-ink-900">
+          <a href="/" className="flex items-center gap-2.5 rounded">
+            <MorphLogo size={36} hover className="shrink-0 text-white" />
+            <span className="text-[17px] font-bold tracking-[-0.02em] text-white">
               Barrakinha
             </span>
           </a>
           <a
             href="/"
-            className="rounded text-[14px] text-ink-600 transition-colors hover:text-ink-900"
+            className="rounded text-[14px] font-medium text-white underline-offset-4 decoration-2 hover:underline"
           >
             Voltar para o site
           </a>

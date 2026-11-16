@@ -53,9 +53,12 @@ const VendorBenefits = () => (
           <PhoneFrame
             src="/models/vendor-aberta.png"
             beforeSrc="/models/vendor-fechada.png"
-            alt="Tela inicial do app do vendedor da Barrakinha: a barraca está aberta e os clientes por perto estão vendo ela no mapa"
+            formats={['avif', 'webp']}
+            width={1206}
+            height={1130}
+            alt="Topo da tela inicial do app do vendedor da Barrakinha: a barraca está aberta e os clientes por perto estão vendo ela no mapa"
             className="w-full max-w-[340px] -rotate-2 border-2 border-cream lg:sticky lg:top-28"
-            crop="9 / 10"
+            crop="1206 / 1130"
           />
         </div>
       </div>

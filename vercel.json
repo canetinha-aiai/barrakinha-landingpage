@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/vendedores",
+      "destination": "/vendedores/index.html"
+    },
+    {
       "source": "/b/:slug/capa.png",
       "destination": "/api/og/:slug"
     },

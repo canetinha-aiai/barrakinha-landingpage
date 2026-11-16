@@ -1,19 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import BrandMark from '@/components/BrandMark';
+import MorphLogo from '@/components/fluid/MorphLogo';
+import { samePageTarget } from '@/lib/nav';
 
 /* Rótulos que dizem o que tem do outro lado do link, não um guarda-chuva
    vago. "Pra você" não dizia pra quem; estes dizem. */
 const links = [
-  { label: 'Pra quem compra', href: '#pra-quem-compra' },
-  { label: 'Pra quem vende', href: '#pra-quem-vende' },
+  { label: 'Pra quem compra', href: '/#pra-quem-compra' },
+  /* Quem vende tem a página dela: na home o cliente não precisa ler
+     sobre mensalidade e cardápio de vendedor. */
+  { label: 'Pra quem vende', href: '/vendedores' },
 ];
 
 /*
-  Header de vidro: papel translúcido com desfoque e um filete embaixo,
-  com a página rolando por baixo. É a única superfície translúcida do
-  site — tudo o mais é papel chapado. Com `prefers-reduced-transparency`
-  ele vira papel sólido (`.glass`, em index.css).
+  Header laranja: o letreiro da barraca, chapado em #F85A35 (o `ember`
+  dos tokens), fixo no topo. Opaco de propósito — sem vidro nem
+  desfoque, ele lê igual sobre o papel do hero e sobre as faixas
+  escuras quando a página rola por baixo.
+
+  Selo, nome e links em branco, a pedido do Pedro. Branco sobre o
+  #F85A35 dá 3,2:1: passa pra texto grande e negrito, mas fica abaixo
+  dos 4,5:1 recomendados pros links de 14px — se pesar na leitura, a
+  volta é tinta escura (#1D1611, 5,5:1). O botão é noite com texto
+  creme (16,8:1). O anel de foco também vira branco (`.header-ember`,
+  em index.css): o anel laranja padrão sumiria aqui.
 
   O menu do celular entra e sai pelo mesmo caminho, num fade de 200ms.
   Sem cascata por item: são dois links, e esperar por eles não informa
@@ -60,29 +70,38 @@ const Header = () => {
     return () => cancelAnimationFrame(frame);
   }, [pending, open]);
 
+  /* Destino nesta página: rola (depois de fechar o menu, se aberto).
+     Destino na outra página: deixa o navegador trocar de página. */
   const go = (event, href) => {
+    const target = samePageTarget(href);
+    if (!target) {
+      setOpen(false);
+      return;
+    }
     event.preventDefault();
 
     if (open) {
       setOpen(false);
-      setPending(href);
+      setPending(target);
       return;
     }
 
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+    document.querySelector(target)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <>
-      <header className="glass fixed inset-x-0 top-0 z-50 border-b border-line bg-paper/85 backdrop-blur-md backdrop-saturate-150">
+      <header className="header-ember fixed inset-x-0 top-0 z-50 bg-ember text-white">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
           <a
-            href="#top"
-            onClick={(event) => go(event, '#top')}
+            href="/#top"
+            onClick={(event) => go(event, '/#top')}
             className="flex items-center gap-2.5 rounded"
           >
-            <BrandMark size={32} />
-            <span className="text-[17px] font-bold tracking-[-0.02em] text-ink">
+            {/* O selo usa a cor do texto do header (`text-white`), igual ao
+                nome do lado: branco sobre o laranja. */}
+            <MorphLogo size={36} hover className="shrink-0 text-white" />
+            <span className="text-[17px] font-bold tracking-[-0.02em] text-white">
               Barrakinha
             </span>
           </a>
@@ -93,7 +112,7 @@ const Header = () => {
                 key={link.href}
                 href={link.href}
                 onClick={(event) => go(event, link.href)}
-                className="rounded text-[14px] text-ink-muted transition-colors duration-150 hover:text-ink"
+                className="rounded text-[14px] font-medium text-white underline-offset-4 decoration-2 hover:underline"
               >
                 {link.label}
               </a>
@@ -101,7 +120,7 @@ const Header = () => {
             <a
               href="#lista"
               onClick={(event) => go(event, '#lista')}
-              className="btn-primary h-10 text-[14px]"
+              className="btn-night h-10 text-[14px]"
             >
               Entrar na lista
             </a>
@@ -124,7 +143,7 @@ const Header = () => {
                 <motion.span
                   key={index}
                   aria-hidden="true"
-                  className="absolute left-0 block h-[1.5px] w-full bg-ink"
+                  className="absolute left-0 block h-[2px] w-full bg-white"
                   style={{ top: 'calc(50% - 0.75px)' }}
                   initial={false}
                   animate={

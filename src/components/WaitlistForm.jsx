@@ -1,4 +1,5 @@
 import React, { useId } from 'react';
+import SpringPress from '@/components/fluid/SpringPress';
 import { cn } from '@/lib/utils';
 import { useWaitlist } from '@/hooks/useWaitlist';
 import PinBurst from '@/components/PinBurst';
@@ -76,7 +77,7 @@ const WaitlistForm = ({
         />
 
         <div className="relative shrink-0">
-          <button
+          <SpringPress
             type="submit"
             disabled={loading}
             className={cn(
@@ -85,7 +86,7 @@ const WaitlistForm = ({
             )}
           >
             {loading ? 'Enviando…' : label}
-          </button>
+          </SpringPress>
           <PinBurst burst={successes} />
         </div>
       </form>

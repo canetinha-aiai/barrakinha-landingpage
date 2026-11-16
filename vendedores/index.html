@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F85A35" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
+
+    <title>Barrakinha pra quem vende — sua barraca no mapa do bairro</title>
+    <meta
+      name="description"
+      content="Abriu a barraca, ela aparece no mapa pra quem está perto. Cardápio no celular, sem ponto fixo, sem mensalidade nem burocracia."
+    />
+
+    <!-- Endereço canônico. Sem ele, o mesmo conteúdo servido em
+         barrakinha.com.br, www.barrakinha.com.br e no domínio de
+         pré-visualização da Vercel conta como três páginas iguais, e o
+         buscador escolhe sozinho qual mostrar. -->
+    <link rel="canonical" href="https://barrakinha.com.br/vendedores" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Barrakinha" />
+    <meta property="og:url" content="https://barrakinha.com.br/vendedores" />
+    <meta property="og:title" content="Barrakinha pra quem vende — sua barraca no mapa do bairro" />
+    <meta
+      property="og:description"
+      content="Abriu a barraca, ela aparece no mapa pra quem está perto. Cardápio no celular, sem ponto fixo, sem mensalidade nem burocracia."
+    />
+    <!-- A imagem do compartilhamento precisa de URL ABSOLUTA: quem lê
+         essa tag (WhatsApp, Instagram, Twitter) não está no site e não
+         tem como resolver um caminho relativo. Largura e altura
+         declaradas fazem o cartão já nascer no tamanho certo, sem o
+         pulo de layout enquanto a imagem carrega. -->
+    <meta property="og:image" content="https://barrakinha.com.br/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Barrakinha, o mapa da comida de rua do seu bairro, com a tela do app mostrando as barracas abertas por perto."
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Atribui o cartão à conta: quando alguém posta o link no X, o
+         card mostra de quem é o site. Só faz sentido existindo conta. -->
+    <meta name="twitter:site" content="@barrakinha_app" />
+    <meta name="twitter:title" content="Barrakinha pra quem vende — sua barraca no mapa do bairro" />
+    <meta
+      name="twitter:description"
+      content="Abriu a barraca, ela aparece no mapa pra quem está perto. Cardápio no celular, sem ponto fixo, sem mensalidade nem burocracia."
+    />
+    <meta name="twitter:image" content="https://barrakinha.com.br/og.png" />
+
+    <!-- Dados estruturados: a organização e o site já estão descritos na
+         home; aqui só a página, ligada a eles pelo @id. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "@id": "https://barrakinha.com.br/vendedores#page",
+        "url": "https://barrakinha.com.br/vendedores",
+        "name": "Barrakinha pra quem vende — sua barraca no mapa do bairro",
+        "inLanguage": "pt-BR",
+        "isPartOf": { "@id": "https://barrakinha.com.br/#site" },
+        "about": { "@id": "https://barrakinha.com.br/#org" }
+      }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/vendedores-main.jsx"></script>
+  </body>
+</html>

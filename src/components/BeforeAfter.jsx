@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import SectionHeading from '@/components/SectionHeading';
+import PillTabs from '@/components/fluid/PillTabs';
 import { cn } from '@/lib/utils';
 
 /*
@@ -151,38 +152,15 @@ const Scene = ({ mode }) => {
   );
 };
 
+/* A chave agora é o Pill Tabs da Fluid: o marcador laranja estica
+   no caminho e encolhe ao chegar, em vez de só deslizar. */
 const Toggle = ({ mode, onChange }) => (
-  <div role="radiogroup" aria-label="Comparar" className="inline-flex rounded border-2 border-night p-1">
-    {MODES.map((option) => {
-      const active = option.id === mode;
-      return (
-        <button
-          key={option.id}
-          type="button"
-          role="radio"
-          aria-checked={active}
-          /* Responde no toque, não na soltura. */
-          onPointerDown={() => onChange(option.id)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') onChange(option.id);
-          }}
-          className={cn(
-            'relative h-11 rounded-[6px] px-4 text-[15px] font-semibold transition-colors duration-150 sm:px-5',
-            active ? 'text-night' : 'text-ink-muted hover:text-ink',
-          )}
-        >
-          {active ? (
-            <motion.span
-              layoutId="before-after-thumb"
-              className="absolute inset-0 rounded-[6px] bg-ember"
-              transition={spring}
-            />
-          ) : null}
-          <span className="relative">{option.label}</span>
-        </button>
-      );
-    })}
-  </div>
+  <PillTabs
+    label="Comparar"
+    value={mode}
+    onChange={onChange}
+    tabs={MODES.map((option) => ({ value: option.id, label: option.label }))}
+  />
 );
 
 const BeforeAfter = () => {

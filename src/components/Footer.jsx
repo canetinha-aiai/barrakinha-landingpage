@@ -1,6 +1,7 @@
 import React from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import BrandMark from '@/components/BrandMark';
+import MorphLogo from '@/components/fluid/MorphLogo';
+import { jump } from '@/lib/nav';
 
 /*
   Rodapé em noite — a página fecha escura depois do laranja da lista,
@@ -16,12 +17,10 @@ import BrandMark from '@/components/BrandMark';
   mais o `.glb`, e a licença CC BY pede atribuição só onde a obra
   aparece.
 */
-const Footer = () => {
+const Footer = ({ modelCredit = false }) => {
   const { toast } = useToast();
 
-  const navigate = (href) => {
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-  };
+
 
   const soon = (label) => {
     toast({
@@ -34,9 +33,9 @@ const Footer = () => {
     {
       title: 'Navegar',
       items: [
-        { label: 'Pra quem compra', onClick: () => navigate('#pra-quem-compra') },
-        { label: 'Pra quem vende', onClick: () => navigate('#pra-quem-vende') },
-        { label: 'Lista de espera', onClick: () => navigate('#lista') },
+        { label: 'Pra quem compra', href: '/#pra-quem-compra' },
+        { label: 'Pra quem vende', href: '/vendedores' },
+        { label: 'Lista de espera', href: '#lista' },
       ],
     },
     {
@@ -71,13 +70,10 @@ const Footer = () => {
       <div className="mx-auto max-w-6xl px-5 pb-28 pt-14 sm:pb-14 lg:px-8">
         <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-12">
           <div className="col-span-2 md:col-span-6">
-            <div className="flex items-center gap-2.5">
-              <BrandMark size={28} />
-              <span className="text-[17px] font-bold tracking-[-0.02em] text-cream">
-                Barrakinha
-              </span>
-            </div>
-            <p className="mt-3 max-w-[32ch] text-[15px] leading-relaxed text-night-muted">
+            {/* Uma marca só: o selo (que já escreve BARRAKINHA) faz o papel
+                do ícone + nome que ficavam aqui embaixo. */}
+            <MorphLogo size={96} start="view" label="Barrakinha" className="text-ember" />
+            <p className="mt-5 max-w-[32ch] text-[15px] leading-relaxed text-night-muted">
               O mapa da comida de rua do seu bairro.
             </p>
             <a
@@ -95,7 +91,7 @@ const Footer = () => {
                 {section.items.map((item) => (
                   <li key={item.label}>
                     {item.href ? (
-                      <a href={item.href} className={linkClass}>
+                      <a href={item.href} onClick={(event) => jump(event, item.href)} className={linkClass}>
                         {item.label}
                       </a>
                     ) : (
@@ -142,6 +138,21 @@ const Footer = () => {
             ))}
           </ul>
         </div>
+        {/* Crédito do celular 3D do hero — a licença CC BY exige
+            atribuição, não destaque. Só na home, onde o modelo aparece. */}
+        {modelCredit ? (
+          <p className="mt-6 text-[12px] leading-relaxed text-night-muted/80">
+            Modelo 3D "Samsung Phone" por{' '}
+            <a href="https://skfb.ly/pFTxN" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-cream">
+              DAKSH_2009
+            </a>
+            , licenciado sob{' '}
+            <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-cream">
+              CC BY 4.0
+            </a>
+            .
+          </p>
+        ) : null}
       </div>
     </footer>
   );

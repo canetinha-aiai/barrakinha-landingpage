@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import RevealText from '@/components/RevealText';
+import RevealText from '@/components/fluid/TextReveal';
 import { cn } from '@/lib/utils';
 import { EASE_OUT } from '@/lib/motion';
 
@@ -12,7 +12,7 @@ import { EASE_OUT } from '@/lib/motion';
  * título sozinho não diz. `tone="night"` é a versão pra seção escura.
  *
  * Entrada em três tempos quando chega na tela: o rótulo aparece, o
- * título sobe palavra por palavra (RevealText) e a frase de apoio vem
+ * título chega letra por letra (Text Reveal da Fluid) e a frase de apoio vem
  * por último, quando o olho já terminou o título.
  */
 const fadeUp = (delay) => ({

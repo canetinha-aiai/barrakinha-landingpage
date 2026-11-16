@@ -18,6 +18,9 @@ import { cn } from '@/lib/utils';
   num quadro de papel: filete de 1px, o raio de 10px do resto da
   página e nada se mexendo sozinho.
 
+  No hero, o celular 3D voltou como melhoria por cima desta captura
+  (ver Phone3DUpgrade): a captura continua sendo a primeira pintura.
+
   `crop` corta a captura numa proporção (`'9 / 11'`, por exemplo) pra
   telas que só têm conteúdo em cima. O corte é reto e honesto: o
   quadro tem borda própria, então não lê como imagem quebrada.
@@ -29,6 +32,9 @@ const PhoneFrame = ({
   crop,
   priority = false,
   beforeSrc,
+  formats = [],
+  width = 1080,
+  height = 2400,
 }) => {
   const reduceMotion = useReducedMotion();
   const revealRef = useRef(null);
@@ -64,31 +70,43 @@ const PhoneFrame = ({
       )}
       style={crop ? { aspectRatio: crop } : undefined}
     >
-      <img
-        src={src}
-        alt={alt}
-        width={1080}
-        height={2400}
-        loading={priority ? 'eager' : 'lazy'}
-        fetchpriority={priority ? 'high' : undefined}
-        decoding="async"
-        className="block w-full"
-      />
+      {/* `formats`: versões mais leves da mesma captura, ao lado do PNG
+          (ex.: vendor-aberta.avif e .webp). O navegador pega a primeira
+          que entende; o PNG fica de reserva. */}
+      <picture>
+        {formats.map((format) => (
+          <source key={format} type={`image/${format}`} srcSet={src.replace(/\.png$/, `.${format}`)} />
+        ))}
+        <img
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          loading={priority ? 'eager' : 'lazy'}
+          fetchpriority={priority ? 'high' : undefined}
+          decoding="async"
+          className="block w-full"
+        />
+      </picture>
 
       {/* Fica de fora de quem pediu menos movimento: sem animação, o
           estado de depois já é o que está embaixo. */}
       {beforeSrc && !reduceMotion ? (
-        <motion.img
-          src={beforeSrc}
-          alt=""
-          aria-hidden="true"
-          width={1080}
-          height={2400}
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-x-0 top-0 block w-full"
-          style={{ opacity: beforeOpacity }}
-        />
+        <motion.picture className="absolute inset-x-0 top-0 block" style={{ opacity: beforeOpacity }}>
+          {formats.map((format) => (
+            <source key={format} type={`image/${format}`} srcSet={beforeSrc.replace(/\.png$/, `.${format}`)} />
+          ))}
+          <img
+            src={beforeSrc}
+            alt=""
+            aria-hidden="true"
+            width={width}
+            height={height}
+            loading="lazy"
+            decoding="async"
+            className="block w-full"
+          />
+        </motion.picture>
       ) : null}
     </figure>
   );

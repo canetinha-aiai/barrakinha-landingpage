@@ -1,0 +1,55 @@
+/* Pill Tabs da Fluid (MIT), nas cores da casa: borda noite, marcador
+   laranja. Ver PillTabs.jsx. */
+.list {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  padding: 4px;
+  border: 2px solid rgb(var(--ink));
+  border-radius: 999px;
+  isolation: isolate;
+}
+.pill {
+  position: absolute;
+  z-index: -1;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  border-radius: 999px;
+  background: #f85a35;
+  opacity: 0;
+}
+.list[data-ready] .pill {
+  opacity: 1;
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: rgb(var(--ink-muted));
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color 200ms ease;
+}
+.tab[aria-checked='true'] {
+  color: #1d1611;
+}
+.list:not([data-ready]) .tab[aria-checked='true'] {
+  background: #f85a35;
+}
+.tab:focus-visible {
+  outline: 2px solid rgb(var(--ink));
+  outline-offset: 2px;
+}
+@media (hover: hover) {
+  .tab[aria-checked='false']:hover {
+    color: rgb(var(--ink));
+  }
+}

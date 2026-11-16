@@ -3,11 +3,18 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const htmlPath = path.join(root, 'dist', 'index.html');
 
 const { render } = await import(path.join(root, 'dist-ssr', 'entry-server.js'));
 
-let markup = render();
+/*
+  Duas páginas pré-renderizadas: a home e /vendedores. Cada uma tem o
+  seu HTML de saída e a sua árvore (ver `render(page)` em
+  src/entry-server.jsx).
+*/
+const pages = [
+  { page: 'home', file: path.join(root, 'dist', 'index.html') },
+  { page: 'vendedores', file: path.join(root, 'dist', 'vendedores', 'index.html') },
+];
 
 /*
   Reabre o que as animações de entrada deixariam fechado.
@@ -30,34 +37,38 @@ let markup = render();
   posicionamento de verdade, como o `translate(-50%,-100%)` que
   centraliza pino em mapa.
 */
-const hidden = (markup.match(/opacity:0(?=[;"])/g) || []).length;
-markup = markup.replace(/opacity:0(?=[;"])/g, 'opacity:1');
+for (const { page, file: htmlPath } of pages) {
+  let markup = render(page);
 
-/*
-  Os títulos que sobem palavra por palavra (RevealText) nascem com a
-  palavra empurrada pra baixo da máscara, `translateY(140%)`. Com
-  máscara, isso esconde — então, ao contrário dos outros deslocamentos,
-  este precisa ser reaberto. O valor 140% só existe ali, por isso a
-  troca pode ser exata.
-*/
-const masked = (markup.match(/translateY\(140%\)/g) || []).length;
-markup = markup.replace(/transform:\s*translateY\(140%\)/g, 'transform:none');
+  const hidden = (markup.match(/opacity:0(?=[;"])/g) || []).length;
+  markup = markup.replace(/opacity:0(?=[;"])/g, 'opacity:1');
 
-const html = await readFile(htmlPath, 'utf8');
-const marker = '<div id="root"></div>';
+  /*
+    Os títulos que sobem palavra por palavra (RevealText) nascem com a
+    palavra empurrada pra baixo da máscara, `translateY(140%)`. Com
+    máscara, isso esconde — então, ao contrário dos outros deslocamentos,
+    este precisa ser reaberto. O valor 140% só existe ali, por isso a
+    troca pode ser exata.
+  */
+  const masked = (markup.match(/translateY\(140%\)/g) || []).length;
+  markup = markup.replace(/transform:\s*translateY\(140%\)/g, 'transform:none');
 
-if (!html.includes(marker)) {
-  throw new Error(
-    `Âncora ${marker} não encontrada em dist/index.html — o HTML mudou e a injeção não tem onde entrar.`,
+  const html = await readFile(htmlPath, 'utf8');
+  const marker = '<div id="root"></div>';
+
+  if (!html.includes(marker)) {
+    throw new Error(
+      `Âncora ${marker} não encontrada em ${htmlPath} — o HTML mudou e a injeção não tem onde entrar.`,
+    );
+  }
+
+  await writeFile(
+    htmlPath,
+    html.replace(marker, `<div id="root">${markup}</div>`),
+    'utf8',
+  );
+
+  console.log(
+    `prerender ${page}: ${markup.length} bytes no #root (${hidden} estilos opacity:0 e ${masked} palavras mascaradas reabertos)`,
   );
 }
-
-await writeFile(
-  htmlPath,
-  html.replace(marker, `<div id="root">${markup}</div>`),
-  'utf8',
-);
-
-console.log(
-  `prerender: ${markup.length} bytes no #root (${hidden} estilos opacity:0 e ${masked} palavras mascaradas reabertos)`,
-);
