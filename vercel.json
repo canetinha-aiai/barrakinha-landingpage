@@ -1,5 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/q",
+      "destination": "/?utm_source=qr_code&utm_medium=offline&utm_campaign=divulgacao",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/vendedores",
