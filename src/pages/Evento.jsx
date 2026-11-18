@@ -22,6 +22,20 @@ import {
 
 const MAX_EVENT_ITEMS = 5;
 const POLL_INTERVAL_MS = 4000;
+/* Pronto: a senha ainda vale no balcão, mas não precisa abrir direto nela. */
+const READY_STATUSES = new Set(['READY']);
+/* Encerrado: retirado ou cancelado, o pedido salvo pode ser descartado. */
+const FINISHED_STATUSES = new Set(['COMPLETED', 'CANCELLED']);
+
+/* Lê o pedido salvo descartando os que já foram retirados/cancelados. */
+function readStoredOrder(key) {
+  const order = safeReadStorage(key);
+  if (order && FINISHED_STATUSES.has(order.status)) {
+    safeWriteStorage(key, null);
+    return null;
+  }
+  return order;
+}
 const SCALLOP_RADIUS = 12;
 
 const API_BASE = (
@@ -203,21 +217,30 @@ function ScallopEdge({ color = '#FFFFFF' }) {
   );
 }
 
-function EventHero({ photo }) {
+function EventHero({ photo, loading = false }) {
   const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const hasPhoto = Boolean(photo) && !failed;
+  /* Skeleton enquanto a barraca carrega ou a foto ainda não chegou. */
+  const showSkeleton = loading || (hasPhoto && !loaded);
 
   return (
-    <div className="ev-shell">
-      <div className="ev-hero">
-        {hasPhoto ? (
+    <div className="ev-shell ev-hero-shell">
+      <div className={`ev-hero${showSkeleton ? ' ev-hero--loading' : ''}`} aria-busy={showSkeleton}>
+        {showSkeleton && <div className="ev-hero-skeleton" aria-hidden="true" />}
+        {loading ? null : hasPhoto ? (
           <>
             <img
+              ref={(el) => {
+                /* Foto já em cache: o onLoad pode ter disparado antes do React ouvir. */
+                if (el?.complete && el.naturalWidth > 0 && !loaded) setLoaded(true);
+              }}
               src={photo}
               alt=""
               {...{ fetchpriority: 'high' }}
+              onLoad={() => setLoaded(true)}
               onError={() => setFailed(true)}
-              className="ev-hero-img"
+              className={`ev-hero-img${loaded ? ' is-loaded' : ''}`}
             />
             <div className="ev-hero-vignette" />
           </>
@@ -226,6 +249,7 @@ function EventHero({ photo }) {
             style={{
               width: '100%',
               height: '100%',
+              background: 'var(--ev-brasa)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -617,10 +641,14 @@ export default function Evento() {
   const [celebratingOrder, setCelebratingOrder] = useState(null);
 
   const storageOrderKey = `barrakinha:event-order:v2:${slug}`;
-  const [activeOrder, setActiveOrder] = useState(() => safeReadStorage(storageOrderKey));
-  const [view, setView] = useState(() =>
-    initialRoute.orderToken || safeReadStorage(storageOrderKey) ? 'ticket' : 'menu',
-  );
+  const [activeOrder, setActiveOrder] = useState(() => readStoredOrder(storageOrderKey));
+  /* Abre na senha só enquanto o pedido está na fila (ou via link ?pedido=).
+     Pronto ou encerrado abre no cardápio; o aviso verde no topo leva à senha. */
+  const [view, setView] = useState(() => {
+    if (initialRoute.orderToken) return 'ticket';
+    const stored = readStoredOrder(storageOrderKey);
+    return stored && !READY_STATUSES.has(stored.status) ? 'ticket' : 'menu';
+  });
 
   const dialogRef = useRef(null);
   const nameInputRef = useRef(null);
@@ -685,9 +713,11 @@ export default function Evento() {
     fetchEventStore();
   }, [fetchEventStore]);
 
-  /* Carrega pedido via deep-link ?pedido=<trackingToken> caso ainda não esteja no storage local. */
+  /* Carrega pedido via deep-link ?pedido=<trackingToken>; sem link, atualiza o
+     pedido salvo uma vez (ele pode ter ficado pronto/retirado com a aba fechada). */
   useEffect(() => {
-    const token = initialRoute.orderToken;
+    const fromLink = Boolean(initialRoute.orderToken);
+    const token = initialRoute.orderToken || readStoredOrder(storageOrderKey)?.trackingToken;
     if (!token || initialRoute.forceDemo) return undefined;
     let cancelled = false;
 
@@ -700,12 +730,19 @@ export default function Evento() {
         if (!res.ok || cancelled) return;
         const fresh = await res.json();
         if (cancelled) return;
+        if (!fromLink && FINISHED_STATUSES.has(fresh.status)) {
+          safeWriteStorage(storageOrderKey, null);
+          setActiveOrder(null);
+          setView('menu');
+          return;
+        }
         setActiveOrder((prev) => {
           const updated = { ...prev, ...fresh };
           safeWriteStorage(storageOrderKey, updated);
           return updated;
         });
-        setView('ticket');
+        if (fromLink) setView('ticket');
+        else if (READY_STATUSES.has(fresh.status)) setView('menu');
       } catch {
         /* Mantém estado local se estiver sem rede no momento. */
       }
@@ -748,13 +785,7 @@ export default function Evento() {
   /* Polling silencioso de 4s para a senha ativa quando ligado na API real. */
   useEffect(() => {
     if (isDemoMode || !activeOrder?.trackingToken) return undefined;
-    if (
-      activeOrder.status === 'READY' ||
-      activeOrder.status === 'COMPLETED' ||
-      activeOrder.status === 'CANCELLED'
-    ) {
-      return undefined;
-    }
+    if (FINISHED_STATUSES.has(activeOrder.status)) return undefined;
 
     const interval = setInterval(async () => {
       try {
@@ -1132,9 +1163,9 @@ export default function Evento() {
       {/* ================= TELA 1: CARDÁPIO DA BARRACA ================= */}
       {view === 'menu' || !activeOrder ? (
         <>
-          <EventHero photo={store?.photo} />
+          <EventHero key={store?.photo || 'sem-foto'} photo={store?.photo} loading={loadingStore} />
 
-          <main className="ev-shell ev-main">
+          <main className="ev-shell ev-main ev-main--menu">
             {loadingStore ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div style={{ width: '65%', height: 34, borderRadius: 10, background: 'var(--ev-sunken)' }} />
@@ -1505,7 +1536,7 @@ export default function Evento() {
         </>
       ) : (
         /* ================= TELA 2: ACOMPANHAMENTO DA SENHA (Genérica + Fotos + Sem Chips) ================= */
-        <main className="ev-shell" style={{ padding: '20px 20px 56px' }}>
+        <main className="ev-shell ev-main--ticket" style={{ padding: '20px 20px 56px' }}>
           <div
             style={{
               display: 'flex',
