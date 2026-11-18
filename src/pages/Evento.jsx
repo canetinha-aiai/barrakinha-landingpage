@@ -130,7 +130,10 @@ function parseRouteFromLocation() {
 
 function formatPhoneMask(raw) {
   const digits = String(raw || '').replace(/\D/g, '').slice(0, 11);
-  if (digits.length > 6) {
+  // O traço só aparece quando já existe dígito depois dele. Se ele ficasse
+  // no fim (ex.: "(62) 98133-"), o backspace apagaria só o traço e a máscara
+  // o recolocaria na hora, travando o campo.
+  if (digits.length > 7) {
     return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
   }
   if (digits.length > 2) {
@@ -2026,7 +2029,23 @@ export default function Evento() {
                 aria-invalid={showPhoneError ? 'true' : 'false'}
                 aria-describedby={showPhoneError ? `${phoneHintId} ${phoneErrorId}` : phoneHintId}
                 onChange={(e) => {
-                  setGuestPhone(formatPhoneMask(e.target.value));
+                  const { value, selectionStart } = e.target;
+                  const onlyDigits = (v) => v.replace(/\D/g, '');
+                  let nextDigits = onlyDigits(value);
+                  // Backspace em cima de "(", ")", espaço ou "-" (no meio do
+                  // número) não remove dígito; apaga o dígito anterior ao cursor.
+                  if (
+                    value.length < guestPhone.length &&
+                    nextDigits === onlyDigits(guestPhone) &&
+                    selectionStart != null
+                  ) {
+                    const digitsBefore = onlyDigits(value.slice(0, selectionStart)).length;
+                    if (digitsBefore > 0) {
+                      nextDigits =
+                        nextDigits.slice(0, digitsBefore - 1) + nextDigits.slice(digitsBefore);
+                    }
+                  }
+                  setGuestPhone(formatPhoneMask(nextDigits));
                   setEdited((prev) => ({ ...prev, phone: true }));
                 }}
                 onBlur={() => setTouched((prev) => ({ ...prev, phone: true }))}
