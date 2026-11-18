@@ -430,14 +430,11 @@ function EventProgressRail({ isReady }) {
 function OrderPlacedCelebration({ order, onComplete }) {
   const [lifting, setLifting] = useState(false);
 
-  useEffect(() => {
-    const liftTimer = setTimeout(() => setLifting(true), 1700);
-    const doneTimer = setTimeout(() => onComplete?.(), 2180);
-    return () => {
-      clearTimeout(liftTimer);
-      clearTimeout(doneTimer);
-    };
-  }, [onComplete]);
+  const dismiss = useCallback(() => {
+    if (lifting) return;
+    setLifting(true);
+    setTimeout(() => onComplete?.(), 460);
+  }, [lifting, onComplete]);
 
   const rays = 14;
   const center = 500;
@@ -446,15 +443,19 @@ function OrderPlacedCelebration({ order, onComplete }) {
   return (
     <div
       className={`ev-celebration ${lifting ? 'ev-celebration--lifting' : ''}`}
-      onClick={() => {
-        if (!lifting) {
-          setLifting(true);
-          setTimeout(() => onComplete?.(), 420);
+      onClick={dismiss}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+          e.preventDefault();
+          dismiss();
         }
       }}
-      role="status"
+      tabIndex={0}
+      role="dialog"
+      aria-modal="true"
       aria-live="assertive"
-      aria-label={`Pedido confirmado! Sua senha é número ${order?.displayNumber ?? ''}`}
+      aria-label={`Pedido confirmado! Sua senha é número ${order?.displayNumber ?? ''}. Toque na tela para acompanhar.`}
+      style={{ cursor: 'pointer', outline: 'none' }}
     >
       <div className="ev-celebration-stage">
         {/* Raios girando como na Splash do app */}
@@ -547,6 +548,19 @@ function OrderPlacedCelebration({ order, onComplete }) {
             >
               Avisaremos no seu WhatsApp assim que ficar pronto no balcão.
             </p>
+            <div
+              className="ev-caption"
+              style={{
+                marginTop: 18,
+                padding: '10px 18px',
+                borderRadius: 999,
+                background: 'var(--ev-brasa)',
+                color: '#FFFFFF',
+                fontSize: 13,
+              }}
+            >
+              Toque para acompanhar
+            </div>
           </div>
         </div>
       </div>
