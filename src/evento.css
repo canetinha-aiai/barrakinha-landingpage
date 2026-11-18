@@ -1,0 +1,741 @@
+/*
+  Barrakinha Design System — Web Client para Eventos (/e/:slug)
+  --------------------------------------------------------------
+  Espelha fielmente `barrakinha-vendedor/src/design-system/tokens.ts` e
+  `typography.ts` (mesma paleta, raios 10/16/24/999, tipografia Archivo +
+  Figtree, ProductHero com recorte de toldo, ProductCard sunken sem borda,
+  QuantityStepper em pílula, CartBar noite e ProgressRail com ícones).
+*/
+
+:root {
+  --ev-canvas: #FFFFFF;
+  --ev-raised: #FFFFFF;
+  --ev-sunken: #F6F1EC;
+  --ev-line: #ECE5DE;
+  --ev-line-strong: #DCD2C8;
+  --ev-ink: #1F1611;
+  --ev-ink-soft: #6E625A;
+  --ev-ink-faint: #8A7E75;
+  --ev-brasa: #EC5512;
+  --ev-brasa-pressed: #D2480C;
+  --ev-on-brasa: #FFFFFF;
+  --ev-brasa-text: #B03C0C;
+  --ev-brasa-soft: #FFE6D4;
+  --ev-brasa-wash: #FFF4EC;
+  --ev-noite: #1F1611;
+  --ev-on-noite: #FFF4EC;
+  --ev-mostarda: #FFC23D;
+  --ev-success: #147541;
+  --ev-success-soft: #E3F4EA;
+  --ev-danger: #C42B21;
+  --ev-danger-soft: #FCE7E4;
+  --ev-warning: #9A5A00;
+  --ev-warning-soft: #FFF1D6;
+  --ev-scrim: rgba(20, 16, 9, 0.48);
+
+  --ev-r-sm: 10px;
+  --ev-r-md: 16px;
+  --ev-r-lg: 24px;
+  --ev-r-pill: 999px;
+
+  --ev-font-display: 'Archivo', system-ui, -apple-system, sans-serif;
+  --ev-font-sans: 'Figtree', system-ui, -apple-system, sans-serif;
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  background: var(--ev-canvas);
+  color: var(--ev-ink);
+  font-family: var(--ev-font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+button,
+a,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ev-brasa);
+  outline-offset: 2px;
+}
+
+.ev-sr-only:where(:not(:focus-within, :active)) {
+  position: absolute !important;
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* === Tipografia do Design System === */
+.ev-display {
+  font-family: var(--ev-font-display);
+  font-stretch: 112.5%;
+  font-weight: 800;
+  font-size: 2rem;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ev-ink);
+}
+
+.ev-title1 {
+  font-family: var(--ev-font-display);
+  font-stretch: 112.5%;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  color: var(--ev-ink);
+}
+
+.ev-title3 {
+  font-family: var(--ev-font-sans);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  color: var(--ev-ink);
+}
+
+.ev-body-strong {
+  font-family: var(--ev-font-sans);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--ev-ink);
+}
+
+.ev-footnote {
+  font-family: var(--ev-font-sans);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--ev-ink-soft);
+}
+
+.ev-caption {
+  font-family: var(--ev-font-sans);
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+}
+
+.ev-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* === Microinteração de mola ao toque (PressableScale) === */
+.ev-pressable {
+  cursor: pointer;
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 140ms ease,
+              opacity 140ms ease;
+}
+
+.ev-pressable:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.ev-pressable:disabled {
+  cursor: not-allowed;
+}
+
+/* === Hero com recorte de toldo (ProductHero.tsx) === */
+.ev-hero {
+  position: relative;
+  width: 100%;
+  height: 244px;
+  overflow: hidden;
+  background: var(--ev-brasa);
+}
+
+@media (min-width: 768px) {
+  .ev-hero {
+    height: 280px;
+  }
+}
+
+.ev-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ev-hero-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 16, 9, 0.34) 0%,
+    rgba(20, 16, 9, 0.04) 48%,
+    rgba(20, 16, 9, 0.14) 100%
+  );
+  pointer-events: none;
+}
+
+.ev-brand-float {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  left: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--ev-r-pill);
+  background: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(31, 22, 17, 0.16);
+}
+
+.ev-promo-footer {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ev-line);
+  display: flex;
+  justify-content: center;
+}
+
+.ev-promo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--ev-r-sm);
+  text-decoration: none;
+  color: var(--ev-ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: color 140ms ease;
+}
+
+.ev-promo-link strong {
+  color: var(--ev-ink);
+  font-weight: 700;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ev-promo-link:hover {
+    color: var(--ev-brasa-text);
+  }
+  .ev-promo-link:hover strong {
+    color: var(--ev-brasa-text);
+  }
+}
+
+/* === Shell centralizado === */
+.ev-shell {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.ev-main {
+  padding: 18px 20px 128px;
+}
+
+/* === Indicador tipográfico de status (sem chips/pílulas) === */
+.ev-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--ev-r-pill);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* === ProductCard (sunken, sem borda, foto 88px à direita com botão + circular) === */
+.ev-products-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 700px) {
+  .ev-products-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+.ev-product-card {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--ev-r-md);
+  background: var(--ev-sunken);
+  min-height: 112px;
+}
+
+.ev-product-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2px 0;
+}
+
+.ev-product-desc {
+  margin: 3px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ev-product-thumb-wrap {
+  position: relative;
+  flex-shrink: 0;
+  align-self: center;
+  width: 92px;
+  height: 92px;
+  padding: 0 4px 4px 0;
+}
+
+.ev-product-thumb {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--ev-r-sm);
+  overflow: hidden;
+  background: var(--ev-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ev-product-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ev-add-fab {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--ev-r-pill);
+  background: var(--ev-brasa);
+  color: var(--ev-on-brasa);
+  border: 3px solid var(--ev-sunken);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ev-add-fab:hover {
+    background: var(--ev-brasa-pressed);
+  }
+}
+
+/* === QuantityStepper (QuantityStepper.tsx) === */
+.ev-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 40px;
+  padding: 3px;
+  border-radius: var(--ev-r-pill);
+  background: var(--ev-canvas);
+  align-self: flex-start;
+}
+
+.ev-stepper--sunken {
+  background: var(--ev-sunken);
+}
+
+.ev-stepper-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--ev-r-pill);
+  border: 0;
+  background: transparent;
+  color: var(--ev-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.ev-stepper-btn--inc {
+  background: var(--ev-brasa);
+  color: var(--ev-on-brasa);
+}
+
+.ev-stepper-btn--inc:disabled {
+  background: var(--ev-line);
+  color: var(--ev-ink-faint);
+}
+
+.ev-stepper-val {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--ev-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* === CartBar em pílula noite (CartBar.tsx) === */
+.ev-cartbar-dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  padding: 12px 16px max(16px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.92) 45%, #FFFFFF 100%);
+  pointer-events: none;
+}
+
+.ev-cartbar {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  height: 60px;
+  padding: 0 20px 0 8px;
+  border-radius: var(--ev-r-pill);
+  border: 0;
+  background: var(--ev-noite);
+  color: var(--ev-on-noite);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  box-shadow: 0 12px 28px rgba(31, 22, 17, 0.2);
+  animation: evEnterUp 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ev-cartbar-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--ev-r-pill);
+  overflow: hidden;
+  background: var(--ev-brasa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ev-cartbar-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ev-cartbar-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ev-mostarda);
+  font-weight: 600;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* === Botões em pílula (Button.tsx) === */
+.ev-btn {
+  width: 100%;
+  height: 58px;
+  padding: 0 24px;
+  border-radius: var(--ev-r-pill);
+  border: 0;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ev-btn--md {
+  height: 52px;
+  font-size: 1rem;
+}
+
+.ev-btn--primary {
+  background: var(--ev-brasa);
+  color: var(--ev-on-brasa);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ev-btn--primary:hover:not(:disabled) {
+    background: var(--ev-brasa-pressed);
+  }
+}
+
+.ev-btn--primary:disabled {
+  background: var(--ev-sunken);
+  color: var(--ev-ink-faint);
+}
+
+.ev-btn--neutral {
+  background: var(--ev-sunken);
+  color: var(--ev-ink);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ev-btn--neutral:hover:not(:disabled) {
+    background: var(--ev-line);
+  }
+}
+
+.ev-btn--tonal {
+  background: var(--ev-brasa-soft);
+  color: var(--ev-brasa-text);
+  border: 1px solid rgba(236, 85, 18, 0.22);
+  gap: 10px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ev-btn--tonal:hover:not(:disabled) {
+    background: #FBDCCF;
+  }
+}
+
+.ev-btn-icon-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--ev-r-pill);
+  background: var(--ev-brasa);
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ev-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--ev-r-pill);
+  border: 0;
+  background: var(--ev-sunken);
+  color: var(--ev-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* === FormField (FormField.tsx: caixa sunken raio 16px, foco brasa 2px) === */
+.ev-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ev-field-label {
+  font-weight: 500;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--ev-ink-soft);
+}
+
+.ev-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  border-radius: var(--ev-r-md);
+  border: 2px solid transparent;
+  background: var(--ev-sunken);
+  color: var(--ev-ink);
+  font-size: max(1rem, 16px);
+  line-height: 1.4;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+.ev-input::placeholder {
+  color: var(--ev-ink-faint);
+}
+
+.ev-input:focus {
+  outline: none;
+  border-color: var(--ev-brasa);
+  background: var(--ev-canvas);
+}
+
+.ev-input--error {
+  border-color: var(--ev-danger);
+  background: var(--ev-danger-soft);
+}
+
+.ev-field-error {
+  margin: 0;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  color: var(--ev-danger);
+}
+
+.ev-field-hint {
+  margin: 0;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  color: var(--ev-ink-faint);
+}
+
+/* === Sheet / Modal nativo (<dialog>) === */
+dialog.ev-sheet {
+  border: 0;
+  padding: 0;
+  background: var(--ev-raised);
+  color: var(--ev-ink);
+  width: 100%;
+  max-width: 100%;
+  max-height: 92dvh;
+  margin: auto 0 0 0;
+  border-radius: var(--ev-r-lg) var(--ev-r-lg) 0 0;
+  box-shadow: 0 -12px 32px rgba(31, 22, 17, 0.18);
+}
+
+@media (min-width: 640px) {
+  dialog.ev-sheet {
+    max-width: 480px;
+    margin: auto;
+    border-radius: var(--ev-r-lg);
+    box-shadow: 0 20px 48px rgba(31, 22, 17, 0.22);
+  }
+}
+
+dialog.ev-sheet[open] {
+  animation: evSheetUp 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+dialog.ev-sheet:modal {
+  overscroll-behavior: contain;
+}
+
+dialog.ev-sheet::backdrop {
+  background: var(--ev-scrim);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+/* === ProgressRail (ProgressRail.tsx) === */
+.ev-rail {
+  position: relative;
+  padding-top: 4px;
+}
+
+.ev-rail-track-wrap {
+  position: relative;
+  height: 34px;
+  display: flex;
+  align-items: center;
+}
+
+.ev-rail-line-bg,
+.ev-rail-line-fill {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 16.666%;
+  right: 16.666%;
+  height: 3px;
+  border-radius: var(--ev-r-pill);
+}
+
+.ev-rail-line-bg {
+  background: var(--ev-line-strong);
+}
+
+.ev-rail-line-fill {
+  background: var(--ev-brasa);
+  transform-origin: left center;
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), background-color 240ms ease;
+}
+
+.ev-rail-nodes {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ev-rail-node {
+  width: 34px;
+  height: 34px;
+  margin: 0 auto;
+  border-radius: var(--ev-r-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 240ms ease, border-color 240ms ease;
+}
+
+.ev-rail-labels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 8px;
+  text-align: center;
+}
+
+.ev-pulse-node {
+  box-shadow: 0 0 0 4px rgba(236, 85, 18, 0.14);
+}
+
+@keyframes evEnterUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes evSheetUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ev-enter {
+  animation: evEnterUp 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

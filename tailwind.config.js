@@ -8,6 +8,7 @@ module.exports = {
 	darkMode: ['class'],
 	content: [
 		'./index.html',
+		'./evento/index.html',
 		'./src/**/*.{js,jsx}',
 	],
 	theme: {

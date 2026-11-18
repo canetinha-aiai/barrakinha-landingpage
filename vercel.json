@@ -13,6 +13,14 @@
       "destination": "/vendedores/index.html"
     },
     {
+      "source": "/evento",
+      "destination": "/evento/index.html"
+    },
+    {
+      "source": "/e/:slug",
+      "destination": "/evento/index.html"
+    },
+    {
       "source": "/b/:slug/capa.png",
       "destination": "/api/og/:slug"
     },

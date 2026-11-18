@@ -216,6 +216,18 @@
   [role='button'] {
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Contenção de rolagem do modal nativo (<dialog>): impede que gestos de
+     rolagem no backdrop ou no fim da sheet movam a página de fundo, sem
+     precisar mexer em overflow do <body>. */
+  dialog:modal {
+    overscroll-behavior: contain;
+  }
+
+  dialog::backdrop {
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
 }
 
 @layer utilities {
