@@ -306,16 +306,27 @@ function ProductPhoto({ src, dim = false, fallbackSize = 22 }) {
   return <ImageOff size={fallbackSize} color="#8A7E75" style={{ opacity: dim ? 0.5 : 1 }} />;
 }
 
-function QuantityStepper({ value, onChange, canIncrement = true, surface = 'white', productName }) {
+function QuantityStepper({
+  value,
+  onChange,
+  canIncrement = true,
+  surface = 'white',
+  floating = false,
+  productName,
+}) {
   return (
-    <div className={`ev-stepper ${surface === 'sunken' ? 'ev-stepper--sunken' : ''}`}>
+    <div
+      className={`ev-stepper ${surface === 'sunken' ? 'ev-stepper--sunken' : ''} ${
+        floating ? 'ev-stepper--floating' : ''
+      }`}
+    >
       <button
         type="button"
         onClick={() => onChange(value - 1)}
         aria-label={`Diminuir quantidade de ${productName}`}
         className="ev-stepper-btn ev-pressable"
       >
-        <Minus size={17} strokeWidth={2.2} />
+        <Minus size={floating ? 15 : 17} strokeWidth={2.2} />
       </button>
 
       <span className="ev-stepper-val" aria-label={`Quantidade ${value}`}>
@@ -329,7 +340,7 @@ function QuantityStepper({ value, onChange, canIncrement = true, surface = 'whit
         aria-label={`Aumentar quantidade de ${productName}`}
         className="ev-stepper-btn ev-stepper-btn--inc ev-pressable"
       >
-        <Plus size={17} strokeWidth={2.4} />
+        <Plus size={floating ? 15 : 17} strokeWidth={2.4} />
       </button>
     </div>
   );
@@ -410,6 +421,158 @@ function EventProgressRail({ isReady }) {
   );
 }
 
+/**
+ * Cena animada de confirmação "Pedido feito!", inspirada na Splash do app:
+ * fundo brasa com raios girando, ondas, faíscas mostarda, selo com check
+ * desenhado e Senha #14 carimbada; no final a cortina com toldo em meias-luas
+ * sobe revelando a tela de acompanhamento da senha.
+ */
+function OrderPlacedCelebration({ order, onComplete }) {
+  const [lifting, setLifting] = useState(false);
+
+  useEffect(() => {
+    const liftTimer = setTimeout(() => setLifting(true), 1700);
+    const doneTimer = setTimeout(() => onComplete?.(), 2180);
+    return () => {
+      clearTimeout(liftTimer);
+      clearTimeout(doneTimer);
+    };
+  }, [onComplete]);
+
+  const rays = 14;
+  const center = 500;
+  const radius = 500;
+
+  return (
+    <div
+      className={`ev-celebration ${lifting ? 'ev-celebration--lifting' : ''}`}
+      onClick={() => {
+        if (!lifting) {
+          setLifting(true);
+          setTimeout(() => onComplete?.(), 420);
+        }
+      }}
+      role="status"
+      aria-live="assertive"
+      aria-label={`Pedido confirmado! Sua senha é número ${order?.displayNumber ?? ''}`}
+    >
+      <div className="ev-celebration-stage">
+        {/* Raios girando como na Splash do app */}
+        <svg
+          className="ev-celebration-rays"
+          viewBox="0 0 1000 1000"
+          aria-hidden="true"
+        >
+          {Array.from({ length: rays }, (_, i) => {
+            const a0 = (i / rays) * Math.PI * 2;
+            const a1 = a0 + Math.PI / rays;
+            return (
+              <path
+                key={i}
+                d={`M${center},${center} L${(center + Math.cos(a0) * radius).toFixed(1)},${(
+                  center + Math.sin(a0) * radius
+                ).toFixed(1)} L${(center + Math.cos(a1) * radius).toFixed(1)},${(
+                  center + Math.sin(a1) * radius
+                ).toFixed(1)} Z`}
+                fill="#CC4309"
+              />
+            );
+          })}
+        </svg>
+
+        {/* Ondas circulares se expandindo */}
+        <div className="ev-celebration-ring" style={{ animationDelay: '80ms' }} />
+        <div className="ev-celebration-ring" style={{ animationDelay: '320ms' }} />
+
+        {/* Faíscas mostarda e creme subindo */}
+        {[
+          { left: '22%', top: '62%', size: 8, color: '#FFC23D', delay: '120ms' },
+          { left: '78%', top: '58%', size: 7, color: '#FFFFFF', delay: '260ms' },
+          { left: '30%', top: '34%', size: 6, color: '#FDECE3', delay: '420ms' },
+          { left: '72%', top: '32%', size: 9, color: '#FFC23D', delay: '180ms' },
+          { left: '18%', top: '46%', size: 6, color: '#FFFFFF', delay: '520ms' },
+          { left: '82%', top: '44%', size: 7, color: '#FFC23D', delay: '360ms' },
+        ].map((s, idx) => (
+          <div
+            key={idx}
+            className="ev-celebration-spark"
+            style={{
+              left: s.left,
+              top: s.top,
+              width: s.size,
+              height: s.size,
+              background: s.color,
+              animationDelay: s.delay,
+            }}
+          />
+        ))}
+
+        {/* Card de Comanda Carimbada */}
+        <div className="ev-celebration-card">
+          <div className="ev-celebration-card-top">
+            <div className="ev-celebration-seal" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path
+                  className="ev-celebration-check-path"
+                  d="M7.5 16.5L13.2 22.2L24.5 10.5"
+                  stroke="#1F1611"
+                  strokeWidth="3.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div className="ev-caption" style={{ color: '#FFC23D', letterSpacing: '0.06em' }}>
+              PEDIDO ENVIADO!
+            </div>
+          </div>
+
+          <div className="ev-celebration-body">
+            <div className="ev-footnote" style={{ color: 'var(--ev-ink-soft)' }}>
+              Sua senha na fila é
+            </div>
+            <div className="ev-celebration-ticket-num">
+              #{order?.displayNumber ?? 14}
+            </div>
+            <div className="ev-body-strong" style={{ color: 'var(--ev-ink)' }}>
+              {order?.storeName || 'Na fila de preparo'}
+            </div>
+            <p
+              className="ev-footnote"
+              style={{
+                margin: '6px 0 0',
+                color: 'var(--ev-ink-soft)',
+                maxWidth: 250,
+              }}
+            >
+              Avisaremos no seu WhatsApp assim que ficar pronto no balcão.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Borda inferior em meias-luas (Valance idêntica à Splash do app) */}
+      <svg
+        className="ev-celebration-valance"
+        viewBox="0 0 480 36"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        {Array.from({ length: 12 }, (_, i) => {
+          const w = 40;
+          return (
+            <path
+              key={i}
+              d={`M${i * w},0 h${w} v14 a20,20 0 0 1 -${w},0 Z`}
+              fill="#EC5512"
+            />
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
+
 export default function Evento() {
   const initialRoute = useMemo(() => parseRouteFromLocation(), []);
   const [slug] = useState(initialRoute.slug);
@@ -437,6 +600,7 @@ export default function Evento() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [liveAnnouncement, setLiveAnnouncement] = useState('');
+  const [celebratingOrder, setCelebratingOrder] = useState(null);
 
   const storageOrderKey = `barrakinha:event-order:v2:${slug}`;
   const [activeOrder, setActiveOrder] = useState(() => safeReadStorage(storageOrderKey));
@@ -776,6 +940,8 @@ export default function Evento() {
       setNote('');
       setSubmitAttempted(false);
       closeCheckoutModal();
+      navigator.vibrate?.([35, 50, 80]);
+      setCelebratingOrder(createdOrder);
       setView('ticket');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
@@ -861,6 +1027,13 @@ export default function Evento() {
       <div aria-live="polite" className="ev-sr-only">
         {liveAnnouncement}
       </div>
+
+      {celebratingOrder && (
+        <OrderPlacedCelebration
+          order={celebratingOrder}
+          onComplete={() => setCelebratingOrder(null)}
+        />
+      )}
 
       {/* Botão flutuante discreto só no modo preview local para testar estados */}
       {isDemoMode && (
@@ -1209,23 +1382,16 @@ export default function Evento() {
                                   )}
                                 </div>
 
-                                <div style={{ minHeight: 36, display: 'flex', alignItems: 'center' }}>
-                                  {soldOut ? (
+                                {soldOut && (
+                                  <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <span
                                       className="ev-footnote"
                                       style={{ fontWeight: 600, color: 'var(--ev-danger)' }}
                                     >
                                       Esgotado
                                     </span>
-                                  ) : qty > 0 && isStoreOpen ? (
-                                    <QuantityStepper
-                                      value={qty}
-                                      canIncrement={canAddMore}
-                                      productName={product.name}
-                                      onChange={(next) => setProductQuantity(product.id, next)}
-                                    />
-                                  ) : null}
-                                </div>
+                                  </div>
+                                )}
                               </div>
 
                               <div className="ev-product-thumb-wrap">
@@ -1233,26 +1399,35 @@ export default function Evento() {
                                   <ProductPhoto src={product.photo} dim={soldOut} />
                                 </div>
 
-                                {!soldOut && qty === 0 && (
-                                  <button
-                                    type="button"
-                                    disabled={!isStoreOpen}
-                                    onClick={() => setProductQuantity(product.id, 1)}
-                                    aria-label={
-                                      isStoreOpen
-                                        ? `Adicionar ${product.name}`
-                                        : `${product.name}: barraca fechada`
-                                    }
-                                    className="ev-add-fab ev-pressable"
-                                    style={
-                                      !isStoreOpen
-                                        ? { background: 'var(--ev-line)', color: 'var(--ev-ink-faint)' }
-                                        : undefined
-                                    }
-                                  >
-                                    <Plus size={18} strokeWidth={2.6} />
-                                  </button>
-                                )}
+                                {!soldOut &&
+                                  (qty > 0 && isStoreOpen ? (
+                                    <QuantityStepper
+                                      floating
+                                      value={qty}
+                                      canIncrement={canAddMore}
+                                      productName={product.name}
+                                      onChange={(next) => setProductQuantity(product.id, next)}
+                                    />
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      disabled={!isStoreOpen}
+                                      onClick={() => setProductQuantity(product.id, 1)}
+                                      aria-label={
+                                        isStoreOpen
+                                          ? `Adicionar ${product.name}`
+                                          : `${product.name}: barraca fechada`
+                                      }
+                                      className="ev-add-fab ev-pressable"
+                                      style={
+                                        !isStoreOpen
+                                          ? { background: 'var(--ev-line)', color: 'var(--ev-ink-faint)' }
+                                          : undefined
+                                      }
+                                    >
+                                      <Plus size={18} strokeWidth={2.6} />
+                                    </button>
+                                  ))}
                               </div>
                             </article>
                           );
