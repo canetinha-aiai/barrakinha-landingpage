@@ -772,7 +772,7 @@ dialog.ev-sheet {
 }
 
 dialog.ev-sheet[open] {
-  animation: evSheetUp 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: evSheetUp 240ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
 dialog.ev-sheet:modal {
