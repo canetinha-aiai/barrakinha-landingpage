@@ -1260,7 +1260,7 @@ export default function Evento() {
         <>
           <EventHero key={store?.photo || 'sem-foto'} photo={store?.photo} loading={loadingStore} />
 
-          <main className="ev-shell ev-main ev-main--menu">
+          <main className={`ev-shell ev-main ev-main--menu${totalItemsInCart > 0 ? ' ev-main--cart' : ''}`}>
             {loadingStore ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div style={{ width: '65%', height: 34, borderRadius: 10, background: 'var(--ev-sunken)' }} />

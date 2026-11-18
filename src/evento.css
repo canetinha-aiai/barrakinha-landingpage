@@ -307,7 +307,12 @@ a,
 }
 
 .ev-main {
-  padding: 18px 20px 128px;
+  padding: 18px 20px 24px;
+}
+
+/* Com itens na bandeja, a barra fixa cobre o fim da página: reserva espaço só nesse caso. */
+.ev-main--cart {
+  padding-bottom: 128px;
 }
 
 /* === Desktop: capa de ponta a ponta e cardápio mais largo === */
@@ -328,7 +333,11 @@ a,
 
   .ev-main--menu {
     max-width: 1120px;
-    padding: 28px 40px 144px;
+    padding: 28px 40px 40px;
+  }
+
+  .ev-main--menu.ev-main--cart {
+    padding-bottom: 144px;
   }
 
   .ev-main--menu .ev-products-grid {
