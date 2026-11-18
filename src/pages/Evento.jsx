@@ -27,6 +27,10 @@ const READY_STATUSES = new Set(['READY']);
 /* Encerrado: retirado ou cancelado, o pedido salvo pode ser descartado. */
 const FINISHED_STATUSES = new Set(['COMPLETED', 'CANCELLED']);
 
+/* Totem: volta ao início sozinho após a senha e após um tempo sem toque. */
+const TOTEM_SUCCESS_MS = 15000;
+const TOTEM_IDLE_MS = 60000;
+
 /* Lê o pedido salvo descartando os que já foram retirados/cancelados. */
 function readStoredOrder(key) {
   const order = safeReadStorage(key);
@@ -105,7 +109,7 @@ const DEMO_STORE = {
 
 function parseRouteFromLocation() {
   if (typeof window === 'undefined') {
-    return { slug: 'cafejoao', orderToken: null, forceDemo: true };
+    return { slug: 'cafejoao', orderToken: null, forceDemo: true, mode: 'cliente' };
   }
   const url = new URL(window.location.href);
   const match = url.pathname.match(/^\/e\/([^/]+)/i);
@@ -118,8 +122,10 @@ function parseRouteFromLocation() {
     slug === 'demo' ||
     slug === 'cafejoao' ||
     url.searchParams.get('preview') === '1';
+  /* /e/<code>/totem = totem de autoatendimento: sem dados salvos, sem acompanhamento. */
+  const mode = /^\/e\/[^/]+\/totem\/?$/i.test(url.pathname) ? 'totem' : 'cliente';
 
-  return { slug, orderToken, forceDemo };
+  return { slug, orderToken, forceDemo, mode };
 }
 
 function formatPhoneMask(raw) {
@@ -611,6 +617,25 @@ function OrderPlacedCelebration({ order, onComplete }) {
   );
 }
 
+/* Tela de sucesso do totem: só a senha, sem acompanhamento. */
+function TotemSuccess({ order, onDone }) {
+  return (
+    <main className="ev-totem-success ev-enter" role="status" aria-live="polite">
+      <p className="ev-totem-kicker">Pedido confirmado</p>
+      <p className="ev-totem-number ev-tabular" aria-label={`Sua senha é ${order.displayNumber}`}>
+        #{order.displayNumber}
+      </p>
+      <p className="ev-totem-hint">Aguarde ser chamado no balcão.</p>
+      <button type="button" className="ev-btn ev-pressable" onClick={onDone}>
+        Fazer novo pedido
+      </button>
+      <p className="ev-footnote" style={{ marginTop: 16 }}>
+        A tela volta ao início sozinha.
+      </p>
+    </main>
+  );
+}
+
 export default function Evento() {
   const initialRoute = useMemo(() => parseRouteFromLocation(), []);
   const [slug] = useState(initialRoute.slug);
@@ -624,7 +649,12 @@ export default function Evento() {
   const [cart, setCart] = useState({});
   const [limitFeedback, setLimitFeedback] = useState(false);
 
-  const savedGuest = useMemo(() => safeReadStorage('barrakinha:event-guest') || {}, []);
+  const isTotem = initialRoute.mode === 'totem';
+  /* No totem nada do cliente anterior é lido nem salvo. */
+  const savedGuest = useMemo(
+    () => (isTotem ? {} : safeReadStorage('barrakinha:event-guest') || {}),
+    [isTotem],
+  );
   const [guestName, setGuestName] = useState(savedGuest.name || '');
   const [guestPhone, setGuestPhone] = useState(savedGuest.phone || '');
   const [note, setNote] = useState('');
@@ -641,10 +671,15 @@ export default function Evento() {
   const [celebratingOrder, setCelebratingOrder] = useState(null);
 
   const storageOrderKey = `barrakinha:event-order:v2:${slug}`;
-  const [activeOrder, setActiveOrder] = useState(() => readStoredOrder(storageOrderKey));
+  const [activeOrder, setActiveOrder] = useState(() =>
+    isTotem ? null : readStoredOrder(storageOrderKey),
+  );
+  /* Pedido concluído no totem, exibido só até a tela voltar ao início. */
+  const [totemOrder, setTotemOrder] = useState(null);
   /* Abre na senha só enquanto o pedido está na fila (ou via link ?pedido=).
      Pronto ou encerrado abre no cardápio; o aviso verde no topo leva à senha. */
   const [view, setView] = useState(() => {
+    if (isTotem) return 'menu';
     if (initialRoute.orderToken) return 'ticket';
     const stored = readStoredOrder(storageOrderKey);
     return stored && !READY_STATUSES.has(stored.status) ? 'ticket' : 'menu';
@@ -718,7 +753,7 @@ export default function Evento() {
   useEffect(() => {
     const fromLink = Boolean(initialRoute.orderToken);
     const token = initialRoute.orderToken || readStoredOrder(storageOrderKey)?.trackingToken;
-    if (!token || initialRoute.forceDemo) return undefined;
+    if (!token || initialRoute.forceDemo || isTotem) return undefined;
     let cancelled = false;
 
     (async () => {
@@ -751,7 +786,7 @@ export default function Evento() {
     return () => {
       cancelled = true;
     };
-  }, [initialRoute.forceDemo, initialRoute.orderToken, storageOrderKey]);
+  }, [initialRoute.forceDemo, initialRoute.orderToken, storageOrderKey, isTotem]);
 
   /* Fallback de light-dismiss para Safari (sem suporte nativo a <dialog closedby="any">). */
   useEffect(() => {
@@ -916,7 +951,9 @@ export default function Evento() {
     }
 
     setIsSubmitting(true);
-    safeWriteStorage('barrakinha:event-guest', { name: trimmedName, phone: guestPhone });
+    if (!isTotem) {
+      safeWriteStorage('barrakinha:event-guest', { name: trimmedName, phone: guestPhone });
+    }
 
     try {
       let createdOrder;
@@ -974,21 +1011,36 @@ export default function Evento() {
         };
       }
 
-      setActiveOrder(createdOrder);
-      safeWriteStorage(storageOrderKey, createdOrder);
-      if (!isDemoMode && createdOrder.trackingToken && typeof window !== 'undefined') {
-        const url = new URL(window.location.href);
-        url.searchParams.set('pedido', createdOrder.trackingToken);
-        window.history.replaceState(null, '', url.toString());
+      if (isTotem) {
+        /* Totem: só mostra a senha; o formulário é limpo agora mesmo. */
+        setTotemOrder(createdOrder);
+        setGuestName('');
+        setGuestPhone('');
+        setTouched({ name: false, phone: false });
+        setEdited({ name: false, phone: false });
+        setCart({});
+        setNote('');
+        setSubmitAttempted(false);
+        closeCheckoutModal();
+        navigator.vibrate?.([35, 50, 80]);
+        window.scrollTo({ top: 0 });
+      } else {
+        setActiveOrder(createdOrder);
+        safeWriteStorage(storageOrderKey, createdOrder);
+        if (!isDemoMode && createdOrder.trackingToken && typeof window !== 'undefined') {
+          const url = new URL(window.location.href);
+          url.searchParams.set('pedido', createdOrder.trackingToken);
+          window.history.replaceState(null, '', url.toString());
+        }
+        setCart({});
+        setNote('');
+        setSubmitAttempted(false);
+        closeCheckoutModal();
+        navigator.vibrate?.([35, 50, 80]);
+        setCelebratingOrder(createdOrder);
+        setView('ticket');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-      setCart({});
-      setNote('');
-      setSubmitAttempted(false);
-      closeCheckoutModal();
-      navigator.vibrate?.([35, 50, 80]);
-      setCelebratingOrder(createdOrder);
-      setView('ticket');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       setSubmitError(err.message || 'Falha de conexão. Tente confirmar novamente.');
     } finally {
@@ -1001,6 +1053,47 @@ export default function Evento() {
       closeCheckoutModal();
     }
   }, [totalItemsInCart]);
+
+  /* Totem: zera tudo para a próxima pessoa da fila. */
+  const resetTotem = () => {
+    setTotemOrder(null);
+    setGuestName('');
+    setGuestPhone('');
+    setTouched({ name: false, phone: false });
+    setEdited({ name: false, phone: false });
+    setCart({});
+    setNote('');
+    setSubmitAttempted(false);
+    setSubmitError('');
+    closeCheckoutModal();
+    window.scrollTo({ top: 0 });
+  };
+  const resetTotemRef = useRef(null);
+  resetTotemRef.current = resetTotem;
+
+  /* Totem: depois da senha, volta ao início sozinho. */
+  useEffect(() => {
+    if (!isTotem || !totemOrder) return undefined;
+    const t = setTimeout(() => resetTotemRef.current?.(), TOTEM_SUCCESS_MS);
+    return () => clearTimeout(t);
+  }, [isTotem, totemOrder]);
+
+  /* Totem: sem toque por um tempo, descarta o que estiver em andamento. */
+  useEffect(() => {
+    if (!isTotem) return undefined;
+    let timer;
+    const arm = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => resetTotemRef.current?.(), TOTEM_IDLE_MS);
+    };
+    const events = ['pointerdown', 'keydown', 'input'];
+    events.forEach((ev) => window.addEventListener(ev, arm, true));
+    arm();
+    return () => {
+      clearTimeout(timer);
+      events.forEach((ev) => window.removeEventListener(ev, arm, true));
+    };
+  }, [isTotem]);
 
   const triggerDemoScenario = (scenario) => {
     setDevMenuOpen(false);
@@ -1081,7 +1174,7 @@ export default function Evento() {
       )}
 
       {/* Botão flutuante discreto só no modo preview local para testar estados */}
-      {isDemoMode && (
+      {isDemoMode && !isTotem && (
         <div style={{ position: 'fixed', top: 14, right: 16, zIndex: 45 }}>
           <button
             type="button"
@@ -1161,7 +1254,9 @@ export default function Evento() {
       )}
 
       {/* ================= TELA 1: CARDÁPIO DA BARRACA ================= */}
-      {view === 'menu' || !activeOrder ? (
+      {isTotem && totemOrder ? (
+        <TotemSuccess order={totemOrder} onDone={resetTotem} />
+      ) : view === 'menu' || !activeOrder ? (
         <>
           <EventHero key={store?.photo || 'sem-foto'} photo={store?.photo} loading={loadingStore} />
 

@@ -17,6 +17,10 @@
       "destination": "/evento/index.html"
     },
     {
+      "source": "/e/:slug/totem",
+      "destination": "/evento/index.html"
+    },
+    {
       "source": "/e/:slug",
       "destination": "/evento/index.html"
     },

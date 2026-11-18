@@ -1037,3 +1037,44 @@ dialog.ev-sheet::backdrop {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* === Totem de autoatendimento: uma tela, só a senha === */
+.ev-totem-success {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 24px;
+  text-align: center;
+  background: var(--ev-canvas);
+}
+
+.ev-totem-kicker {
+  margin: 0;
+  font-family: var(--ev-font-sans);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ev-success);
+}
+
+.ev-totem-number {
+  margin: 0;
+  font-family: var(--ev-font-display);
+  font-weight: 800;
+  font-size: clamp(120px, 30vw, 240px);
+  line-height: 1;
+  color: var(--ev-ink);
+}
+
+.ev-totem-hint {
+  margin: 0 0 24px;
+  font-family: var(--ev-font-sans);
+  font-size: 22px;
+  color: var(--ev-ink-soft);
+}
+
+.ev-totem-success .ev-btn {
+  max-width: 420px;
+}

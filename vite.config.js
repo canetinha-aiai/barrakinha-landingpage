@@ -15,7 +15,8 @@ const vendorRoute = {
       } else if (
         req.url === '/evento' ||
         req.url.startsWith('/evento?') ||
-        /^\/e\/[^/.]+(\?.*)?$/.test(req.url || '')
+        /^\/e\/[^/.]+(\?.*)?$/.test(req.url || '') ||
+        /^\/e\/[^/.]+\/totem\/?(\?.*)?$/.test(req.url || '')
       ) {
         const qIndex = req.url.indexOf('?');
         req.url = '/evento/index.html' + (qIndex >= 0 ? req.url.slice(qIndex) : '');
