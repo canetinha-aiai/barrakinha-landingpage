@@ -332,7 +332,8 @@ a,
   }
 
   .ev-main--menu .ev-products-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* auto-fit colapsa colunas vazias: categoria com 1 item ocupa a largura toda. */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 16px;
   }
 }
