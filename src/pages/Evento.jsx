@@ -25,7 +25,7 @@ const POLL_INTERVAL_MS = 4000;
 const SCALLOP_RADIUS = 12;
 
 const API_BASE = (
-  import.meta.env.VITE_BARRAKINHA_API_URL || 'https://api.barrakinha.com.br'
+  import.meta.env.VITE_BARRAKINHA_API_URL || 'https://api-dev.barrakinha.com.br'
 ).replace(/\/+$/, '');
 
 /* Mesmas categorias e ícones reais de `ProductCategory` no backend e no app
