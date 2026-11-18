@@ -863,7 +863,7 @@ dialog.ev-sheet::backdrop {
   animation: evEnterUp 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* === Cena de celebração "Pedido feito!" inspirada na Splash do app === */
+/* === Confirmação "Pedido confirmado" no celular: mesma linguagem do totem === */
 .ev-celebration {
   position: fixed;
   inset: 0;
@@ -891,28 +891,64 @@ dialog.ev-sheet::backdrop {
   padding: 24px;
 }
 
-.ev-celebration-rays {
-  position: absolute;
-  width: 140vmax;
-  height: 140vmax;
-  left: 50%;
-  top: 50%;
-  margin-left: -70vmax;
-  margin-top: -70vmax;
-  opacity: 0.42;
-  pointer-events: none;
-  animation: evRaysSpin 9s linear infinite;
+.ev-celebration-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  color: var(--ev-on-brasa);
+  text-align: center;
 }
 
-.ev-celebration-ring {
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  border-radius: 999px;
-  border: 3px solid var(--ev-brasa-soft);
-  opacity: 0;
-  pointer-events: none;
-  animation: evRingExpand 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.ev-celebration .ev-celebration-kicker {
+  font-size: clamp(20px, 6vw, 28px);
+  white-space: nowrap;
+}
+
+.ev-celebration .ev-celebration-ticket {
+  width: 100%;
+  padding: 24px 20px 22px;
+}
+
+.ev-celebration .ev-celebration-number {
+  font-size: clamp(88px, 30vw, 140px);
+}
+
+.ev-celebration .ev-celebration-number--long {
+  font-size: clamp(72px, 22vw, 110px);
+}
+
+.ev-celebration-store {
+  margin: 10px 0 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ev-ink);
+}
+
+.ev-celebration-note {
+  margin: 0;
+  max-width: 30ch;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.ev-celebration-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 26px;
+  border-radius: var(--ev-r-pill);
+  background: var(--ev-canvas);
+  color: var(--ev-brasa-text);
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .ev-celebration-spark {
@@ -923,75 +959,6 @@ dialog.ev-sheet::backdrop {
   animation: evSparkRise 1100ms cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
-.ev-celebration-card {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 332px;
-  background: var(--ev-canvas);
-  border-radius: var(--ev-r-lg);
-  overflow: hidden;
-  box-shadow: 0 24px 60px rgba(31, 22, 17, 0.28);
-  text-align: center;
-  animation: evCardPopIn 520ms cubic-bezier(0.34, 1.56, 0.64, 1) 60ms both;
-}
-
-.ev-celebration-card-top {
-  background: var(--ev-noite);
-  padding: 22px 20px 14px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.ev-celebration-seal {
-  width: 64px;
-  height: 64px;
-  border-radius: 999px;
-  background: var(--ev-mostarda);
-  color: var(--ev-noite);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 22px rgba(255, 194, 61, 0.35);
-  animation: evSealBounce 560ms cubic-bezier(0.34, 1.56, 0.64, 1) 180ms both;
-}
-
-.ev-celebration-check-path {
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  animation: evDrawCheck 380ms cubic-bezier(0.22, 1, 0.36, 1) 340ms forwards;
-}
-
-.ev-celebration-body {
-  padding: 20px 22px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.ev-celebration-ticket-num {
-  font-family: var(--ev-font-display);
-  font-weight: 800;
-  font-size: 3.5rem;
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  color: var(--ev-brasa);
-  font-variant-numeric: tabular-nums;
-  margin: 4px 0 8px;
-  animation: evNumberStamp 480ms cubic-bezier(0.34, 1.56, 0.64, 1) 280ms both;
-}
-
-.ev-celebration-valance {
-  width: 100%;
-  height: 34px;
-  margin-top: -1px;
-  flex-shrink: 0;
-  pointer-events: none;
-}
-
 @keyframes evCelebrationFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -1000,16 +967,6 @@ dialog.ev-sheet::backdrop {
 @keyframes evCurtainLift {
   from { transform: translateY(0); }
   to { transform: translateY(-105%); }
-}
-
-@keyframes evRaysSpin {
-  from { transform: rotate(0deg) scale(1.02); }
-  to { transform: rotate(60deg) scale(1.02); }
-}
-
-@keyframes evRingExpand {
-  0% { opacity: 0.7; transform: scale(0.45); }
-  100% { opacity: 0; transform: scale(2.65); }
 }
 
 @keyframes evSparkRise {
@@ -1029,10 +986,6 @@ dialog.ev-sheet::backdrop {
   100% { opacity: 1; transform: scale(1) rotate(0deg); }
 }
 
-@keyframes evDrawCheck {
-  to { stroke-dashoffset: 0; }
-}
-
 @keyframes evNumberStamp {
   0% { opacity: 0; transform: scale(0.6); }
   100% { opacity: 1; transform: scale(1); }
@@ -1048,43 +1001,250 @@ dialog.ev-sheet::backdrop {
   }
 }
 
-/* === Totem de autoatendimento: uma tela, só a senha === */
+/* === Totem de autoatendimento: uma tela, só a senha ===
+   Lida de longe: brasa chapado, senha num cartão de papel em Archivo
+   larga, instrução em branco. Sem sombra, sem degradê, sem toldo. */
 .ev-totem-success {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  padding: max(24px, env(safe-area-inset-top)) clamp(20px, 5vw, 64px)
+    max(24px, env(safe-area-inset-bottom));
+  background: var(--ev-brasa);
+  color: var(--ev-on-brasa);
+  text-align: center;
+  animation: evCelebrationFadeIn 200ms ease-out both;
+}
+
+.ev-totem-brand {
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 32px 24px;
-  text-align: center;
-  background: var(--ev-canvas);
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ev-totem-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ev-totem-brand img {
+  width: clamp(36px, min(5vw, 4vh), 56px);
+  height: auto;
+  display: block;
+}
+
+.ev-totem-brand-name {
+  font-family: var(--ev-font-display);
+  font-stretch: 118%;
+  font-weight: 850;
+  font-size: clamp(22px, min(3vw, 2.4vh), 36px);
+  letter-spacing: -0.01em;
+}
+
+.ev-totem-brand-store {
+  font-size: clamp(20px, min(2.6vw, 2.1vh), 30px);
+  font-weight: 700;
+}
+
+.ev-totem-brand-store::before {
+  content: '·';
+  margin-right: 10px;
+}
+
+.ev-totem-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 3vh, 40px);
+  padding: clamp(16px, 3vh, 40px) 0;
 }
 
 .ev-totem-kicker {
   margin: 0;
-  font-family: var(--ev-font-sans);
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--ev-success);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--ev-font-display);
+  font-stretch: 118%;
+  font-weight: 850;
+  font-size: clamp(24px, min(4.4vw, 4vh), 60px);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+
+.ev-totem-check {
+  width: 1.3em;
+  height: 1.3em;
+  border-radius: var(--ev-r-pill);
+  background: var(--ev-mostarda);
+  color: var(--ev-noite);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: evSealBounce 520ms cubic-bezier(0.34, 1.56, 0.64, 1) 120ms both;
+}
+
+.ev-totem-check svg {
+  width: 62%;
+  height: 62%;
+}
+
+.ev-totem-ticket {
+  width: min(100%, max(640px, 84vw), 960px);
+  background: var(--ev-canvas);
+  color: var(--ev-ink);
+  border-radius: var(--ev-r-lg);
+  padding: clamp(24px, 4vh, 44px) clamp(20px, 4vw, 48px) clamp(20px, 3.5vh, 36px);
+  animation: evCardPopIn 520ms cubic-bezier(0.22, 1, 0.36, 1) 60ms both;
+}
+
+.ev-totem-ticket-label {
+  margin: 0;
+  font-size: clamp(16px, min(2.4vw, 2.2vh), 34px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ev-brasa-text);
 }
 
 .ev-totem-number {
-  margin: 0;
+  margin: 4px 0 0;
   font-family: var(--ev-font-display);
-  font-weight: 800;
-  font-size: clamp(120px, 30vw, 240px);
-  line-height: 1;
+  font-stretch: 118%;
+  font-weight: 900;
+  font-size: clamp(96px, min(36vw, 28vh), 440px);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
   color: var(--ev-ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  animation: evNumberStamp 480ms cubic-bezier(0.34, 1.56, 0.64, 1) 240ms both;
+}
+
+.ev-totem-hash {
+  color: var(--ev-brasa);
+  font-size: 0.45em;
+  vertical-align: 0.8em;
+  margin-right: 0.04em;
 }
 
 .ev-totem-hint {
-  margin: 0 0 24px;
-  font-family: var(--ev-font-sans);
-  font-size: 22px;
-  color: var(--ev-ink-soft);
+  margin: 0;
+  max-width: 22ch;
+  font-size: clamp(24px, min(4.4vw, 4vh), 60px);
+  font-weight: 700;
+  line-height: 1.2;
+  text-wrap: balance;
 }
 
-.ev-totem-success .ev-btn {
-  max-width: 420px;
+.ev-totem-actions {
+  width: min(100%, max(520px, 64vw));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 18px;
+}
+
+.ev-totem-btn {
+  height: clamp(64px, 8vh, 104px);
+  font-size: clamp(20px, min(3vw, 2.6vh), 34px);
+  background: var(--ev-canvas);
+  color: var(--ev-brasa-text);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ev-totem-btn:hover {
+    background: var(--ev-brasa-wash);
+  }
+}
+
+.ev-totem-timer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ev-totem-timer-track {
+  height: clamp(6px, 0.6vh, 10px);
+  border-radius: var(--ev-r-pill);
+  background: rgba(255, 255, 255, 0.28);
+  overflow: hidden;
+}
+
+.ev-totem-timer-fill {
+  height: 100%;
+  background: var(--ev-canvas);
+  border-radius: inherit;
+  transform-origin: left center;
+  animation: evTotemCountdown linear forwards;
+}
+
+.ev-totem-timer-text {
+  margin: 0;
+  font-size: clamp(19px, min(2.4vw, 1.9vh), 28px);
+  font-weight: 700;
+}
+
+/* Senha de 3+ dígitos: encolhe para caber no cartão sem quebrar. */
+.ev-totem-number--long {
+  font-size: clamp(72px, min(23vw, 24vh), 360px);
+}
+
+.ev-totem-number--xlong {
+  font-size: clamp(56px, min(19vw, 20vh), 280px);
+}
+
+@media (max-width: 480px) {
+  .ev-totem-brand {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ev-totem-brand-store::before {
+    content: none;
+  }
+}
+
+@keyframes evTotemCountdown {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ev-totem-timer-track {
+    display: none;
+  }
+}
+
+/* === Acompanhamento da senha (celular): a senha em destaque, como no totem === */
+.ev-ticket-hero {
+  margin-bottom: 20px;
+  padding: 20px 20px 18px;
+  border-radius: var(--ev-r-lg);
+  background: var(--ev-brasa-wash);
+  text-align: center;
+}
+
+.ev-ticket-hero .ev-totem-ticket-label {
+  font-size: 14px;
+}
+
+.ev-ticket-hero-number {
+  margin: 2px 0 0;
+  font-family: var(--ev-font-display);
+  font-stretch: 118%;
+  font-weight: 900;
+  font-size: clamp(64px, 22vw, 112px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ev-ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }

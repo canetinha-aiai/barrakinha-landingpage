@@ -452,10 +452,10 @@ function EventProgressRail({ isReady }) {
 }
 
 /**
- * Cena animada de confirmação "Pedido feito!", inspirada na Splash do app:
- * fundo brasa com raios girando, ondas, faíscas mostarda, selo com check
- * desenhado e Senha #14 carimbada; no final a cortina com toldo em meias-luas
- * sobe revelando a tela de acompanhamento da senha.
+ * Confirmação "Pedido confirmado" no celular, na mesma linguagem do totem:
+ * brasa chapado, selo mostarda com check, a senha num cartão de papel em
+ * Archivo larga. Toque em qualquer lugar sobe a cortina e revela a tela de
+ * acompanhamento da senha.
  */
 function OrderPlacedCelebration({ order, onComplete }) {
   const [lifting, setLifting] = useState(false);
@@ -466,9 +466,8 @@ function OrderPlacedCelebration({ order, onComplete }) {
     setTimeout(() => onComplete?.(), 460);
   }, [lifting, onComplete]);
 
-  const rays = 14;
-  const center = 500;
-  const radius = 500;
+  const number = order?.displayNumber ?? 14;
+  const digits = String(number).length;
 
   return (
     <div
@@ -484,45 +483,18 @@ function OrderPlacedCelebration({ order, onComplete }) {
       role="dialog"
       aria-modal="true"
       aria-live="assertive"
-      aria-label={`Pedido confirmado! Sua senha é número ${order?.displayNumber ?? ''}. Toque na tela para acompanhar.`}
+      aria-label={`Pedido confirmado! Sua senha é número ${number}. Toque na tela para acompanhar.`}
       style={{ cursor: 'pointer', outline: 'none' }}
     >
       <div className="ev-celebration-stage">
-        {/* Raios girando como na Splash do app */}
-        <svg
-          className="ev-celebration-rays"
-          viewBox="0 0 1000 1000"
-          aria-hidden="true"
-        >
-          {Array.from({ length: rays }, (_, i) => {
-            const a0 = (i / rays) * Math.PI * 2;
-            const a1 = a0 + Math.PI / rays;
-            return (
-              <path
-                key={i}
-                d={`M${center},${center} L${(center + Math.cos(a0) * radius).toFixed(1)},${(
-                  center + Math.sin(a0) * radius
-                ).toFixed(1)} L${(center + Math.cos(a1) * radius).toFixed(1)},${(
-                  center + Math.sin(a1) * radius
-                ).toFixed(1)} Z`}
-                fill="#CC4309"
-              />
-            );
-          })}
-        </svg>
-
-        {/* Ondas circulares se expandindo */}
-        <div className="ev-celebration-ring" style={{ animationDelay: '80ms' }} />
-        <div className="ev-celebration-ring" style={{ animationDelay: '320ms' }} />
-
         {/* Faíscas mostarda e creme subindo */}
         {[
-          { left: '22%', top: '62%', size: 8, color: '#FFC23D', delay: '120ms' },
-          { left: '78%', top: '58%', size: 7, color: '#FFFFFF', delay: '260ms' },
-          { left: '30%', top: '34%', size: 6, color: '#FDECE3', delay: '420ms' },
-          { left: '72%', top: '32%', size: 9, color: '#FFC23D', delay: '180ms' },
-          { left: '18%', top: '46%', size: 6, color: '#FFFFFF', delay: '520ms' },
-          { left: '82%', top: '44%', size: 7, color: '#FFC23D', delay: '360ms' },
+          { left: '14%', top: '70%', size: 8, color: '#FFC23D', delay: '120ms' },
+          { left: '84%', top: '66%', size: 7, color: '#FFFFFF', delay: '260ms' },
+          { left: '22%', top: '22%', size: 6, color: '#FFE6D4', delay: '420ms' },
+          { left: '78%', top: '20%', size: 9, color: '#FFC23D', delay: '180ms' },
+          { left: '8%', top: '44%', size: 6, color: '#FFFFFF', delay: '520ms' },
+          { left: '90%', top: '42%', size: 7, color: '#FFC23D', delay: '360ms' },
         ].map((s, idx) => (
           <div
             key={idx}
@@ -538,100 +510,119 @@ function OrderPlacedCelebration({ order, onComplete }) {
           />
         ))}
 
-        {/* Card de Comanda Carimbada */}
-        <div className="ev-celebration-card">
-          <div className="ev-celebration-card-top">
-            <div className="ev-celebration-seal" aria-hidden="true">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path
-                  className="ev-celebration-check-path"
-                  d="M7.5 16.5L13.2 22.2L24.5 10.5"
-                  stroke="#1F1611"
-                  strokeWidth="3.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <div className="ev-caption" style={{ color: '#FFC23D', letterSpacing: '0.06em' }}>
-              PEDIDO ENVIADO!
-            </div>
+        <div className="ev-celebration-content">
+          <p className="ev-totem-kicker ev-celebration-kicker">
+            <span className="ev-totem-check" aria-hidden="true">
+              <Check size={20} strokeWidth={3.2} />
+            </span>
+            Pedido confirmado
+          </p>
+
+          <div className="ev-totem-ticket ev-celebration-ticket">
+            <p className="ev-totem-ticket-label">Sua senha</p>
+            <p
+              className={`ev-totem-number ev-celebration-number ev-tabular${
+                digits >= 3 ? ' ev-celebration-number--long' : ''
+              }`}
+            >
+              <span className="ev-totem-hash" aria-hidden="true">#</span>
+              {number}
+            </p>
+            {order?.storeName ? (
+              <p className="ev-celebration-store">{order.storeName}</p>
+            ) : null}
           </div>
 
-          <div className="ev-celebration-body">
-            <div className="ev-footnote" style={{ color: 'var(--ev-ink-soft)' }}>
-              Sua senha na fila é
-            </div>
-            <div className="ev-celebration-ticket-num">
-              #{order?.displayNumber ?? 14}
-            </div>
-            <div className="ev-body-strong" style={{ color: 'var(--ev-ink)' }}>
-              {order?.storeName || 'Na fila de preparo'}
-            </div>
-            <p
-              className="ev-footnote"
-              style={{
-                margin: '6px 0 0',
-                color: 'var(--ev-ink-soft)',
-                maxWidth: 250,
-              }}
-            >
-              Avisaremos no seu WhatsApp assim que ficar pronto no balcão.
-            </p>
-            <div
-              className="ev-caption"
-              style={{
-                marginTop: 18,
-                padding: '10px 18px',
-                borderRadius: 999,
-                background: 'var(--ev-brasa)',
-                color: '#FFFFFF',
-                fontSize: 13,
-              }}
-            >
-              Toque para acompanhar
-            </div>
-          </div>
+          <p className="ev-celebration-note">
+            Avisamos no seu WhatsApp assim que ficar pronto no balcão.
+          </p>
+
+          <span className="ev-celebration-cta">Toque para acompanhar</span>
         </div>
       </div>
-
-      {/* Borda inferior em meias-luas (Valance idêntica à Splash do app) */}
-      <svg
-        className="ev-celebration-valance"
-        viewBox="0 0 480 36"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        {Array.from({ length: 12 }, (_, i) => {
-          const w = 40;
-          return (
-            <path
-              key={i}
-              d={`M${i * w},0 h${w} v14 a20,20 0 0 1 -${w},0 Z`}
-              fill="#EC5512"
-            />
-          );
-        })}
-      </svg>
     </div>
   );
 }
 
-/* Tela de sucesso do totem: só a senha, sem acompanhamento. */
-function TotemSuccess({ order, onDone }) {
+/* Tela de sucesso do totem: só a senha, sem acompanhamento.
+   Feita para ser lida a alguns passos de distância: fundo brasa chapado,
+   a senha num cartão de papel em Archivo larga, a instrução em branco e
+   uma barra que mostra quanto falta para a tela voltar ao início. */
+function TotemSuccess({ order, storeName, durationMs, onDone }) {
+  const totalSeconds = Math.round(durationMs / 1000);
+  const [secondsLeft, setSecondsLeft] = useState(totalSeconds);
+
+  useEffect(() => {
+    const startedAt = Date.now();
+    const t = setInterval(() => {
+      const left = Math.max(0, Math.ceil((durationMs - (Date.now() - startedAt)) / 1000));
+      setSecondsLeft(left);
+    }, 250);
+    return () => clearInterval(t);
+  }, [durationMs]);
+
+  /* A barra do navegador acompanha o brasa enquanto a senha está na tela. */
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return undefined;
+    const previous = meta.getAttribute('content');
+    meta.setAttribute('content', '#EC5512');
+    return () => meta.setAttribute('content', previous);
+  }, []);
+
+  const name = storeName || order.storeName;
+  const digits = String(order.displayNumber ?? '').length;
+
   return (
-    <main className="ev-totem-success ev-enter" role="status" aria-live="polite">
-      <p className="ev-totem-kicker">Pedido confirmado</p>
-      <p className="ev-totem-number ev-tabular" aria-label={`Sua senha é ${order.displayNumber}`}>
-        #{order.displayNumber}
-      </p>
-      <p className="ev-totem-hint">Aguarde ser chamado no balcão.</p>
-      <button type="button" className="ev-btn ev-pressable" onClick={onDone}>
-        Fazer novo pedido
-      </button>
-      <p className="ev-footnote" style={{ marginTop: 16 }}>
-        A tela volta ao início sozinha.
-      </p>
+    <main className="ev-totem-success" role="status" aria-live="polite">
+      <header className="ev-totem-brand">
+        <span className="ev-totem-brand-mark">
+          <img src="/logo/barrakinha-logo-branca.svg" alt="" width={36} height={36} />
+          <span className="ev-totem-brand-name">Barrakinha</span>
+        </span>
+        {name ? <span className="ev-totem-brand-store">{name}</span> : null}
+      </header>
+
+      <div className="ev-totem-center">
+        <p className="ev-totem-kicker">
+          <span className="ev-totem-check" aria-hidden="true">
+            <Check size={22} strokeWidth={3.2} />
+          </span>
+          Pedido confirmado
+        </p>
+
+        <div className="ev-totem-ticket">
+          <p className="ev-totem-ticket-label">Sua senha</p>
+          <p
+            className={`ev-totem-number ev-tabular${
+              digits >= 4 ? ' ev-totem-number--xlong' : digits === 3 ? ' ev-totem-number--long' : ''
+            }`}
+            aria-label={`Sua senha é ${order.displayNumber}`}
+          >
+            <span className="ev-totem-hash" aria-hidden="true">#</span>
+            {order.displayNumber}
+          </p>
+        </div>
+
+        <p className="ev-totem-hint">Aguarde ser chamado no balcão.</p>
+      </div>
+
+      <footer className="ev-totem-actions">
+        <button type="button" className="ev-btn ev-totem-btn ev-pressable" onClick={onDone}>
+          Fazer novo pedido
+        </button>
+        <div className="ev-totem-timer">
+          <div className="ev-totem-timer-track" aria-hidden="true">
+            <div
+              className="ev-totem-timer-fill"
+              style={{ animationDuration: `${durationMs}ms` }}
+            />
+          </div>
+          <p className="ev-totem-timer-text">
+            A tela volta ao início em <span className="ev-tabular">{secondsLeft}s</span>
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }
@@ -1255,7 +1246,12 @@ export default function Evento() {
 
       {/* ================= TELA 1: CARDÁPIO DA BARRACA ================= */}
       {isTotem && totemOrder ? (
-        <TotemSuccess order={totemOrder} onDone={resetTotem} />
+        <TotemSuccess
+          order={totemOrder}
+          storeName={store?.name}
+          durationMs={TOTEM_SUCCESS_MS}
+          onDone={resetTotem}
+        />
       ) : view === 'menu' || !activeOrder ? (
         <>
           <EventHero key={store?.photo || 'sem-foto'} photo={store?.photo} loading={loadingStore} />
@@ -1651,13 +1647,15 @@ export default function Evento() {
           </div>
 
           <section className="ev-enter" aria-label={`Senha ${activeOrder.displayNumber}`}>
-            {/* Título + linha de apoio limpa (zero chips redundantes) */}
-            <header style={{ marginBottom: 20 }}>
-              <h1 className="ev-display ev-tabular" style={{ margin: 0 }}>
-                Senha #{activeOrder.displayNumber}
+            {/* A senha num cartão de papel brasa, na mesma linguagem do totem */}
+            <header className="ev-ticket-hero">
+              <p className="ev-totem-ticket-label">Sua senha</p>
+              <h1 className="ev-ticket-hero-number ev-tabular">
+                <span className="ev-totem-hash" aria-hidden="true">#</span>
+                <span className="ev-sr-only">Senha </span>
+                {activeOrder.displayNumber}
               </h1>
-
-              <p className="ev-footnote" style={{ margin: '8px 0 0', fontSize: 14 }}>
+              <p className="ev-footnote" style={{ margin: '6px 0 0', fontSize: 14 }}>
                 <strong style={{ color: 'var(--ev-ink)', fontWeight: 600 }}>
                   {activeOrderItemsCount} {activeOrderItemsCount === 1 ? 'item' : 'itens'}
                 </strong>
