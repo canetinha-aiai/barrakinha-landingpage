@@ -370,7 +370,8 @@ a,
 
 @media (min-width: 700px) {
   .ev-products-grid {
-    grid-template-columns: 1fr 1fr;
+    /* auto-fit: categoria com 1 item ocupa a linha toda, em vez de meia coluna. */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 12px;
   }
 }
