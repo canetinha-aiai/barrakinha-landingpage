@@ -84,7 +84,7 @@ export function OrderPlacedCelebration({ order, onComplete }) {
           </div>
 
           <p className="ev-celebration-note">
-            Avisamos no seu WhatsApp assim que ficar pronto no balcão.
+            Avisaremos no seu WhatsApp assim que ficar pronto no balcão.
           </p>
 
           <span className="ev-celebration-cta">Toque para acompanhar</span>
