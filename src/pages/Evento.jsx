@@ -9,6 +9,7 @@ import { OrderPlacedCelebration } from './evento/OrderPlacedCelebration.jsx';
 import { TotemSuccess } from './evento/TotemSuccess.jsx';
 import { ProductCard } from './evento/ProductCard.jsx';
 import { CheckoutForm } from './evento/CheckoutForm.jsx';
+import { buildEventTheme, themeColorsFrom } from './evento/theme.js';
 
 export default function Evento() {
   const initialRoute = useMemo(() => parseRouteFromLocation(), []);
@@ -19,6 +20,18 @@ export default function Evento() {
   const [store, setStore] = useState(initialRoute.forceDemo ? DEMO_STORE : null);
   const [loadingStore, setLoadingStore] = useState(!initialRoute.forceDemo);
   const [loadError, setLoadError] = useState(false);
+
+  /* Cores da barraca. Enquanto ela carrega, valem as da última visita (a senha
+     reaberta não pisca na paleta padrão); sem cor, fica a padrão. */
+  const themeStorageKey = `barrakinha:event-theme:v1:${slug}`;
+  const [cachedThemeColors] = useState(() =>
+    initialRoute.forceDemo ? null : safeReadStorage(themeStorageKey),
+  );
+  const themeColors = store ? themeColorsFrom(store) : cachedThemeColors;
+  const theme = useMemo(
+    () => buildEventTheme(themeColors?.primaryColor, themeColors?.secondaryColor),
+    [themeColors?.primaryColor, themeColors?.secondaryColor],
+  );
 
   const [cart, setCart] = useState({});
   const [limitFeedback, setLimitFeedback] = useState(false);
@@ -105,6 +118,11 @@ export default function Evento() {
   useEffect(() => {
     fetchEventStore();
   }, [fetchEventStore]);
+
+  useEffect(() => {
+    if (!store || isDemoMode) return;
+    safeWriteStorage(themeStorageKey, themeColorsFrom(store));
+  }, [store, isDemoMode, themeStorageKey]);
 
   /* Carrega pedido via deep-link ?pedido=<trackingToken>; sem link, atualiza o
      pedido salvo uma vez (ele pode ter ficado pronto/retirado com a aba fechada). */
@@ -490,7 +508,15 @@ export default function Evento() {
   const activeOrderItemsCount = (activeOrder?.items || []).reduce((s, i) => s + (i.quantity || 1), 0);
 
   return (
-    <div style={{ minHeight: '100dvh', width: '100%', overflowX: 'clip', background: 'var(--ev-canvas)' }}>
+    <div
+      style={{
+        minHeight: '100dvh',
+        width: '100%',
+        overflowX: 'clip',
+        background: 'var(--ev-canvas)',
+        ...theme.style,
+      }}
+    >
       <div aria-live="polite" className="ev-sr-only">
         {liveAnnouncement}
       </div>
@@ -588,11 +614,19 @@ export default function Evento() {
           order={totemOrder}
           storeName={store?.name}
           durationMs={TOTEM_SUCCESS_MS}
+          themeColor={theme.themeColor}
+          lightLogo={!theme.onPrimaryIsDark}
           onDone={resetTotem}
         />
       ) : view === 'menu' || !activeOrder ? (
         <>
-          <EventHero key={store?.photo || 'sem-foto'} photo={store?.photo} loading={loadingStore} />
+          {/* Com banner, ele vira a capa e a foto da barraca vai para o círculo. */}
+          <EventHero
+            key={store?.bannerPhoto || store?.photo || 'sem-foto'}
+            photo={store?.bannerPhoto || store?.photo}
+            logo={store?.bannerPhoto ? store?.photo : null}
+            loading={loadingStore}
+          />
 
           <main className={`ev-shell ev-main ev-main--menu${totalItemsInCart > 0 ? ' ev-main--cart' : ''}`}>
             {loadingStore ? (
@@ -703,7 +737,7 @@ export default function Evento() {
                           padding: '0 10px',
                           borderRadius: 999,
                           background: isOrderReady ? 'var(--ev-success)' : 'var(--ev-brasa)',
-                          color: '#FFFFFF',
+                          color: isOrderReady ? '#FFFFFF' : 'var(--ev-on-brasa)',
                           fontFamily: 'var(--ev-font-display)',
                           fontWeight: 800,
                           fontSize: 15,
@@ -821,7 +855,7 @@ export default function Evento() {
                           marginBottom: 12,
                         }}
                       >
-                        <Icon size={18} strokeWidth={2.2} color="#B03C0C" />
+                        <Icon size={18} strokeWidth={2.2} style={{ color: 'var(--ev-brasa-text)' }} />
                         <h2 className="ev-title3" style={{ margin: 0, flex: 1 }}>
                           {label}
                         </h2>
@@ -863,7 +897,7 @@ export default function Evento() {
                   {store?.photo ? (
                     <img src={store.photo} alt="" />
                   ) : (
-                    <StoreIcon size={20} color="#FFFFFF" />
+                    <StoreIcon size={20} style={{ color: 'var(--ev-on-brasa)' }} />
                   )}
                 </div>
 
@@ -1024,7 +1058,7 @@ export default function Evento() {
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
-                    <StoreIcon size={20} color="#B03C0C" />
+                    <StoreIcon size={20} style={{ color: 'var(--ev-brasa-text)' }} />
                   )}
                 </div>
                 <span className="ev-body-strong" style={{ flex: 1 }}>

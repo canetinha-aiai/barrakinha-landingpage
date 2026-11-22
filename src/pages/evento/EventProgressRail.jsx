@@ -10,7 +10,9 @@ export function EventProgressRail({ isReady }) {
     { key: 'ready', label: 'Pronto', Icon: BellRing },
   ];
 
-  const activeColor = isReady ? '#147541' : '#EC5512';
+  /* Na fila: cor da barraca (brasa por padrão). Pronto: verde de sucesso. */
+  const activeColor = isReady ? '#147541' : 'var(--ev-brasa)';
+  const onActiveColor = isReady ? '#FFFFFF' : 'var(--ev-on-brasa)';
   const fillFraction = isReady ? 1 : 0.5;
 
   return (
@@ -47,7 +49,7 @@ export function EventProgressRail({ isReady }) {
                   <Icon
                     size={16}
                     strokeWidth={2.4}
-                    color={filled ? '#FFFFFF' : '#8A7E75'}
+                    style={{ color: filled ? onActiveColor : '#8A7E75' }}
                   />
                 </div>
               </div>

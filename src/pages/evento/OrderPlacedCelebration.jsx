@@ -37,14 +37,15 @@ export function OrderPlacedCelebration({ order, onComplete }) {
       style={{ cursor: 'pointer', outline: 'none' }}
     >
       <div className="ev-celebration-stage">
-        {/* Faíscas mostarda e creme subindo */}
+        {/* Faíscas subindo: secundária (mostarda), texto sobre a primária
+            (branco) e o tom claro da primária (creme), como no padrão. */}
         {[
-          { left: '14%', top: '70%', size: 8, color: '#FFC23D', delay: '120ms' },
-          { left: '84%', top: '66%', size: 7, color: '#FFFFFF', delay: '260ms' },
-          { left: '22%', top: '22%', size: 6, color: '#FFE6D4', delay: '420ms' },
-          { left: '78%', top: '20%', size: 9, color: '#FFC23D', delay: '180ms' },
-          { left: '8%', top: '44%', size: 6, color: '#FFFFFF', delay: '520ms' },
-          { left: '90%', top: '42%', size: 7, color: '#FFC23D', delay: '360ms' },
+          { left: '14%', top: '70%', size: 8, color: 'var(--ev-mostarda)', delay: '120ms' },
+          { left: '84%', top: '66%', size: 7, color: 'var(--ev-on-brasa)', delay: '260ms' },
+          { left: '22%', top: '22%', size: 6, color: 'var(--ev-brasa-soft)', delay: '420ms' },
+          { left: '78%', top: '20%', size: 9, color: 'var(--ev-mostarda)', delay: '180ms' },
+          { left: '8%', top: '44%', size: 6, color: 'var(--ev-on-brasa)', delay: '520ms' },
+          { left: '90%', top: '42%', size: 7, color: 'var(--ev-mostarda)', delay: '360ms' },
         ].map((s, idx) => (
           <div
             key={idx}

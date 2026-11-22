@@ -5,7 +5,14 @@ import { Check } from 'lucide-react';
    Feita para ser lida a alguns passos de distância: fundo brasa chapado,
    a senha num cartão de papel em Archivo larga, a instrução em branco e
    uma barra que mostra quanto falta para a tela voltar ao início. */
-export function TotemSuccess({ order, storeName, durationMs, onDone }) {
+export function TotemSuccess({
+  order,
+  storeName,
+  durationMs,
+  themeColor = null,
+  lightLogo = true,
+  onDone,
+}) {
   const totalSeconds = Math.round(durationMs / 1000);
   const [secondsLeft, setSecondsLeft] = useState(totalSeconds);
 
@@ -18,14 +25,15 @@ export function TotemSuccess({ order, storeName, durationMs, onDone }) {
     return () => clearInterval(t);
   }, [durationMs]);
 
-  /* A barra do navegador acompanha o brasa enquanto a senha está na tela. */
+  /* A barra do navegador acompanha o fundo (brasa ou a cor da barraca)
+     enquanto a senha está na tela. */
   useEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) return undefined;
     const previous = meta.getAttribute('content');
-    meta.setAttribute('content', '#EC5512');
+    meta.setAttribute('content', themeColor || '#EC5512');
     return () => meta.setAttribute('content', previous);
-  }, []);
+  }, [themeColor]);
 
   const name = storeName || order.storeName;
   const digits = String(order.displayNumber ?? '').length;
@@ -34,7 +42,13 @@ export function TotemSuccess({ order, storeName, durationMs, onDone }) {
     <main className="ev-totem-success" role="status" aria-live="polite">
       <header className="ev-totem-brand">
         <span className="ev-totem-brand-mark">
-          <img src="/logo/barrakinha-logo-branca.svg" alt="" width={36} height={36} />
+          {/* Logo branca some em cor de barraca clara: aí vai a colorida. */}
+          <img
+            src={lightLogo ? '/logo/barrakinha-logo-branca.svg' : '/logo/barrakinha-logo.svg'}
+            alt=""
+            width={36}
+            height={36}
+          />
           <span className="ev-totem-brand-name">Barrakinha</span>
         </span>
         {name ? <span className="ev-totem-brand-store">{name}</span> : null}
