@@ -23,7 +23,12 @@ const LANES = [
   {
     key: 'barrakinha',
     title: 'Pela Barrakinha',
-    steps: ['Abriu o app', 'Viu o pastel a 80 m', 'Pediu e pagou no Pix', 'Pastel na mão'],
+    steps: [
+      'Viu no mapa o que está aberto agora',
+      'Escolheu pelo cardápio, com preço e o que acabou',
+      'Pediu e pagou no Pix, sem sair do lugar',
+      'Chegou e só buscou o pastel',
+    ],
     /* termina na metade da rolagem */
     end: 0.5,
     ours: true,
