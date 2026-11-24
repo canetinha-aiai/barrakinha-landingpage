@@ -67,13 +67,6 @@ const Hero = () => (
               Entrar na lista de espera
             </SpringPress>
           </Magnetic>
-          <a
-            href="#comparacao"
-            onClick={(event) => jump(event, '#comparacao')}
-            className="self-center rounded text-[16px] font-semibold underline decoration-ink/30 underline-offset-[6px] hover:decoration-ember sm:self-auto"
-          >
-            Ver a comparação
-          </a>
         </div>
       </div>
       <PracaIso className="mx-auto w-full max-w-[540px] lg:col-span-6 lg:-mr-6 lg:max-w-none" />
