@@ -162,7 +162,7 @@ const rows = [
   {
     label: 'Pra quem vende',
     us: 'R$1 fixo por pedido pago. Sem mensalidade e sem porcentagem',
-    them: 'A partir de 12% do pedido, mais taxa de pagamento online. Mais caro ainda no plano em que o iFood entrega*',
+    them: 'A partir de 12% do pedido, mais taxa de pagamento online e mensalidade a partir de R$110. Mais caro no plano em que o iFood entrega*',
   },
 ];
 
@@ -226,9 +226,10 @@ const Comparison = () => (
           <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-ink">
             Saipos
           </a>
-          : plano Básico, 12% sobre o pedido mais a taxa de pagamento online; o plano com entrega do iFood é
-          mais alto. Os valores mudam conforme plano, cidade e contrato, então confira no iFood. Conferido em
-          24/11/2026.
+          : plano Básico, 12% sobre o pedido mais a taxa de pagamento online, e mensalidade de R$110 depois do
+          primeiro mês (para quem vende mais de R$1.800 por mês); o plano com entrega do iFood é mais alto, com
+          mensalidade de R$180. Os valores mudam conforme plano, cidade e contrato, então confira no iFood.
+          Conferido em 24/11/2026.
         </p>
       </div>
     </div>
@@ -413,7 +414,7 @@ const FeeCompare = () => (
       <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-cream">
         Saipos
       </a>
-      , sem a taxa de pagamento online.
+      , sem a taxa de pagamento online nem a mensalidade.
     </p>
   </Reveal>
 );
@@ -466,7 +467,7 @@ export const faq = [
   },
   {
     q: 'A Barrakinha é mais barata que o iFood pra quem vende?',
-    a: 'É. A Barrakinha cobra R$1 fixo por pedido pago. O iFood cobra do restaurante a partir de 12% do pedido, mais a taxa de pagamento online, segundo a Saipos. Num pedido de R$25, são R$3,00 ou mais contra R$1,00. Os valores do iFood mudam por plano, cidade e contrato.',
+    a: 'É. A Barrakinha cobra R$1 fixo por pedido pago. O iFood cobra do restaurante a partir de 12% do pedido, mais a taxa de pagamento online e uma mensalidade a partir de R$110, segundo a Saipos. Num pedido de R$25, são R$3,00 ou mais só de comissão, contra R$1,00. Os valores do iFood mudam por plano, cidade e contrato.',
   },
   {
     q: 'É Barrakinha com K mesmo?',
