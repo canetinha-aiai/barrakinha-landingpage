@@ -267,7 +267,7 @@ const WhenToUse = () => (
               delay={0.08 * index}
               className={
                 moment.ours
-                  ? 'relative overflow-hidden rounded bg-ember p-7 text-night sm:p-9'
+                  ? 'relative overflow-hidden rounded bg-night p-7 text-cream sm:p-9'
                   : 'rounded border border-line-strong bg-paper p-7 sm:p-9'
               }
             >
@@ -292,7 +292,7 @@ const WhenToUse = () => (
                     key={item}
                     className={
                       moment.ours
-                        ? 'border-t border-night/20 pt-4 text-[17px] font-medium leading-snug'
+                        ? 'border-t border-night-line pt-4 text-[17px] font-medium leading-snug'
                         : 'border-t border-line-strong pt-4 text-[17px] leading-snug text-ink-muted'
                     }
                   >
