@@ -101,13 +101,13 @@ const Lane = ({ lane, progress, still }) => {
   return (
     <div
       className={cn(
-        'relative rounded p-3 pb-16 sm:p-8 sm:pb-8',
+        'relative rounded p-4 pb-4 sm:p-8 sm:pb-8',
         lane.ours ? 'bg-paper text-ink' : 'border border-night-line bg-night text-cream',
       )}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 className="display-wide text-[15px] leading-none tracking-[-0.02em] sm:text-[28px]">{lane.title}</h3>
-        <span className={cn('text-[11px] font-semibold sm:text-[14px]', lane.ours ? 'text-ember-text' : 'text-night-muted')}>
+        <h3 className="display-wide text-[19px] leading-none tracking-[-0.02em] sm:text-[28px]">{lane.title}</h3>
+        <span className={cn('text-[13px] font-semibold sm:text-[14px]', lane.ours ? 'text-ember-text' : 'text-night-muted')}>
           {done ? (lane.ours ? 'Pronto' : 'Entregue') : lane.ours ? 'Andando' : 'Esperando'}
         </span>
       </div>
@@ -132,7 +132,7 @@ const Lane = ({ lane, progress, still }) => {
         </motion.div>
       </div>
 
-      <ol className="mt-4 space-y-2.5 sm:mt-7 sm:space-y-3">
+      <ol className="mt-4 space-y-2 sm:mt-7 sm:space-y-3">
         {lane.steps.map((step, i) => {
           const on = i < reached;
           return (
@@ -154,7 +154,7 @@ const Lane = ({ lane, progress, still }) => {
               </span>
               <span
                 className={cn(
-                  'text-[12.5px] leading-tight transition-opacity duration-300 sm:text-[17px] sm:leading-snug',
+                  'text-[14px] leading-tight transition-opacity duration-300 sm:text-[17px] sm:leading-snug',
                   /* passo que ainda não chegou: mais claro, mas legível
                      (contraste ~4,5:1 nos dois fundos) */
                   on ? 'opacity-100' : lane.ours ? 'text-ink-muted' : 'text-night-muted',
@@ -253,7 +253,7 @@ const FomeRace = () => {
           <p className="mt-4 hidden max-w-[46ch] text-[17px] leading-relaxed text-night-muted sm:block">
             Role a página e acompanhe os dois pedidos ao mesmo tempo.
           </p>
-          <div ref={gridRef} className="mt-6 grid grid-cols-2 gap-2 sm:mt-10 sm:gap-5">
+          <div ref={gridRef} className="mt-6 grid grid-cols-1 gap-3 sm:mt-10 sm:gap-5 md:grid-cols-2">
             {LANES.map((lane) => (
               <Lane key={lane.key} lane={lane} progress={progress} still={still} />
             ))}

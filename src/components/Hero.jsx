@@ -96,7 +96,7 @@ const Hero = () => {
 
           <a
             href="/barrakinha-x-ifood"
-            className="mt-7 inline-block rounded text-[15px] text-ink-muted underline decoration-ink/25 underline-offset-4 hover:text-ink hover:decoration-ember"
+            className="mx-auto mt-7 block w-fit rounded text-center text-[15px] sm:mx-0 sm:text-left text-ink-muted underline decoration-ink/25 underline-offset-4 hover:text-ink hover:decoration-ember"
           >
             Compare a Barrakinha com a concorrência
           </a>
