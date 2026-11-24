@@ -37,10 +37,11 @@ const LANES = [
     key: 'delivery',
     title: 'Pelo delivery',
     steps: [
-      'Você abre o app e acha um restaurante que entrega aí',
-      'Informa o endereço de entrega e escolhe no cardápio',
-      'Paga e espera o preparo',
-      'O entregador vem pra cá',
+      'Você abre o app e acha um restaurante',
+      'Cadastra o endereço de entrega',
+      'Confere se entregam no seu endereço',
+      'Escolhe no cardápio e paga',
+      'Espera o preparo',
       'O entregador procura você na praça',
       'O pedido chega',
     ],
@@ -184,7 +185,7 @@ const Lane = ({ lane, progress, still }) => {
           aria-hidden="true"
           className="pointer-events-none absolute bottom-4 right-4 h-20 w-28 sm:bottom-6 sm:right-6 sm:h-24 sm:w-36"
           initial={false}
-          animate={reached >= 4 ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
+          animate={reached >= 6 ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 160, damping: 18 }}
         >
           <Moto />
