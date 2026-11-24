@@ -315,12 +315,19 @@ const WhenToUse = () => (
 */
 const FeeCompare = () => (
   <Reveal className="rounded border border-night-line p-6 sm:p-8" amount={0.4}>
-    <p className="text-[15px] text-night-muted">Num pedido de R$25, fica pra plataforma:</p>
+    {/* O destaque: quanto a Barrakinha é mais barata. 12% de R$25 = R$3,00,
+        contra R$1,00 fixo: três vezes menos, só na comissão. */}
+    <p className="display-wide text-[88px] leading-[0.9] tracking-[-0.04em] text-ember sm:text-[120px]">3x</p>
+    <p className="mt-3 text-[20px] font-semibold leading-snug text-cream sm:text-[24px]">
+      mais barata que a comissão do iFood
+    </p>
+    <p className="mt-1 text-[15px] text-night-muted">num pedido de R$25</p>
+    <div className="mt-6 border-t border-night-line" />
     {[
       { name: 'iFood', value: 'a partir de R$3,00*', w: '100%', cls: 'bg-cream/40' },
       { name: 'Barrakinha', value: 'R$1,00', w: '33.3%', cls: 'bg-ember' },
     ].map((bar, i) => (
-      <div key={bar.name} className="mt-6">
+      <div key={bar.name} className="mt-5">
         <div className="flex items-baseline justify-between gap-3">
           <span className="text-[16px] font-semibold text-cream">{bar.name}</span>
           <span className="display-wide numeric text-[20px] tracking-[-0.02em] text-cream sm:text-[26px]">{bar.value}</span>
@@ -342,7 +349,8 @@ const FeeCompare = () => (
       <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-cream">
         Saipos
       </a>
-      , sem a taxa de pagamento online nem a mensalidade.
+      , sem a taxa de pagamento online nem a mensalidade. Quanto maior o pedido, maior a diferença: em
+      pedidos abaixo de uns R$8 a comissão de 12% sai menor que R$1, mas aí o iFood ainda cobra a mensalidade.
     </p>
   </Reveal>
 );
