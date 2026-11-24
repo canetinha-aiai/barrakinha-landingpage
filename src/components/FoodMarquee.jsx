@@ -68,7 +68,7 @@ const FoodIcon = ({ food }) => {
       aria-hidden="true"
       onPointerEnter={hop}
       onClick={hop}
-      className="relative mx-1 block h-12 w-12 shrink-0 cursor-pointer sm:h-16 sm:w-16 lg:h-[4.5rem] lg:w-[4.5rem]"
+      className="relative mx-1 block h-8 w-8 shrink-0 cursor-pointer sm:h-10 sm:w-10 lg:h-12 lg:w-12"
     >
       <motion.span
         key={hops}
@@ -129,8 +129,8 @@ const Row = ({ hidden, outline }) => (
     {foods.map((food) => (
       <li key={food} className="flex items-center">
         <span
-          className="display-wide whitespace-nowrap px-6 text-[2.5rem] leading-[1.1] tracking-[-0.02em] transition-colors duration-200 hover:text-ember sm:px-8 sm:text-[3.5rem] lg:text-[4.5rem]"
-          style={outline ? { color: 'transparent', WebkitTextStroke: '1.5px #FBF7F2' } : undefined}
+          className="display-wide whitespace-nowrap px-4 text-[1.6rem] leading-[1.1] tracking-[-0.02em] transition-colors duration-200 hover:text-ember sm:px-6 sm:text-[2.1rem] lg:text-[2.75rem]"
+          style={outline ? { color: 'transparent', WebkitTextStroke: '1px #FBF7F2' } : undefined}
         >
           {food}
         </span>
@@ -179,7 +179,7 @@ const FoodMarquee = () => {
       aria-label="Comidas de rua"
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
-      className="flex flex-col gap-2 overflow-hidden bg-night py-10 text-cream sm:gap-3 sm:py-14"
+      className="flex flex-col gap-1 overflow-hidden bg-night py-6 text-cream sm:gap-2 sm:py-8"
     >
       <Reveal x={-48} y={0}><Track direction={1} speedFactor={speedFactor} skew={reduceMotion ? 0 : skew} running={running} /></Reveal>
       <Reveal x={48} y={0} delay={0.08}><Track direction={-1} outline speedFactor={speedFactor} skew={reduceMotion ? 0 : skew} running={running} /></Reveal>
