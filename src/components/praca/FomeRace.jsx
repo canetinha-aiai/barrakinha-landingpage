@@ -37,8 +37,8 @@ const LANES = [
     key: 'delivery',
     title: 'Pelo delivery',
     steps: [
-      'Você abre o app',
-      'Acha um restaurante que entrega aí',
+      'Você abre o app e acha um restaurante que entrega aí',
+      'Escolhe no cardápio',
       'Paga e espera o preparo',
       'O entregador vem pra cá',
       'O entregador procura você na praça',
