@@ -267,18 +267,18 @@ const WhenToUse = () => (
               delay={0.08 * index}
               className={
                 moment.ours
-                  ? 'relative overflow-hidden rounded bg-night p-7 text-cream sm:p-9'
+                  ? 'relative rounded border-2 border-ink bg-paper p-7 text-ink sm:p-9'
                   : 'rounded border border-line-strong bg-paper p-7 sm:p-9'
               }
             >
-              {/* O selo da Barrakinha como carimbo: branco, no canto de cima,
-                  inteiro e um pouco torto. */}
+              {/* O selo da Barrakinha como carimbo: no laranja de texto, no canto
+                  de cima, inteiro e um pouco torto. */}
               {moment.ours ? (
                 <MorphLogo
                   size={96}
                   start="view"
                   label="Barrakinha"
-                  className="pointer-events-none absolute right-4 top-4 h-16 w-16 -rotate-12 text-white sm:right-6 sm:top-6 sm:h-24 sm:w-24"
+                  className="pointer-events-none absolute right-4 top-4 h-16 w-16 -rotate-12 text-ember-text sm:right-6 sm:top-6 sm:h-24 sm:w-24"
                 />
               ) : null}
               <h3
@@ -292,7 +292,7 @@ const WhenToUse = () => (
                     key={item}
                     className={
                       moment.ours
-                        ? 'border-t border-night-line pt-4 text-[17px] font-medium leading-snug'
+                        ? 'border-t border-line-strong pt-4 text-[17px] font-medium leading-snug'
                         : 'border-t border-line-strong pt-4 text-[17px] leading-snug text-ink-muted'
                     }
                   >
