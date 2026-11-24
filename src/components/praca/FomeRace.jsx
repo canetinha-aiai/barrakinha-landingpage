@@ -46,31 +46,31 @@ const LANES = [
   },
 ];
 
-/* A motinha do delivery: desenho chapado com duas faces na caixa, no
-   mesmo traço isométrico da praça. Entra quando o entregador sai. */
+/* A motinha do delivery: formas chapadas, no mesmo traço das comidas e
+   da barraca (sem contorno, sem degradê). Entra quando o entregador sai. */
 const Moto = () => (
-  <svg viewBox="0 0 120 84" className="h-full w-full overflow-visible">
-    <ellipse cx="60" cy="78" rx="48" ry="4" fill="#000" opacity="0.25" />
-    {/* caixa de entrega: face da frente, lado e topo */}
-    <polygon points="4,12 36,12 40,8 8,8" fill="#F1EBE0" />
-    <rect x="4" y="12" width="32" height="26" rx="2" fill="#D9D1C3" />
-    <polygon points="36,12 40,8 40,34 36,38" fill="#A39B8C" />
-    <rect x="9" y="21" width="22" height="3" rx="1.5" fill="#8A8478" />
-    {/* corpo e banco */}
-    <path d="M30 44 L62 44 L66 52 L84 52 L90 66 L46 66 Z" fill="#B9B2A5" />
-    <rect x="30" y="38" width="36" height="7" rx="3" fill="#4A4540" />
+  <svg viewBox="0 0 96 64" className="h-full w-full overflow-visible">
+    <ellipse cx="48" cy="60" rx="40" ry="3" fill="#000" opacity="0.2" />
+    {/* caixa de entrega */}
+    <rect x="4" y="10" width="28" height="22" rx="3" fill="#FFC23D" />
+    <rect x="4" y="10" width="28" height="7" rx="3" fill="#C98A12" opacity="0.45" />
+    {/* corpo, banco e escudo da frente */}
+    <rect x="16" y="30" width="40" height="14" rx="7" fill="#FBF7F2" />
+    <rect x="22" y="26" width="22" height="6" rx="3" fill="#4A4540" />
+    <path d="M58 18 L66 18 L72 44 L62 44 Z" fill="#FBF7F2" />
+    <line x1="68" y1="30" x2="76" y2="48" stroke="#FBF7F2" strokeWidth="4" strokeLinecap="round" />
+    {/* guidão e farol */}
+    <rect x="56" y="13" width="12" height="4" rx="2" fill="#4A4540" />
+    <circle cx="71" cy="22" r="3" fill="#FFC23D" />
     {/* piloto */}
-    <path d="M52 38 L56 20 L68 20 L70 32 L86 30" fill="none" stroke="#6B645A" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="63" cy="12" r="7" fill="#4A4540" />
-    <rect x="63" y="10" width="8" height="4" rx="2" fill="#F1EBE0" opacity="0.8" />
-    {/* garfo e guidão */}
-    <path d="M88 30 L96 66" stroke="#D9D1C3" strokeWidth="4" strokeLinecap="round" />
-    <path d="M84 28 L94 28" stroke="#D9D1C3" strokeWidth="4" strokeLinecap="round" />
+    <path d="M40 26 L44 16 L54 16 L56 26 Z" fill="#8A8478" />
+    <line x1="52" y1="19" x2="62" y2="15" stroke="#8A8478" strokeWidth="4" strokeLinecap="round" />
+    <circle cx="47" cy="10" r="6" fill="#BDB5A8" />
     {/* rodas */}
-    {[28, 98].map((cx) => (
+    {[20, 76].map((cx) => (
       <g key={cx}>
-        <circle cx={cx} cy="66" r="12" fill="#26221E" stroke="#D9D1C3" strokeWidth="3" />
-        <circle cx={cx} cy="66" r="3.5" fill="#D9D1C3" />
+        <circle cx={cx} cy="48" r="11" fill="#26221E" />
+        <circle cx={cx} cy="48" r="4" fill="#FBF7F2" />
       </g>
     ))}
   </svg>
@@ -202,7 +202,7 @@ const Lane = ({ lane, progress, still }) => {
       {lane.ours ? (
         <motion.div
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-20 right-24 h-14 w-14 sm:bottom-24 sm:right-6 sm:h-20 sm:w-20"
+          className="pointer-events-none absolute bottom-6 right-[104px] h-14 w-14 sm:bottom-8 sm:right-[148px] sm:h-20 sm:w-20"
           initial={false}
           animate={sweet ? { scale: 1, rotate: -12, opacity: 1 } : { scale: 0.2, rotate: 20, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 380, damping: 14 }}
