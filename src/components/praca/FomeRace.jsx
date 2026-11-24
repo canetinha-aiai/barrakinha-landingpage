@@ -220,11 +220,19 @@ const FomeRace = () => {
   useEffect(() => {
     const measure = () => {
       const h = innerRef.current?.firstElementChild?.getBoundingClientRect().height ?? 0;
-      setCompact(h + 120 > window.innerHeight);
+      /* cabeçalho fixo (64) + barra de ação do celular (~80) + folga */
+      setCompact(h + 210 > window.innerHeight);
     };
     measure();
     window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
+    /* a fonte e as imagens mudam a altura depois do primeiro desenho */
+    const el = innerRef.current?.firstElementChild;
+    const ro = typeof ResizeObserver !== 'undefined' && el ? new ResizeObserver(measure) : null;
+    if (ro) ro.observe(el);
+    return () => {
+      window.removeEventListener('resize', measure);
+      if (ro) ro.disconnect();
+    };
   }, []);
 
   const sticky = useScroll({ target: ref, offset: ['start start', 'end end'] }).scrollYProgress;
