@@ -65,20 +65,20 @@ const Lane = ({ lane, progress, still }) => {
     <div
       className={cn(
         'relative rounded p-5 sm:p-8',
-        lane.ours ? 'bg-ember text-night' : 'border border-night-line bg-night text-cream',
+        lane.ours ? 'border-2 border-ember bg-ember/[0.12] text-cream' : 'border border-night-line bg-night text-cream',
       )}
     >
       <div className="flex items-baseline justify-between gap-4">
         <h3 className="display-wide text-[22px] leading-none tracking-[-0.02em] sm:text-[28px]">{lane.title}</h3>
-        <span className={cn('text-[14px] font-semibold', lane.ours ? 'text-night/70' : 'text-night-muted')}>
+        <span className={cn('text-[14px] font-semibold', lane.ours ? 'text-ember' : 'text-night-muted')}>
           {done ? (lane.ours ? 'Pronto' : 'Entregue') : lane.ours ? 'Andando' : 'Esperando'}
         </span>
       </div>
 
       {/* pista */}
-      <div className={cn('relative mt-5 h-2 rounded-full sm:mt-6', lane.ours ? 'bg-night/15' : 'bg-cream/10')}>
+      <div className={cn('relative mt-5 h-2 rounded-full sm:mt-6', 'bg-cream/10')}>
         <motion.div
-          className={cn('absolute inset-y-0 left-0 rounded-full', lane.ours ? 'bg-night' : 'bg-cream/60')}
+          className={cn('absolute inset-y-0 left-0 rounded-full', lane.ours ? 'bg-ember' : 'bg-cream/60')}
           style={{ width }}
         />
         {/* o "você" que anda na pista */}
@@ -89,7 +89,7 @@ const Lane = ({ lane, progress, still }) => {
           <div
             className={cn(
               '-ml-3 h-6 w-6 rounded-full border-[3px]',
-              lane.ours ? 'border-night bg-cream' : 'border-cream/80 bg-night',
+              lane.ours ? 'border-ember bg-night' : 'border-cream/80 bg-night',
             )}
           />
         </motion.div>
@@ -106,8 +106,8 @@ const Lane = ({ lane, progress, still }) => {
                   'grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-colors duration-300',
                   lane.ours
                     ? on
-                      ? 'border-night bg-night text-ember'
-                      : 'border-night/50'
+                      ? 'border-ember bg-ember text-night'
+                      : 'border-cream/35'
                     : on
                       ? 'border-cream/70 bg-cream/70 text-night'
                       : 'border-cream/35',
@@ -134,7 +134,7 @@ const Lane = ({ lane, progress, still }) => {
                   'text-[15px] leading-snug transition-opacity duration-300 sm:text-[17px]',
                   /* passo que ainda não chegou: mais claro, mas legível
                      (contraste ~4,5:1 nos dois fundos) */
-                  on ? 'opacity-100' : lane.ours ? 'text-night/75' : 'text-night-muted',
+                  on ? 'opacity-100' : 'text-night-muted',
                   lane.ours && 'font-medium',
                 )}
               >

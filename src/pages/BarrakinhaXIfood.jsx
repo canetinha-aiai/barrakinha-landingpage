@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
@@ -315,19 +315,14 @@ const WhenToUse = () => (
 */
 const FeeCompare = () => (
   <Reveal className="rounded border border-night-line p-6 sm:p-8" amount={0.4}>
-    {/* O destaque: quanto a Barrakinha é mais barata. 12% de R$25 = R$3,00,
-        contra R$1,00 fixo: três vezes menos, só na comissão. */}
-    <p className="display-wide text-[88px] leading-[0.9] tracking-[-0.04em] text-ember sm:text-[120px]">3x</p>
-    <p className="mt-3 text-[20px] font-semibold leading-snug text-cream sm:text-[24px]">
-      mais barata que a comissão do iFood
+    <p className="text-[15px] leading-snug text-night-muted">
+      Num mês com 300 pedidos de R$25 (R$7.500 em vendas), a barraca paga:
     </p>
-    <p className="mt-1 text-[15px] text-night-muted">num pedido de R$25</p>
-    <div className="mt-6 border-t border-night-line" />
     {[
-      { name: 'iFood', value: 'a partir de R$3,00*', w: '100%', cls: 'bg-cream/40' },
-      { name: 'Barrakinha', value: 'R$1,00', w: '33.3%', cls: 'bg-ember' },
+      { name: 'iFood', value: 'a partir de R$1.010*', note: 'R$900 de comissão + R$110 de mensalidade', w: '100%', cls: 'bg-cream/40' },
+      { name: 'Barrakinha', value: 'R$300', note: 'R$1 por pedido, sem mensalidade', w: '29.7%', cls: 'bg-ember' },
     ].map((bar, i) => (
-      <div key={bar.name} className="mt-5">
+      <div key={bar.name} className="mt-6">
         <div className="flex items-baseline justify-between gap-3">
           <span className="text-[16px] font-semibold text-cream">{bar.name}</span>
           <span className="display-wide numeric text-[20px] tracking-[-0.02em] text-cream sm:text-[26px]">{bar.value}</span>
@@ -342,15 +337,16 @@ const FeeCompare = () => (
             transition={{ duration: 0.9, delay: 0.2 + i * 0.25, ease: [0.23, 1, 0.32, 1] }}
           />
         </div>
+        <p className="mt-2 text-[13px] text-night-muted">{bar.note}</p>
       </div>
     ))}
     <p className="mt-6 text-[13px] leading-relaxed text-night-muted">
-      *12% de comissão do plano Básico, segundo a{' '}
+      *12% de comissão e R$110 de mensalidade do plano Básico, segundo a{' '}
       <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-cream">
         Saipos
       </a>
-      , sem a taxa de pagamento online nem a mensalidade. Quanto maior o pedido, maior a diferença: em
-      pedidos abaixo de uns R$8 a comissão de 12% sai menor que R$1, mas aí o iFood ainda cobra a mensalidade.
+      , sem contar a taxa de pagamento online. Exemplo ilustrativo: os valores do iFood mudam por plano, cidade e
+      contrato.
     </p>
   </Reveal>
 );
@@ -414,10 +410,58 @@ export const faq = [
 ];
 
 /*
-  Perguntas em sanfona (<details>): fechadas, cada uma é uma linha, e a
-  página não vira um paredão de texto. Sem JavaScript, e o texto das
-  respostas continua no HTML pra quem lê a página sem abrir nada.
+  Perguntas em sanfona, com animação ao abrir e ao fechar: a altura da
+  resposta anima de 0 até o tamanho dela (e volta), e o "+" gira pra
+  virar "×". As respostas ficam todas no HTML, só recolhidas, então
+  quem lê a página sem abrir nada (e o buscador) vê o texto inteiro.
+  Com "menos movimento" a troca é instantânea.
 */
+const EASE = [0.23, 1, 0.32, 1];
+
+const FaqItem = ({ item, index, defaultOpen }) => {
+  const [open, setOpen] = useState(defaultOpen);
+  const reduce = useReducedMotion();
+  const id = `faq-${index}`;
+  const t = reduce ? { duration: 0 } : { duration: 0.4, ease: EASE };
+
+  return (
+    <div className="border-b border-line-strong">
+      <h3>
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={id}
+          onClick={() => setOpen((v) => !v)}
+          className="flex w-full items-center justify-between gap-6 rounded py-5 text-left text-[18px] font-bold leading-snug tracking-[-0.015em]"
+        >
+          {item.q}
+          <motion.span
+            aria-hidden="true"
+            initial={false}
+            animate={{ rotate: open ? 45 : 0 }}
+            transition={t}
+            className="relative block h-4 w-4 shrink-0"
+          >
+            <span className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-ink" />
+            <span className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-ink" />
+          </motion.span>
+        </button>
+      </h3>
+      <motion.div
+        id={id}
+        role="region"
+        aria-hidden={!open}
+        initial={false}
+        animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
+        transition={t}
+        style={{ overflow: 'hidden' }}
+      >
+        <p className="max-w-[60ch] pb-6 text-[16px] leading-relaxed text-ink-muted text-pretty">{item.a}</p>
+      </motion.div>
+    </div>
+  );
+};
+
 const Faq = () => (
   <section className="border-t border-line bg-paper text-ink">
     <div className="section">
@@ -425,19 +469,7 @@ const Faq = () => (
         <SectionHeading title="Perguntas que todo mundo faz" />
         <div className="mt-10 border-t border-line-strong">
           {faq.map((item, i) => (
-            <details key={item.q} className="group border-b border-line-strong" open={i === 0}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[18px] font-bold leading-snug tracking-[-0.015em] marker:content-none [&::-webkit-details-marker]:hidden">
-                {item.q}
-                <span
-                  aria-hidden="true"
-                  className="relative block h-4 w-4 shrink-0 transition-transform duration-300 ease-out group-open:rotate-45"
-                >
-                  <span className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-ink" />
-                  <span className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-ink" />
-                </span>
-              </summary>
-              <p className="max-w-[60ch] pb-6 text-[16px] leading-relaxed text-ink-muted text-pretty">{item.a}</p>
-            </details>
+            <FaqItem key={item.q} item={item} index={i} defaultOpen={i === 0} />
           ))}
         </div>
       </div>
