@@ -271,16 +271,19 @@ const WhenToUse = () => (
                   : 'rounded border border-line-strong bg-paper p-7 sm:p-9'
               }
             >
-              {/* O selo da Barrakinha como carimbo: grande, torto, num tom
-                  só mais escuro que o laranja, cortado pela borda. */}
+              {/* O selo da Barrakinha como carimbo: branco, no canto de cima,
+                  inteiro e um pouco torto. */}
               {moment.ours ? (
                 <MorphLogo
-                  size={150}
+                  size={96}
                   start="view"
-                  className="pointer-events-none absolute -bottom-8 -right-6 -rotate-12 text-night/20 sm:-bottom-10 sm:-right-4 sm:h-[200px] sm:w-[200px]"
+                  label="Barrakinha"
+                  className="pointer-events-none absolute right-4 top-4 h-16 w-16 -rotate-12 text-white sm:right-6 sm:top-6 sm:h-24 sm:w-24"
                 />
               ) : null}
-              <h3 className="relative display-wide text-[26px] leading-none tracking-[-0.02em] sm:text-[32px]">
+              <h3
+                className={`relative display-wide text-[26px] leading-none tracking-[-0.02em] sm:text-[32px] ${moment.ours ? 'pr-20 sm:pr-28' : ''}`}
+              >
                 {moment.title}
               </h3>
               <ul className="relative mt-6 space-y-4">
