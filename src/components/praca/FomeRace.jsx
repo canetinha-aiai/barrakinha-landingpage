@@ -200,6 +200,15 @@ const Lane = ({ lane, progress, still }) => {
           <Moto />
         </motion.div>
       ) : null}
+
+      {lane.ours ? (
+        <MorphLogo
+          size={112}
+          start="view"
+          label="Barrakinha"
+          className="pointer-events-none absolute bottom-4 right-4 h-20 w-20 -rotate-12 text-ember-text sm:bottom-6 sm:right-6 sm:h-28 sm:w-28"
+        />
+      ) : null}
     </div>
   );
 };
