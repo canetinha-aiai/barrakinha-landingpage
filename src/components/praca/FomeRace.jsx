@@ -46,6 +46,36 @@ const LANES = [
   },
 ];
 
+/* A motinha do delivery: desenho chapado com duas faces na caixa, no
+   mesmo traço isométrico da praça. Entra quando o entregador sai. */
+const Moto = () => (
+  <svg viewBox="0 0 120 84" className="h-full w-full overflow-visible">
+    <ellipse cx="60" cy="78" rx="48" ry="4" fill="#000" opacity="0.25" />
+    {/* caixa de entrega: face da frente, lado e topo */}
+    <polygon points="4,12 36,12 40,8 8,8" fill="#F1EBE0" />
+    <rect x="4" y="12" width="32" height="26" rx="2" fill="#D9D1C3" />
+    <polygon points="36,12 40,8 40,34 36,38" fill="#A39B8C" />
+    <rect x="9" y="21" width="22" height="3" rx="1.5" fill="#8A8478" />
+    {/* corpo e banco */}
+    <path d="M30 44 L62 44 L66 52 L84 52 L90 66 L46 66 Z" fill="#B9B2A5" />
+    <rect x="30" y="38" width="36" height="7" rx="3" fill="#4A4540" />
+    {/* piloto */}
+    <path d="M52 38 L56 20 L68 20 L70 32 L86 30" fill="none" stroke="#6B645A" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="63" cy="12" r="7" fill="#4A4540" />
+    <rect x="63" y="10" width="8" height="4" rx="2" fill="#F1EBE0" opacity="0.8" />
+    {/* garfo e guidão */}
+    <path d="M88 30 L96 66" stroke="#D9D1C3" strokeWidth="4" strokeLinecap="round" />
+    <path d="M84 28 L94 28" stroke="#D9D1C3" strokeWidth="4" strokeLinecap="round" />
+    {/* rodas */}
+    {[28, 98].map((cx) => (
+      <g key={cx}>
+        <circle cx={cx} cy="66" r="12" fill="#26221E" stroke="#D9D1C3" strokeWidth="3" />
+        <circle cx={cx} cy="66" r="3.5" fill="#D9D1C3" />
+      </g>
+    ))}
+  </svg>
+);
+
 const Lane = ({ lane, progress, still }) => {
   const fill = useTransform(progress, [0.05, lane.end], [0, 1], { clamp: true });
   const smooth = useSpring(fill, { stiffness: 140, damping: 26 });
@@ -65,17 +95,12 @@ const Lane = ({ lane, progress, still }) => {
   return (
     <div
       className={cn(
-        'relative rounded p-5 sm:p-8',
+        'relative rounded p-5 sm:p-8', 'pb-24 sm:pb-8',
         lane.ours ? 'bg-paper text-ink' : 'border border-night-line bg-night text-cream',
       )}
     >
-      <div className="flex items-center justify-between gap-4">
-        <h3 className="display-wide flex items-center gap-3 text-[22px] leading-none tracking-[-0.02em] sm:text-[28px]">
-          {lane.ours ? (
-            <MorphLogo size={40} start="view" label="Barrakinha" className="shrink-0 text-ember" />
-          ) : null}
-          {lane.title}
-        </h3>
+      <div className="flex items-baseline justify-between gap-4">
+        <h3 className="display-wide text-[22px] leading-none tracking-[-0.02em] sm:text-[28px]">{lane.title}</h3>
         <span className={cn('text-[14px] font-semibold', lane.ours ? 'text-ember-text' : 'text-night-muted')}>
           {done ? (lane.ours ? 'Pronto' : 'Entregue') : lane.ours ? 'Andando' : 'Esperando'}
         </span>
@@ -151,11 +176,33 @@ const Lane = ({ lane, progress, still }) => {
         })}
       </ol>
 
+      {/* a motinha entra quando o entregador sai */}
+      {!lane.ours ? (
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-4 right-4 h-20 w-28 sm:bottom-6 sm:right-6 sm:h-24 sm:w-36"
+          initial={false}
+          animate={reached >= 4 ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 160, damping: 18 }}
+        >
+          <Moto />
+        </motion.div>
+      ) : null}
+
       {/* o prêmio: o pastel pula na pista da Barrakinha */}
+      {lane.ours ? (
+        <MorphLogo
+          size={112}
+          start="view"
+          label="Barrakinha"
+          className="pointer-events-none absolute bottom-4 right-4 h-20 w-20 -rotate-12 text-ember-text sm:bottom-6 sm:right-6 sm:h-28 sm:w-28"
+        />
+      ) : null}
+
       {lane.ours ? (
         <motion.div
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-4 right-3 h-20 w-20 sm:-bottom-6 sm:right-6 sm:h-28 sm:w-28"
+          className="pointer-events-none absolute bottom-20 right-24 h-14 w-14 sm:bottom-24 sm:right-6 sm:h-20 sm:w-20"
           initial={false}
           animate={sweet ? { scale: 1, rotate: -12, opacity: 1 } : { scale: 0.2, rotate: 20, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 380, damping: 14 }}
