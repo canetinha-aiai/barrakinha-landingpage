@@ -413,21 +413,33 @@ export const faq = [
   },
 ];
 
+/*
+  Perguntas em sanfona (<details>): fechadas, cada uma é uma linha, e a
+  página não vira um paredão de texto. Sem JavaScript, e o texto das
+  respostas continua no HTML pra quem lê a página sem abrir nada.
+*/
 const Faq = () => (
   <section className="border-t border-line bg-paper text-ink">
     <div className="section">
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-5 lg:grid-cols-12 lg:px-8">
-        <div className="lg:col-span-4">
-          <SectionHeading title="Perguntas que todo mundo faz" />
-        </div>
-        <dl className="border-t border-line-strong lg:col-span-7 lg:col-start-6">
-          {faq.map((item) => (
-            <Reveal key={item.q} className="border-b border-line-strong py-6">
-              <dt className="text-[20px] font-bold leading-snug tracking-[-0.015em]">{item.q}</dt>
-              <dd className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-ink-muted text-pretty">{item.a}</dd>
-            </Reveal>
+      <div className="mx-auto w-full max-w-3xl px-5 lg:px-8">
+        <SectionHeading title="Perguntas que todo mundo faz" />
+        <div className="mt-10 border-t border-line-strong">
+          {faq.map((item, i) => (
+            <details key={item.q} className="group border-b border-line-strong" open={i === 0}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[18px] font-bold leading-snug tracking-[-0.015em] marker:content-none [&::-webkit-details-marker]:hidden">
+                {item.q}
+                <span
+                  aria-hidden="true"
+                  className="relative block h-4 w-4 shrink-0 transition-transform duration-300 ease-out group-open:rotate-45"
+                >
+                  <span className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-ink" />
+                  <span className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-ink" />
+                </span>
+              </summary>
+              <p className="max-w-[60ch] pb-6 text-[16px] leading-relaxed text-ink-muted text-pretty">{item.a}</p>
+            </details>
           ))}
-        </dl>
+        </div>
       </div>
     </div>
   </section>
