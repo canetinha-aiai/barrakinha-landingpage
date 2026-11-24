@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { animate, motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/Header';
@@ -11,9 +12,20 @@ import Magnetic from '@/components/Magnetic';
 import Reveal from '@/components/Reveal';
 import SpringPress from '@/components/fluid/SpringPress';
 import { jump } from '@/lib/nav';
+import HeroStall from '@/components/HeroStall';
+import FoodMarquee from '@/components/FoodMarquee';
+import MorphLogo from '@/components/fluid/MorphLogo';
+import FomeRace from '@/components/praca/FomeRace';
+
+/* A praça 3D (three.js) só é baixada depois que a página montou. */
+const PracaScene = lazy(() => import('@/components/praca/PracaScene'));
 
 /*
   /barrakinha-x-ifood — a página de comparação.
+
+  Versão "na praça": abre com a praça em 3D (PracaScene), o "x" grande
+  entre as duas marcas, a corrida da fome presa na rolagem (FomeRace),
+  a faixa de comidas e depois a comparação, a barraca e o FAQ.
 
   A pergunta que todo mundo faz é "é tipo um iFood?". A resposta não
   briga com o iFood: são coisas pra horas diferentes. O iFood leva a
@@ -34,39 +46,138 @@ import { jump } from '@/lib/nav';
   "barraquinha".
 */
 
-const Hero = () => (
-  <section id="top" className="bg-paper pt-16 text-ink">
-    <div className="mx-auto w-full max-w-6xl px-5 pb-14 pt-12 lg:px-8 lg:pb-20 lg:pt-20">
-      <h1 className="display-wide max-w-[14ch] animate-enter text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-balance [animation-delay:80ms] sm:text-[4rem] lg:text-[5rem]">
-        Barrakinha <span className="text-ember-text">x</span> iFood: qual a diferença?
-      </h1>
-      <p className="mt-7 max-w-[44ch] animate-enter text-[18px] leading-relaxed text-ink-muted text-pretty [animation-delay:200ms]">
-        O iFood leva a comida até você. A Barrakinha mostra as barracas de
-        comida de rua abertas agora, perto de você, pra pedir, pagar no Pix e
-        buscar na hora. Sem entregador e sem taxa de entrega.
-      </p>
-      <div className="mt-9 flex animate-enter flex-col gap-5 [animation-delay:300ms] sm:flex-row sm:items-center sm:gap-7">
-        <Magnetic className="w-full sm:w-auto">
-          <SpringPress
-            as="a"
-            href="#lista"
-            onClick={(event) => jump(event, '#lista')}
-            className="btn-ember h-14 w-full text-base sm:h-12 sm:w-auto"
-          >
-            Entrar na lista de espera
-          </SpringPress>
-        </Magnetic>
-        <a
-          href="#comparacao"
-          onClick={(event) => jump(event, '#comparacao')}
-          className="self-center rounded text-[16px] font-semibold underline decoration-ink/30 underline-offset-[6px] hover:decoration-ember sm:self-auto"
-        >
-          Ver a comparação
-        </a>
+/*
+  A praça 3D entra por cima da barraquinha em SVG: o HTML
+  pré-renderizado e a primeira pintura mostram a barraca, e quando o
+  three.js chegou e desenhou o primeiro quadro, a praça aparece no
+  lugar com um fade. Se o WebGL falhar, a barraca simplesmente fica.
+*/
+const PracaHero = ({ className }) => {
+  const [load, setLoad] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const ok = (() => {
+      try {
+        const c = document.createElement('canvas');
+        return !!(c.getContext('webgl2') || c.getContext('webgl'));
+      } catch {
+        return false;
+      }
+    })();
+    if (!ok) return undefined;
+    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
+    const id = idle(() => setLoad(true));
+    return () => (window.cancelIdleCallback || clearTimeout)(id);
+  }, []);
+
+  return (
+    <div className={`relative ${className || ''}`}>
+      <div
+        className="transition-opacity duration-500"
+        style={{ opacity: ready ? 0 : 1 }}
+        aria-hidden={ready ? 'true' : undefined}
+      >
+        <HeroStall className="mx-auto w-full max-w-[420px]" />
       </div>
+      {load ? (
+        <Suspense fallback={null}>
+          <PracaScene
+            className="absolute inset-0 transition-opacity duration-700"
+            onReady={() => setReady(true)}
+          />
+        </Suspense>
+      ) : null}
+      <p
+        className="pointer-events-none absolute inset-x-0 bottom-0 text-center text-[13px] text-ink-muted transition-opacity duration-500"
+        style={{ opacity: ready ? 1 : 0 }}
+      >
+        Arraste pra girar a praça
+      </p>
+    </div>
+  );
+};
+
+const Hero = () => (
+  <section id="top" className="relative overflow-hidden bg-paper pt-16 text-ink">
+    <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-6 px-5 pb-10 pt-10 lg:grid-cols-12 lg:gap-4 lg:px-8 lg:pb-16 lg:pt-14">
+      <div className="lg:col-span-6">
+        <h1 className="display-wide animate-enter text-[2.5rem] leading-[0.98] tracking-[-0.03em] text-balance [animation-delay:80ms] sm:text-[3.6rem] lg:text-[4.1rem]">
+          Com fome na <span className="text-ember-text">praça</span>, ninguém pede iFood.
+        </h1>
+        <p className="mt-6 max-w-[42ch] animate-enter text-[18px] leading-relaxed text-ink-muted text-pretty [animation-delay:200ms] lg:text-[19px]">
+          Você abre a Barrakinha e vê as barracas abertas aí do lado, com a
+          distância até cada uma. Pede, paga no Pix e busca. Sem entregador
+          e sem taxa de entrega.
+        </p>
+        <div className="mt-8 flex animate-enter flex-col gap-5 [animation-delay:300ms] sm:flex-row sm:items-center sm:gap-7">
+          <Magnetic className="w-full sm:w-auto">
+            <SpringPress
+              as="a"
+              href="#lista"
+              onClick={(event) => jump(event, '#lista')}
+              className="btn-ember h-14 w-full text-base sm:h-12 sm:w-auto"
+            >
+              Entrar na lista de espera
+            </SpringPress>
+          </Magnetic>
+          <a
+            href="#comparacao"
+            onClick={(event) => jump(event, '#comparacao')}
+            className="self-center rounded text-[16px] font-semibold underline decoration-ink/30 underline-offset-[6px] hover:decoration-ember sm:self-auto"
+          >
+            Ver a comparação
+          </a>
+        </div>
+      </div>
+      <PracaHero className="aspect-square w-full lg:col-span-6 lg:-mr-10 lg:aspect-[1/0.95]" />
     </div>
   </section>
 );
+
+/*
+  O "x" do título, grande: o selo da Barrakinha de um lado, "iFood"
+  escrito do outro. O iFood vai só em texto, na cor neutra: logo e
+  vermelho deles são marca registrada, e a página não usa.
+
+  O "x" gira com a rolagem, e os dois nomes se aproximam até se
+  encostarem no meio da faixa.
+*/
+const Versus = () => {
+  const ref = useRef(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const rotate = useTransform(scrollYProgress, [0, 1], [-90, 270]);
+  const left = useTransform(scrollYProgress, [0, 0.5], ['-12%', '0%']);
+  const right = useTransform(scrollYProgress, [0, 0.5], ['12%', '0%']);
+
+  return (
+    <section ref={ref} aria-label="Barrakinha x iFood" className="overflow-hidden border-y border-line bg-paper-raised">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-center gap-4 px-5 py-14 sm:gap-10 lg:py-20">
+        <motion.div style={reduce ? undefined : { x: left }} className="flex items-center gap-3 sm:gap-5">
+          <MorphLogo size={72} start="view" label="Barrakinha" className="hidden text-ember sm:block" />
+          <MorphLogo size={44} start="view" label="Barrakinha" className="text-ember sm:hidden" />
+          <span className="display-wide text-[30px] leading-none tracking-[-0.03em] text-ink sm:text-[56px] lg:text-[72px]">
+            Barrakinha
+          </span>
+        </motion.div>
+        <motion.span
+          aria-hidden="true"
+          style={reduce ? undefined : { rotate }}
+          className="display-wide inline-block text-[44px] leading-none text-ember sm:text-[88px] lg:text-[112px]"
+        >
+          x
+        </motion.span>
+        <motion.span
+          style={reduce ? undefined : { x: right }}
+          className="display-wide text-[30px] leading-none tracking-[-0.03em] text-ink-muted sm:text-[56px] lg:text-[72px]"
+        >
+          iFood
+        </motion.span>
+      </div>
+    </section>
+  );
+};
 
 /* Cada linha: o que se compara, o nosso lado e o lado do delivery. O
    lado do iFood fica em texto neutro, no cinza; o nosso em tinta. */
@@ -244,6 +355,57 @@ const vendorItems = [
   },
 ];
 
+/*
+  O exemplo do pedido de R$25, contado na tela: quando o cartão entra,
+  o valor desce de R$25 pra R$24 e a linha do R$1 aparece. O número é
+  o que o split faz hoje: o pedido menos R$1 vai pra conta da barraca.
+*/
+const brl = (v) => v.toFixed(2).replace('.', ',');
+
+const MoneyCard = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const reduce = useReducedMotion();
+  const [value, setValue] = useState(25);
+  const [phase, setPhase] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return undefined;
+    if (reduce) {
+      setValue(24);
+      setPhase(2);
+      return undefined;
+    }
+    setPhase(1);
+    const controls = animate(25, 24, {
+      duration: 1.1,
+      delay: 0.5,
+      ease: [0.23, 1, 0.32, 1],
+      onUpdate: setValue,
+      onComplete: () => setPhase(2),
+    });
+    return () => controls.stop();
+  }, [inView, reduce]);
+
+  return (
+    <div ref={ref} className="mt-10 rounded border border-night-line p-6">
+      <p className="text-[15px] text-night-muted">Pedido de R$25 no Pix</p>
+      <p className="display-wide mt-2 text-[44px] leading-none tracking-[-0.03em] text-cream">
+        R${brl(value)}{' '}
+        <span className="text-[18px] font-semibold tracking-normal text-night-muted">pra você</span>
+      </p>
+      <motion.p
+        initial={false}
+        animate={phase ? { opacity: 1, y: 0 } : { opacity: 0, y: -6 }}
+        transition={{ duration: 0.4 }}
+        className="mt-3 text-[15px] text-night-muted"
+      >
+        <span className="font-semibold text-ember">− R$1,00</span> de tarifa, que já inclui o custo do Pix.
+      </motion.p>
+    </div>
+  );
+};
+
 const ForVendors = () => (
   <section id="pra-quem-vende" className="bg-night text-cream">
     <div className="section">
@@ -254,15 +416,7 @@ const ForVendors = () => (
             title="Pra barraca: R$1 por pedido. Só isso."
             description="Quem vende na rua não tem margem pra dividir cada venda. Por isso a conta é simples."
           />
-          {/* Exemplo com o número que o split faz hoje: o pedido menos
-              R$1 vai pra subconta da barraca. */}
-          <Reveal className="mt-10 rounded border border-night-line p-6">
-            <p className="text-[15px] text-night-muted">Pedido de R$25 no Pix</p>
-            <p className="display-wide mt-2 text-[40px] leading-none tracking-[-0.03em] text-cream">
-              R$24 <span className="text-[18px] font-semibold tracking-normal text-night-muted">pra você</span>
-            </p>
-            <p className="mt-3 text-[15px] text-night-muted">R$1 de tarifa, que já inclui o custo do Pix.</p>
-          </Reveal>
+          <MoneyCard />
           <a
             href="/vendedores"
             className="mt-8 inline-block rounded text-[16px] font-semibold text-cream underline decoration-night-line underline-offset-[6px] hover:decoration-ember"
@@ -333,6 +487,9 @@ const BarrakinhaXIfood = () => (
       <Header />
       <main>
         <Hero />
+        <Versus />
+        <FomeRace />
+        <FoodMarquee />
         <Comparison />
         <WhenToUse />
         <ForVendors />
