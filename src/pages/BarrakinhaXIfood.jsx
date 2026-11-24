@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { animate, motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/Header';
-import BenefitList from '@/components/BenefitList';
 import SectionHeading from '@/components/SectionHeading';
 import DownloadCTA from '@/components/DownloadCTA';
 import Footer from '@/components/Footer';
@@ -309,95 +308,24 @@ const WhenToUse = () => (
   </section>
 );
 
-const vendorItems = [
-  {
-    title: 'Sem mensalidade',
-    detail: 'Estar no app não custa nada. Não vendeu, não paga.',
-  },
-  {
-    title: 'Sem porcentagem',
-    detail: 'É R$1 por pedido pago no Pix, seja um pastel de R$8 ou um combo de R$80.',
-  },
-  {
-    title: 'Sem entregador',
-    detail: 'O cliente vem buscar. Você não depende de motoboy nem embala pra viagem.',
-  },
-  {
-    title: 'O preço é seu',
-    detail: 'Não precisa subir o preço no app pra cobrir taxa. O cardápio é o mesmo do balcão.',
-  },
-];
-
 /*
-  O exemplo do pedido de R$25, contado na tela: quando o cartão entra,
-  o valor desce de R$25 pra R$24 e a linha do R$1 aparece. O número é
-  o que o split faz hoje: o pedido menos R$1 vai pra conta da barraca.
-*/
-const brl = (v) => v.toFixed(2).replace('.', ',');
-
-const MoneyCard = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.6 });
-  const reduce = useReducedMotion();
-  const [value, setValue] = useState(25);
-  const [phase, setPhase] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return undefined;
-    if (reduce) {
-      setValue(24);
-      setPhase(2);
-      return undefined;
-    }
-    setPhase(1);
-    const controls = animate(25, 24, {
-      duration: 1.1,
-      delay: 0.5,
-      ease: [0.23, 1, 0.32, 1],
-      onUpdate: setValue,
-      onComplete: () => setPhase(2),
-    });
-    return () => controls.stop();
-  }, [inView, reduce]);
-
-  return (
-    <div ref={ref} className="mt-10 rounded border border-night-line p-6">
-      <p className="text-[15px] text-night-muted">Pedido de R$25 no Pix</p>
-      <p className="display-wide mt-2 text-[44px] leading-none tracking-[-0.03em] text-cream">
-        R${brl(value)}{' '}
-        <span className="text-[18px] font-semibold tracking-normal text-night-muted">pra você</span>
-      </p>
-      <motion.p
-        initial={false}
-        animate={phase ? { opacity: 1, y: 0 } : { opacity: 0, y: -6 }}
-        transition={{ duration: 0.4 }}
-        className="mt-3 text-[15px] text-night-muted"
-      >
-        <span className="font-semibold text-ember">− R$1,00</span> de tarifa, que já inclui o custo do Pix.
-      </motion.p>
-    </div>
-  );
-};
-
-/*
-  Quanto sai de um pedido de R$25. O R$1 é o nosso, fixo. O do iFood é
-  o piso da comissão do plano mais barato (12% de R$25 = R$3,00), sem
-  contar a taxa de pagamento online nem os planos mais caros: é o menor
-  valor que a fonte sustenta, e mesmo assim é o triplo.
+  Seção da barraca, enxuta: o título com a promessa, uma frase e UMA
+  comparação (as duas barras). Sem lista de benefícios nem cartão de
+  exemplo: o que importa é o R$1 contra o resto.
 */
 const FeeCompare = () => (
-  <Reveal className="mt-5 rounded border border-night-line p-6" amount={0.4}>
-    <p className="text-[15px] text-night-muted">O que fica pra plataforma num pedido de R$25</p>
+  <Reveal className="rounded border border-night-line p-6 sm:p-8" amount={0.4}>
+    <p className="text-[15px] text-night-muted">Num pedido de R$25, fica pra plataforma:</p>
     {[
-      { name: 'iFood', value: 'a partir de R$3,00', w: '100%', cls: 'bg-cream/40', note: true },
+      { name: 'iFood', value: 'a partir de R$3,00*', w: '100%', cls: 'bg-cream/40' },
       { name: 'Barrakinha', value: 'R$1,00', w: '33.3%', cls: 'bg-ember' },
     ].map((bar, i) => (
-      <div key={bar.name} className="mt-4">
-        <div className="flex items-baseline justify-between gap-3 text-[15px]">
-          <span className="font-semibold text-cream">{bar.name}</span>
-          <span className="numeric font-semibold text-cream">{bar.value}{bar.note ? '*' : ''}</span>
+      <div key={bar.name} className="mt-6">
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="text-[16px] font-semibold text-cream">{bar.name}</span>
+          <span className="display-wide numeric text-[20px] tracking-[-0.02em] text-cream sm:text-[26px]">{bar.value}</span>
         </div>
-        <div className="mt-2 h-3 rounded-full bg-cream/10">
+        <div className="mt-3 h-3 rounded-full bg-cream/10">
           <motion.div
             className={`h-full origin-left rounded-full ${bar.cls}`}
             style={{ width: bar.w }}
@@ -409,7 +337,7 @@ const FeeCompare = () => (
         </div>
       </div>
     ))}
-    <p className="mt-4 text-[13px] leading-relaxed text-night-muted">
+    <p className="mt-6 text-[13px] leading-relaxed text-night-muted">
       *12% de comissão do plano Básico, segundo a{' '}
       <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-cream">
         Saipos
@@ -422,15 +350,13 @@ const FeeCompare = () => (
 const ForVendors = () => (
   <section id="pra-quem-vende" className="bg-night text-cream">
     <div className="section">
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-5 lg:grid-cols-12 lg:gap-10 lg:px-8">
-        <div className="lg:col-span-5">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-5 lg:grid-cols-12 lg:gap-10 lg:px-8">
+        <div className="lg:col-span-6">
           <SectionHeading
             tone="night"
             title="Pra barraca: R$1 por pedido. Só isso."
-            description="Quem vende na rua não tem margem pra dividir cada venda. Por isso a conta é simples e bem mais barata."
+            description="Sem mensalidade, sem porcentagem e sem entregador. Você recebe o valor do cardápio, menos R$1 por pedido pago no Pix."
           />
-          <MoneyCard />
-          <FeeCompare />
           <a
             href="/vendedores"
             className="mt-8 inline-block rounded text-[16px] font-semibold text-cream underline decoration-night-line underline-offset-[6px] hover:decoration-ember"
@@ -438,8 +364,8 @@ const ForVendors = () => (
             Ver tudo pra quem vende
           </a>
         </div>
-        <div className="lg:col-span-6 lg:col-start-7">
-          <BenefitList tone="night" items={vendorItems} />
+        <div className="lg:col-span-5 lg:col-start-8">
+          <FeeCompare />
         </div>
       </div>
     </div>
