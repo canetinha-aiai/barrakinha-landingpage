@@ -65,7 +65,7 @@ const Lane = ({ lane, progress, still }) => {
     <div
       className={cn(
         'relative rounded p-5 sm:p-8',
-        lane.ours ? 'border-2 border-ember bg-ember/[0.12] text-cream' : 'border border-night-line bg-night text-cream',
+        'border border-night-line bg-night text-cream',
       )}
     >
       <div className="flex items-baseline justify-between gap-4">
@@ -185,7 +185,7 @@ const FomeRace = () => {
           <p className="mt-4 hidden max-w-[46ch] text-[17px] leading-relaxed text-night-muted sm:block">
             Role a página e acompanhe os dois pedidos ao mesmo tempo.
           </p>
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-10 sm:gap-5 md:grid-cols-2">
+          <div className="mt-6 grid grid-cols-1 items-start gap-4 sm:mt-10 sm:gap-5 md:grid-cols-2">
             {LANES.map((lane) => (
               <Lane key={lane.key} lane={lane} progress={scrollYProgress} still={reduce} />
             ))}

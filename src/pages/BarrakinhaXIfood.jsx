@@ -313,40 +313,41 @@ const WhenToUse = () => (
   comparação (as duas barras). Sem lista de benefícios nem cartão de
   exemplo: o que importa é o R$1 contra o resto.
 */
+const FEE_ROWS = [
+  { label: 'Por pedido', them: '12%', us: 'R$1' },
+  { label: 'Mensalidade', them: 'R$110', us: 'R$0' },
+  { label: 'Pagamento online', them: 'taxa extra', us: 'incluso', small: true },
+];
+
+/* Sem conta pra fazer: o que cada um cobra, linha por linha. */
 const FeeCompare = () => (
   <Reveal className="rounded border border-night-line p-6 sm:p-8" amount={0.4}>
-    <p className="text-[15px] leading-snug text-night-muted">
-      Num mês com 300 pedidos de R$25 (R$7.500 em vendas), a barraca paga:
-    </p>
-    {[
-      { name: 'iFood', value: 'a partir de R$1.010*', note: 'R$900 de comissão + R$110 de mensalidade', w: '100%', cls: 'bg-cream/40' },
-      { name: 'Barrakinha', value: 'R$300', note: 'R$1 por pedido, sem mensalidade', w: '29.7%', cls: 'bg-ember' },
-    ].map((bar, i) => (
-      <div key={bar.name} className="mt-6">
-        <div className="flex items-baseline justify-between gap-3">
-          <span className="text-[16px] font-semibold text-cream">{bar.name}</span>
-          <span className="display-wide numeric text-[20px] tracking-[-0.02em] text-cream sm:text-[26px]">{bar.value}</span>
-        </div>
-        <div className="mt-3 h-3 rounded-full bg-cream/10">
-          <motion.div
-            className={`h-full origin-left rounded-full ${bar.cls}`}
-            style={{ width: bar.w }}
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, amount: 0.8 }}
-            transition={{ duration: 0.9, delay: 0.2 + i * 0.25, ease: [0.23, 1, 0.32, 1] }}
-          />
-        </div>
-        <p className="mt-2 text-[13px] text-night-muted">{bar.note}</p>
-      </div>
-    ))}
-    <p className="mt-6 text-[13px] leading-relaxed text-night-muted">
-      *12% de comissão e R$110 de mensalidade do plano Básico, segundo a{' '}
+    <div className="grid grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,1fr)] items-baseline gap-x-4">
+      <span />
+      <span className="pb-4 text-right text-[15px] font-semibold text-night-muted">iFood*</span>
+      <span className="pb-4 text-right text-[15px] font-semibold text-ember">Barrakinha</span>
+      {FEE_ROWS.map((row) => (
+        <React.Fragment key={row.label}>
+          <span className="border-t border-night-line py-5 text-[15px] text-night-muted">{row.label}</span>
+          <span
+            className={`display-wide border-t border-night-line py-5 text-right leading-none tracking-[-0.02em] text-cream/55 ${row.small ? 'text-[15px] sm:text-[18px]' : 'text-[24px] sm:text-[30px]'}`}
+          >
+            {row.them}
+          </span>
+          <span
+            className={`display-wide border-t border-night-line py-5 text-right leading-none tracking-[-0.02em] text-cream ${row.small ? 'text-[15px] sm:text-[18px]' : 'text-[24px] sm:text-[30px]'}`}
+          >
+            {row.us}
+          </span>
+        </React.Fragment>
+      ))}
+    </div>
+    <p className="mt-2 text-[13px] leading-relaxed text-night-muted">
+      *Plano Básico do iFood, segundo a{' '}
       <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-cream">
         Saipos
       </a>
-      , sem contar a taxa de pagamento online. Exemplo ilustrativo: os valores do iFood mudam por plano, cidade e
-      contrato.
+      . Os valores mudam por plano, cidade e contrato.
     </p>
   </Reveal>
 );
