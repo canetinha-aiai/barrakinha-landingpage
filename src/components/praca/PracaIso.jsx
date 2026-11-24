@@ -1,4 +1,5 @@
 import React from 'react';
+import { useReducedMotion } from 'framer-motion';
 
 /*
   A praça da página /barrakinha-x-ifood, no mesmo desenho da barraquinha
@@ -8,10 +9,11 @@ import React from 'react';
   nenhuma largura (o viewBox tem folga pros nomes das barracas).
 
   Cena: uma praça em losango, você no meio (o pino laranja) e cinco
-  barracas em volta, cada uma com a comida e a distância. Um radar sai
-  de você em ondas. Só duas coisas se mexem, as ondas do radar e o
-  pisca das lampadinhas (a mesma `stall-glow` da barraca da home); o
-  pino boia um pouco. Com "menos movimento" tudo fica parado.
+  barracas em volta, cada uma com a comida e a distância, e um
+  caminho pontilhado de você até cada uma (o "como chegar" do app). Só
+  três coisas se mexem: o pisca das lampadinhas (a mesma `stall-glow`
+  da barraca da home), o pino que boia um pouco e uma pessoinha que
+  anda até a barraca mais perto. Com "menos movimento" tudo fica parado.
 */
 
 const COS = 0.866;
@@ -229,25 +231,60 @@ const Label = ({ x, y, food, dist, delay }) => {
   );
 };
 
+/* ---------- caminhos até as barracas ---------- */
+
+/* Segue as ruas da praça: sai do pino pelo eixo x e dobra pro y até a
+   frente da barraca. O traço é pontilhado e redondo, como o trajeto
+   do "Como chegar". */
+const routePoints = (w) => {
+  const a = iso([0, 0, 0]);
+  const b = iso([w[0], 0, 0]);
+  const c = iso([w[0], w[1] + 16, 0]);
+  return `M${a.x.toFixed(1)},${a.y.toFixed(1)} L${b.x.toFixed(1)},${b.y.toFixed(1)} L${c.x.toFixed(1)},${c.y.toFixed(1)}`;
+};
+
+const Routes = ({ stalls, walkTo }) => {
+  const reduce = useReducedMotion();
+  const walk = stalls.find((s) => s.food === walkTo);
+  return (
+    <g>
+      {stalls.map((s) => (
+        <path
+          key={s.food}
+          d={routePoints(s.w)}
+          fill="none"
+          stroke={C.brasa}
+          strokeWidth={2.6}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="0.1 7"
+          opacity={0.6}
+        />
+      ))}
+      {/* a pessoinha: sai de você, vai até a barraca, espera e some */}
+      {!reduce && walk ? (
+        <g>
+          <circle r={6.5} fill="#FBF7F2" stroke={C.brasa} strokeWidth={2.4}>
+            <animateMotion
+              dur="7s"
+              repeatCount="indefinite"
+              path={routePoints(walk.w)}
+              keyPoints="0;1;1"
+              keyTimes="0;0.7;1"
+              calcMode="linear"
+            />
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.9;1" dur="7s" repeatCount="indefinite" />
+          </circle>
+        </g>
+      ) : null}
+    </g>
+  );
+};
+
 /* ---------- você ---------- */
 
 const You = () => (
   <g>
-    {/* ondas do radar: o círculo do mundo vira elipse 1,22 x 0,71 */}
-    {[0, 1].map((i) => (
-      <ellipse
-        key={i}
-        cx={CX}
-        cy={CY}
-        rx={1.2247 * 150}
-        ry={0.7071 * 150}
-        fill="none"
-        stroke={C.brasa}
-        strokeWidth={2.2}
-        className="praca-ring"
-        style={{ animationDelay: `${i * 1.6}s` }}
-      />
-    ))}
     <ellipse cx={CX} cy={CY + 2} rx={13} ry={5.5} fill={C.noite} opacity={0.15} />
     <g className="praca-bob">
       <path d={`M${CX},${CY - 6} L${CX - 9},${CY - 30} A12 12 0 1 1 ${CX + 9},${CY - 30} Z`} fill={C.brasa} />
@@ -295,6 +332,7 @@ const PracaIso = ({ className }) => (
       {TREES.filter(([x, y]) => x + y < -40).map(([x, y, s]) => (
         <Tree key={`${x}${y}`} x={x} y={y} s={s} />
       ))}
+      <Routes stalls={STALLS} walkTo="Pastel" />
       <You />
       {STALLS.map((s, i) => {
         const g = iso([s.w[0], s.w[1], 0]);

@@ -107,10 +107,10 @@ const Lane = ({ lane, progress, still }) => {
                   lane.ours
                     ? on
                       ? 'border-night bg-night text-ember'
-                      : 'border-night/30'
+                      : 'border-night/50'
                     : on
                       ? 'border-cream/70 bg-cream/70 text-night'
-                      : 'border-cream/20',
+                      : 'border-cream/35',
                 )}
               >
                 {on ? (
@@ -132,7 +132,9 @@ const Lane = ({ lane, progress, still }) => {
               <span
                 className={cn(
                   'text-[15px] leading-snug transition-opacity duration-300 sm:text-[17px]',
-                  on ? 'opacity-100' : 'opacity-45',
+                  /* passo que ainda não chegou: mais claro, mas legível
+                     (contraste ~4,5:1 nos dois fundos) */
+                  on ? 'opacity-100' : lane.ours ? 'text-night/75' : 'text-night-muted',
                   lane.ours && 'font-medium',
                 )}
               >

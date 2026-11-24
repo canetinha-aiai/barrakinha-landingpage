@@ -348,15 +348,6 @@
 /* Praça isométrica de /barrakinha-x-ifood (PracaIso): ondas do radar,
    pino que boia e nomes que aparecem em sequência. Tudo transform e
    opacidade; sem "menos movimento" a cena fica parada e completa. */
-.praca-ring {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: praca-ring 3.2s cubic-bezier(0.23, 1, 0.32, 1) infinite both;
-}
-@keyframes praca-ring {
-  from { transform: scale(0.12); opacity: 0.7; }
-  to { transform: scale(1); opacity: 0; }
-}
 .praca-bob { animation: praca-bob 2.4s ease-in-out infinite; }
 @keyframes praca-bob {
   0%, 100% { transform: translateY(0); }
@@ -368,6 +359,5 @@
   to { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .praca-ring { animation: none; opacity: 0.25; }
   .praca-bob, .praca-pop { animation: none; }
 }

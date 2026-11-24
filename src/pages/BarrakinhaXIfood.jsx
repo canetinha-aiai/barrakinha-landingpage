@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { animate, motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/react';
+import { Check, Minus, Percent, Receipt, Search, Store, Truck, Utensils, Wallet } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/Header';
 import BenefitList from '@/components/BenefitList';
@@ -13,7 +14,6 @@ import Reveal from '@/components/Reveal';
 import SpringPress from '@/components/fluid/SpringPress';
 import { jump } from '@/lib/nav';
 import PracaIso from '@/components/praca/PracaIso';
-import FoodMarquee from '@/components/FoodMarquee';
 import MorphLogo from '@/components/fluid/MorphLogo';
 import FomeRace from '@/components/praca/FomeRace';
 
@@ -22,8 +22,8 @@ import FomeRace from '@/components/praca/FomeRace';
   /barrakinha-x-ifood — a página de comparação.
 
   Versão "na praça": abre com a praça isométrica (PracaIso, ilustração
-  fixa no desenho da barraca da home), o "x" grande entre as duas marcas, a corrida da fome presa na rolagem (FomeRace),
-  a faixa de comidas e depois a comparação, a barraca e o FAQ.
+  fixa no desenho da barraca da home), o "x" grande entre as duas marcas, a corrida da fome presa na rolagem (FomeRace)
+  e depois a comparação, a barraca e o FAQ.
 
   A pergunta que todo mundo faz é "é tipo um iFood?". A resposta não
   briga com o iFood: são coisas pra horas diferentes. O iFood leva a
@@ -167,6 +167,24 @@ const rows = [
   },
 ];
 
+/*
+  "Lado a lado": cada linha é um par de cartões. A Barrakinha vai em
+  laranja chapado, com um visto; o iFood em papel com filete e um
+  traço, mais apagado. A linha da taxa da barraca é maior, porque é a
+  que mais pesa. Os cartões da mesma linha têm sempre a mesma altura
+  (é o próprio grid). No celular o nome da linha vem em cima e os dois
+  cartões ficam lado a lado.
+*/
+const ROW_ICONS = {
+  'Pra que serve': Utensils,
+  'Quem vende': Store,
+  'Como chega': Truck,
+  'Taxa de entrega': Receipt,
+  'O que você paga': Wallet,
+  'Como achar': Search,
+  'Pra quem vende': Percent,
+};
+
 const Comparison = () => (
   <section id="comparacao" className="scroll-mt-16 border-t border-line bg-paper text-ink">
     <div className="section">
@@ -176,57 +194,83 @@ const Comparison = () => (
           description="Não é um contra o outro. São apps pra momentos diferentes do dia."
         />
 
-        <Reveal className="mt-12" amount={0.05}>
-          <table className="w-full border-collapse text-left">
-            <caption className="sr-only">Comparação entre Barrakinha e iFood</caption>
-            <thead>
-              <tr className="border-b-2 border-ink">
-                <th scope="col" className="hidden w-[22%] pb-4 sm:table-cell">
-                  <span className="sr-only">Item</span>
-                </th>
-                <th scope="col" className="w-1/2 pb-4 pr-4 sm:w-[39%]">
-                  <span className="display-wide text-[22px] tracking-[-0.02em] text-ember-text sm:text-[28px]">Barrakinha</span>
-                </th>
-                <th scope="col" className="w-1/2 pb-4 sm:w-[39%]">
-                  <span className="display-wide text-[22px] tracking-[-0.02em] text-ink-muted sm:text-[28px]">iFood</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <React.Fragment key={row.label}>
-                  {/* No celular o nome da linha vem em cima, ocupando as
-                      duas colunas; no desktop ele é a primeira coluna. */}
-                  <tr className="sm:hidden">
-                    <th colSpan={2} className="pt-5 text-label font-semibold text-ink-muted">
-                      {row.label}
-                    </th>
-                  </tr>
-                  <tr className="border-b border-line-strong align-top">
-                    <th scope="row" className="hidden py-5 pr-6 text-[15px] font-semibold text-ink-muted sm:table-cell">
-                      {row.label}
-                    </th>
-                    <td className="pb-5 pr-4 pt-2 text-[16px] font-semibold leading-snug text-ink sm:py-5 sm:text-[18px]">
-                      {row.us}
-                    </td>
-                    <td className="pb-5 pt-2 text-[16px] leading-snug text-ink-muted sm:py-5 sm:text-[18px]">
-                      {row.them}
-                    </td>
-                  </tr>
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-          <p className="mt-6 max-w-[70ch] text-[14px] leading-relaxed text-ink-muted">
-            * Comissão cobrada de restaurantes, segundo a{' '}
-            <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-ink">
-              Saipos
-            </a>
-            : plano Básico, 12% sobre o pedido mais a taxa de pagamento online; o plano com entrega do iFood é
-            mais alto. Os valores mudam conforme plano, cidade e contrato, então confira no iFood. Conferido em
-            24/11/2026.
-          </p>
-        </Reveal>
+        <div className="mt-12 grid grid-cols-2 gap-x-3 gap-y-3 md:grid-cols-[190px_1fr_1fr] md:gap-x-4">
+          <div className="hidden md:block" />
+          <div className="rounded bg-ember px-5 py-4 text-night sm:px-6">
+            <p className="display-wide text-[22px] leading-none tracking-[-0.02em] sm:text-[30px]">Barrakinha</p>
+          </div>
+          <div className="rounded border border-line-strong bg-paper-raised px-5 py-4 text-ink-muted sm:px-6">
+            <p className="display-wide text-[22px] leading-none tracking-[-0.02em] sm:text-[30px]">iFood</p>
+          </div>
+
+          {rows.map((row, index) => {
+            const Icon = ROW_ICONS[row.label] || Utensils;
+            const big = row.label === 'Pra quem vende';
+            return (
+              <React.Fragment key={row.label}>
+                <Reveal
+                  delay={0.03 * index}
+                  className="col-span-2 mt-4 flex items-center gap-3 text-[15px] font-semibold text-ink md:col-span-1 md:mt-0"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded bg-ink text-paper">
+                    <Icon aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
+                  </span>
+                  {row.label}
+                </Reveal>
+                <Reveal
+                  delay={0.03 * index}
+                  className="group relative rounded bg-ember p-5 text-night transition-transform duration-300 ease-out hover-fine:hover:-translate-y-0.5 sm:p-6"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mb-3 grid h-6 w-6 place-items-center rounded-full bg-night text-ember"
+                  >
+                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                  </span>
+                  <p
+                    className={
+                      big
+                        ? 'display-wide break-words text-[16px] leading-[1.15] tracking-[-0.02em] text-balance sm:text-[24px]'
+                        : 'text-[16px] font-semibold leading-snug text-balance sm:text-[18px]'
+                    }
+                  >
+                    {row.us}
+                  </p>
+                </Reveal>
+                <Reveal
+                  delay={0.03 * index + 0.05}
+                  className="rounded border border-line-strong bg-paper-raised p-5 text-ink-muted sm:p-6"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mb-3 grid h-6 w-6 place-items-center rounded-full border-2 border-line-strong text-ink-muted"
+                  >
+                    <Minus className="h-3.5 w-3.5" strokeWidth={3} />
+                  </span>
+                  <p
+                    className={
+                      big
+                        ? 'text-[16px] font-semibold leading-snug text-ink sm:text-[19px]'
+                        : 'text-[16px] leading-snug sm:text-[18px]'
+                    }
+                  >
+                    {row.them}
+                  </p>
+                </Reveal>
+              </React.Fragment>
+            );
+          })}
+        </div>
+
+        <p className="mt-8 max-w-[70ch] text-[14px] leading-relaxed text-ink-muted">
+          * Comissão cobrada de restaurantes, segundo a{' '}
+          <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-ink">
+            Saipos
+          </a>
+          : plano Básico, 12% sobre o pedido mais a taxa de pagamento online; o plano com entrega do iFood é
+          mais alto. Os valores mudam conforme plano, cidade e contrato, então confira no iFood. Conferido em
+          24/11/2026.
+        </p>
       </div>
     </div>
   </section>
@@ -491,7 +535,6 @@ const BarrakinhaXIfood = () => (
         <Hero />
         <Versus />
         <FomeRace />
-        <FoodMarquee />
         <Comparison />
         <WhenToUse />
         <ForVendors />
