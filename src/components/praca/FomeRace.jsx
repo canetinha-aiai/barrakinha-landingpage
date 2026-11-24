@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
-import { motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
 import MorphLogo from '@/components/fluid/MorphLogo';
 import { cn } from '@/lib/utils';
+import { Bell, Banknote, Bike, Clock, HandPlatter, Home, MapPin, PackageCheck, Smartphone, Store, UtensilsCrossed } from 'lucide-react';
 
 /*
   "A corrida da fome": a mesma fome, na mesma praça, por dois caminhos.
@@ -24,12 +25,14 @@ const LANES = [
     key: 'barrakinha',
     title: 'Pela Barrakinha',
     steps: [
-      'Abre o app e **vê quem está aberto**',
+      'Abre o app',
+      '**Vê quem está aberto** por perto',
       'Escolhe, **sem cadastrar endereço**',
       'Paga no Pix, **sem taxa de entrega**',
       'O app **avisa quando fica pronto**',
       'Busca e come **na hora**',
     ],
+    icons: [Smartphone, MapPin, UtensilsCrossed, Banknote, Bell, HandPlatter],
     /* termina na metade da rolagem */
     end: 0.5,
     ours: true,
@@ -38,7 +41,8 @@ const LANES = [
     key: 'delivery',
     title: 'Pelo delivery',
     steps: [
-      'Abre o app e cadastra o endereço',
+      'Abre o app',
+      'Cadastra o endereço',
       'Escolhe o restaurante',
       'Escolhe no cardápio',
       'Paga o pedido e a entrega',
@@ -46,6 +50,7 @@ const LANES = [
       'O entregador te procura na praça',
       'Pedido entregue',
     ],
+    icons: [Smartphone, Home, Store, UtensilsCrossed, Banknote, Clock, Bike, PackageCheck],
     /* chega ao fim, mas só no último trecho da rolagem: a Barrakinha já
        estava comendo há muito tempo. */
     end: 0.9,
@@ -138,31 +143,17 @@ const Lane = ({ lane, progress, still }) => {
               <span
                 aria-hidden="true"
                 className={cn(
-                  'grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-colors duration-300',
+                  'grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 transition-colors duration-300',
                   lane.ours
                     ? on
                       ? 'border-ember bg-ember text-paper'
-                      : 'border-ink/25'
+                      : 'border-ink/25 text-ink-muted'
                     : on
                       ? 'border-cream/70 bg-cream/70 text-night'
-                      : 'border-cream/35',
+                      : 'border-cream/35 text-night-muted',
                 )}
               >
-                {on ? (
-                  <svg viewBox="0 0 16 16" className="h-3.5 w-3.5">
-                    <motion.path
-                      d="M3.5 8.5l3 3 6-7"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2.4}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      initial={still ? false : { pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ duration: 0.35 }}
-                    />
-                  </svg>
-                ) : null}
+                {React.createElement(lane.icons[i], { className: 'h-4 w-4', strokeWidth: 2.2 })}
               </span>
               <span
                 className={cn(
@@ -194,7 +185,7 @@ const Lane = ({ lane, progress, still }) => {
           aria-hidden="true"
           className="pointer-events-none absolute bottom-4 right-4 h-20 w-28 sm:bottom-6 sm:right-6 sm:h-24 sm:w-36"
           initial={false}
-          animate={reached >= 5 ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
+          animate={reached >= 7 ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 160, damping: 18 }}
         >
           <Moto />
@@ -215,16 +206,46 @@ const Lane = ({ lane, progress, still }) => {
 
 const FomeRace = () => {
   const ref = useRef(null);
+  const innerRef = useRef(null);
+  const gridRef = useRef(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
+  /* Telas baixas (celular): o conteúdo não cabe na tela, então a seção
+     não prende; a corrida anda conforme os cards passam pela tela. */
+  const [compact, setCompact] = useState(false);
+
+  useEffect(() => {
+    const measure = () => {
+      const h = innerRef.current?.firstElementChild?.getBoundingClientRect().height ?? 0;
+      setCompact(h + 120 > window.innerHeight);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
+  const sticky = useScroll({ target: ref, offset: ['start start', 'end end'] }).scrollYProgress;
+  const flow = useScroll({ target: gridRef, offset: ['start 75%', 'end 55%'] }).scrollYProgress;
+  const progress = useMotionValue(0);
+  useMotionValueEvent(sticky, 'change', (v) => {
+    if (!compact) progress.set(v);
+  });
+  useMotionValueEvent(flow, 'change', (v) => {
+    if (compact) progress.set(v);
+  });
+  useEffect(() => {
+    progress.set((compact ? flow : sticky).get());
+  }, [compact, flow, sticky, progress]);
+
+  const still = reduce;
+  const pinned = !reduce && !compact;
 
   return (
     <section
       ref={ref}
       aria-labelledby="corrida-titulo"
-      className={cn('relative bg-night text-cream', reduce ? '' : 'h-[260vh]')}
+      className={cn('relative bg-night text-cream', pinned ? 'h-[260vh]' : '')}
     >
-      <div className={cn(reduce ? 'section' : 'sticky top-0 flex min-h-screen items-center pb-6 pt-20 sm:py-24')}>
+      <div ref={innerRef} className={cn(pinned ? 'sticky top-0 flex min-h-screen items-center pb-6 pt-20 sm:py-24' : 'section')}>
         <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
           <h2
             id="corrida-titulo"
@@ -235,9 +256,9 @@ const FomeRace = () => {
           <p className="mt-4 hidden max-w-[46ch] text-[17px] leading-relaxed text-night-muted sm:block">
             Role a página e acompanhe os dois pedidos ao mesmo tempo.
           </p>
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-10 sm:gap-5 md:grid-cols-2">
+          <div ref={gridRef} className="mt-6 grid grid-cols-1 gap-4 sm:mt-10 sm:gap-5 md:grid-cols-2">
             {LANES.map((lane) => (
-              <Lane key={lane.key} lane={lane} progress={scrollYProgress} still={reduce} />
+              <Lane key={lane.key} lane={lane} progress={progress} still={still} />
             ))}
           </div>
         </div>
