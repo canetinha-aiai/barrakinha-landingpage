@@ -59,7 +59,31 @@ export function ScallopEdge({ color = '#FFFFFF' }) {
   );
 }
 
-export function EventHero({ photo, loading = false }) {
+/* Logo da barraca no círculo do canto. Se a foto falhar, o ícone de loja na
+   cor da barraca segura o lugar. */
+function StoreLogoFloat({ src }) {
+  const [failed, setFailed] = useState(false);
+
+  return (
+    <div className="ev-brand-float ev-brand-float--store">
+      {failed ? (
+        <span className="ev-brand-fallback" aria-hidden="true">
+          <StoreIcon size={26} strokeWidth={1.8} />
+        </span>
+      ) : (
+        /* Decorativa: o nome da barraca vem logo abaixo, no título. */
+        <img src={src} alt="" onError={() => setFailed(true)} />
+      )}
+    </div>
+  );
+}
+
+/**
+ * Capa da página. `photo` é a imagem de fundo: o banner do evento quando a
+ * barraca configurou um, senão a própria foto da barraca. `logo` (só com
+ * banner) vai para o círculo do canto no lugar do selo da Barrakinha.
+ */
+export function EventHero({ photo, logo = null, loading = false }) {
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const hasPhoto = Boolean(photo) && !failed;
@@ -97,26 +121,30 @@ export function EventHero({ photo, loading = false }) {
               justifyContent: 'center',
             }}
           >
-            <StoreIcon size={84} strokeWidth={1.3} color="#FFFFFF" />
+            <StoreIcon size={84} strokeWidth={1.3} style={{ color: 'var(--ev-on-brasa)' }} />
           </div>
         )}
 
-        <a
-          href="/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ev-brand-float ev-pressable"
-          aria-label="Conhecer a Barrakinha"
-          title="Conhecer a Barrakinha"
-        >
-          <img
-            src="/logo/barrakinha-logo.svg"
-            alt="Barrakinha"
-            width={48}
-            height={48}
-            style={{ width: 48, height: 48, display: 'block' }}
-          />
-        </a>
+        {loading ? null : logo ? (
+          <StoreLogoFloat key={logo} src={logo} />
+        ) : (
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ev-brand-float ev-pressable"
+            aria-label="Conhecer a Barrakinha"
+            title="Conhecer a Barrakinha"
+          >
+            <img
+              src="/logo/barrakinha-logo.svg"
+              alt="Barrakinha"
+              width={48}
+              height={48}
+              style={{ width: 48, height: 48, display: 'block' }}
+            />
+          </a>
+        )}
 
         <ScallopEdge color="#FFFFFF" />
       </div>
