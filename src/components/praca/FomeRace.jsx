@@ -27,10 +27,11 @@ const LANES = [
     steps: [
       'Abre o app e **vê quem está aberto**',
       'Pede e paga no Pix, **sem endereço e sem taxa**',
+      'Espera o preparo, **sem ficar parado**',
       'O app **avisa quando fica pronto**',
       'Busca e come **na hora**',
     ],
-    icons: [MapPin, Banknote, Bell, HandPlatter],
+    icons: [MapPin, Banknote, Clock, Bell, HandPlatter],
     /* termina na metade da rolagem */
     end: 0.5,
     ours: true,
