@@ -24,10 +24,10 @@ const LANES = [
     key: 'barrakinha',
     title: 'Pela Barrakinha',
     steps: [
-      'Viu no mapa o que está aberto agora',
-      'Escolheu pelo cardápio, com preço e o que acabou',
-      'Pediu e pagou no Pix, sem fila e sem esperar na mesa',
-      'O app avisou que ficou pronto e ele foi buscar',
+      'Você vê no mapa quem está aberto',
+      'Escolhe no cardápio, com preço e tudo',
+      'Paga no Pix, sem fila e sem esperar',
+      'O app avisa quando está pronto e você busca',
     ],
     /* termina na metade da rolagem */
     end: 0.5,
@@ -37,12 +37,12 @@ const LANES = [
     key: 'delivery',
     title: 'Pelo delivery',
     steps: [
-      'Abriu o app',
-      'Achou um restaurante que entrega aí',
-      'Esperou o preparo',
-      'Entregador a caminho',
-      'Entregador procurando você na praça',
-      'Pedido entregue',
+      'Você abre o app',
+      'Acha um restaurante que entrega aí',
+      'Espera o preparo',
+      'O entregador vem pra cá',
+      'O entregador procura você na praça',
+      'O pedido chega',
     ],
     /* chega ao fim, mas só no último trecho da rolagem: a Barrakinha já
        estava comendo há muito tempo. */
