@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { FOOD_ICONS } from '@/components/FoodIcons';
+import MorphLogo from '@/components/fluid/MorphLogo';
 import { cn } from '@/lib/utils';
 
 /*
@@ -68,8 +69,13 @@ const Lane = ({ lane, progress, still }) => {
         lane.ours ? 'bg-paper text-ink' : 'border border-night-line bg-night text-cream',
       )}
     >
-      <div className="flex items-baseline justify-between gap-4">
-        <h3 className="display-wide text-[22px] leading-none tracking-[-0.02em] sm:text-[28px]">{lane.title}</h3>
+      <div className="flex items-center justify-between gap-4">
+        <h3 className="display-wide flex items-center gap-3 text-[22px] leading-none tracking-[-0.02em] sm:text-[28px]">
+          {lane.ours ? (
+            <MorphLogo size={40} start="view" label="Barrakinha" className="shrink-0 text-ember" />
+          ) : null}
+          {lane.title}
+        </h3>
         <span className={cn('text-[14px] font-semibold', lane.ours ? 'text-ember-text' : 'text-night-muted')}>
           {done ? (lane.ours ? 'Pronto' : 'Entregue') : lane.ours ? 'Andando' : 'Esperando'}
         </span>
