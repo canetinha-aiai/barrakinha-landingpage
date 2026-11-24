@@ -26,7 +26,7 @@ const LANES = [
     steps: [
       'Você abre o app e vê quem está aberto',
       'Escolhe no cardápio',
-      'Paga no Pix, sem fila e sem esperar',
+      'Paga no Pix',
       'O app avisa quando está pronto e você busca',
     ],
     /* termina na metade da rolagem */
@@ -38,7 +38,7 @@ const LANES = [
     title: 'Pelo delivery',
     steps: [
       'Você abre o app e acha um restaurante que entrega aí',
-      'Escolhe no cardápio',
+      'Informa o endereço de entrega e escolhe no cardápio',
       'Paga e espera o preparo',
       'O entregador vem pra cá',
       'O entregador procura você na praça',
