@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { animate, motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/react';
-import { Check, Minus, Percent, Receipt, Search, Store, Truck, Utensils, Wallet } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/Header';
 import BenefitList from '@/components/BenefitList';
@@ -168,23 +167,12 @@ const rows = [
 ];
 
 /*
-  "Lado a lado": cada linha é um par de cartões. A Barrakinha vai em
-  laranja chapado, com um visto; o iFood em papel com filete e um
-  traço, mais apagado. A linha da taxa da barraca é maior, porque é a
-  que mais pesa. Os cartões da mesma linha têm sempre a mesma altura
-  (é o próprio grid). No celular o nome da linha vem em cima e os dois
-  cartões ficam lado a lado.
+  "Lado a lado": lista de filetes, no estilo do resto do site. Sem
+  caixas, ícones nem vistos: a Barrakinha em tinta, o iFood em cinza, e
+  só a linha da taxa da barraca ganha destaque (título largo, número em
+  laranja de texto), que é onde a diferença pesa. No celular o nome da
+  linha vem em cima e as duas colunas ficam lado a lado.
 */
-const ROW_ICONS = {
-  'Pra que serve': Utensils,
-  'Quem vende': Store,
-  'Como chega': Truck,
-  'Taxa de entrega': Receipt,
-  'O que você paga': Wallet,
-  'Como achar': Search,
-  'Pra quem vende': Percent,
-};
-
 const Comparison = () => (
   <section id="comparacao" className="scroll-mt-16 border-t border-line bg-paper text-ink">
     <div className="section">
@@ -194,69 +182,40 @@ const Comparison = () => (
           description="Não é um contra o outro. São apps pra momentos diferentes do dia."
         />
 
-        <div className="mt-12 grid grid-cols-2 gap-x-3 gap-y-3 md:grid-cols-[190px_1fr_1fr] md:gap-x-4">
-          <div className="hidden md:block" />
-          <div className="rounded bg-ember px-5 py-4 text-night sm:px-6">
-            <p className="display-wide text-[22px] leading-none tracking-[-0.02em] sm:text-[30px]">Barrakinha</p>
-          </div>
-          <div className="rounded border border-line-strong bg-paper-raised px-5 py-4 text-ink-muted sm:px-6">
-            <p className="display-wide text-[22px] leading-none tracking-[-0.02em] sm:text-[30px]">iFood</p>
-          </div>
+        <div className="mt-12 grid grid-cols-2 gap-x-6 md:grid-cols-[200px_1fr_1fr] md:gap-x-10">
+          <div className="hidden border-b-2 border-ink md:block" />
+          <p className="display-wide border-b-2 border-ink pb-4 text-[22px] leading-none tracking-[-0.02em] text-ember-text sm:text-[28px]">
+            Barrakinha
+          </p>
+          <p className="display-wide border-b-2 border-ink pb-4 text-[22px] leading-none tracking-[-0.02em] text-ink-muted sm:text-[28px]">
+            iFood
+          </p>
 
-          {rows.map((row, index) => {
-            const Icon = ROW_ICONS[row.label] || Utensils;
+          {rows.map((row) => {
             const big = row.label === 'Pra quem vende';
             return (
               <React.Fragment key={row.label}>
-                <Reveal
-                  delay={0.03 * index}
-                  className="col-span-2 mt-4 flex items-center gap-3 text-[15px] font-semibold text-ink md:col-span-1 md:mt-0"
-                >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded bg-ink text-paper">
-                    <Icon aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2.2} />
-                  </span>
+                <p className="col-span-2 pt-5 text-[14px] font-semibold text-ink-muted md:col-span-1 md:border-b md:border-line-strong md:py-5 md:text-[15px]">
                   {row.label}
-                </Reveal>
-                <Reveal
-                  delay={0.03 * index}
-                  className="group relative rounded bg-ember p-5 text-night transition-transform duration-300 ease-out hover-fine:hover:-translate-y-0.5 sm:p-6"
+                </p>
+                <p
+                  className={
+                    big
+                      ? 'display-wide border-b border-line-strong pb-5 pt-1 text-[17px] leading-[1.2] tracking-[-0.02em] text-ember-text text-balance sm:text-[24px] md:py-5'
+                      : 'border-b border-line-strong pb-5 pt-1 text-[16px] font-semibold leading-snug text-ink text-balance sm:text-[18px] md:py-5'
+                  }
                 >
-                  <span
-                    aria-hidden="true"
-                    className="mb-3 grid h-6 w-6 place-items-center rounded-full bg-night text-ember"
-                  >
-                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                  </span>
-                  <p
-                    className={
-                      big
-                        ? 'display-wide break-words text-[16px] leading-[1.15] tracking-[-0.02em] text-balance sm:text-[24px]'
-                        : 'text-[16px] font-semibold leading-snug text-balance sm:text-[18px]'
-                    }
-                  >
-                    {row.us}
-                  </p>
-                </Reveal>
-                <Reveal
-                  delay={0.03 * index + 0.05}
-                  className="rounded border border-line-strong bg-paper-raised p-5 text-ink-muted sm:p-6"
+                  {row.us}
+                </p>
+                <p
+                  className={
+                    big
+                      ? 'border-b border-line-strong pb-5 pt-1 text-[16px] leading-snug text-ink-muted sm:text-[18px] md:py-5'
+                      : 'border-b border-line-strong pb-5 pt-1 text-[16px] leading-snug text-ink-muted sm:text-[18px] md:py-5'
+                  }
                 >
-                  <span
-                    aria-hidden="true"
-                    className="mb-3 grid h-6 w-6 place-items-center rounded-full border-2 border-line-strong text-ink-muted"
-                  >
-                    <Minus className="h-3.5 w-3.5" strokeWidth={3} />
-                  </span>
-                  <p
-                    className={
-                      big
-                        ? 'text-[16px] font-semibold leading-snug text-ink sm:text-[19px]'
-                        : 'text-[16px] leading-snug sm:text-[18px]'
-                    }
-                  >
-                    {row.them}
-                  </p>
-                </Reveal>
+                  {row.them}
+                </p>
               </React.Fragment>
             );
           })}
@@ -308,14 +267,23 @@ const WhenToUse = () => (
               delay={0.08 * index}
               className={
                 moment.ours
-                  ? 'rounded bg-ember p-7 text-night sm:p-9'
+                  ? 'relative overflow-hidden rounded bg-ember p-7 text-night sm:p-9'
                   : 'rounded border border-line-strong bg-paper p-7 sm:p-9'
               }
             >
-              <h3 className="display-wide text-[26px] leading-none tracking-[-0.02em] sm:text-[32px]">
+              {/* O selo da Barrakinha como carimbo: grande, torto, num tom
+                  só mais escuro que o laranja, cortado pela borda. */}
+              {moment.ours ? (
+                <MorphLogo
+                  size={150}
+                  start="view"
+                  className="pointer-events-none absolute -bottom-8 -right-6 -rotate-12 text-night/20 sm:-bottom-10 sm:-right-4 sm:h-[200px] sm:w-[200px]"
+                />
+              ) : null}
+              <h3 className="relative display-wide text-[26px] leading-none tracking-[-0.02em] sm:text-[32px]">
                 {moment.title}
               </h3>
-              <ul className="mt-6 space-y-4">
+              <ul className="relative mt-6 space-y-4">
                 {moment.items.map((item) => (
                   <li
                     key={item}
