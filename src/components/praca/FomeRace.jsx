@@ -31,6 +31,7 @@ const LANES = [
       'O app **avisa quando fica pronto**',
       'Busca e come **na hora**',
     ],
+    short: ['**Vê quem está aberto**', 'Paga no Pix, **sem endereço**', 'Espera **sem ficar parado**', 'O app **avisa**', 'Busca e come'],
     icons: [MapPin, Banknote, Clock, Bell, HandPlatter],
     /* termina na metade da rolagem */
     end: 0.5,
@@ -47,6 +48,7 @@ const LANES = [
       'O entregador te procura na praça',
       'Pedido entregue',
     ],
+    short: ['Abre o app', 'Cadastra o endereço', 'Paga, com taxa', 'Espera o preparo', 'Entregador te procura', 'Pedido entregue'],
     icons: [Smartphone, Home, Banknote, Clock, Bike, PackageCheck],
     /* chega ao fim, mas só no último trecho da rolagem: a Barrakinha já
        estava comendo há muito tempo. */
@@ -83,6 +85,18 @@ const Moto = () => (
     ))}
   </svg>
 );
+
+/* "**trecho**" vira destaque. */
+const rich = (text) =>
+  text.split('**').map((part, k) =>
+    k % 2 ? (
+      <strong key={k} className="font-bold text-ember-text">
+        {part}
+      </strong>
+    ) : (
+      part
+    ),
+  );
 
 const Lane = ({ lane, progress, still }) => {
   const fill = useTransform(progress, [0.05, lane.end], [0, 1], { clamp: true });
@@ -161,15 +175,8 @@ const Lane = ({ lane, progress, still }) => {
                   lane.ours && 'font-medium',
                 )}
               >
-                {step.split('**').map((part, k) =>
-                  k % 2 ? (
-                    <strong key={k} className="font-bold text-ember-text">
-                      {part}
-                    </strong>
-                  ) : (
-                    part
-                  ),
-                )}
+                <span className="sm:hidden">{rich(lane.short[i])}</span>
+                <span className="hidden sm:inline">{rich(step)}</span>
               </span>
             </li>
           );
