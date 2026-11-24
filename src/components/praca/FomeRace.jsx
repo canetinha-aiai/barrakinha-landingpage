@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
 import MorphLogo from '@/components/fluid/MorphLogo';
 import { cn } from '@/lib/utils';
-import { Bell, Banknote, Bike, Clock, HandPlatter, Home, MapPin, PackageCheck, Smartphone, Store, UtensilsCrossed } from 'lucide-react';
+import { Bell, Banknote, Bike, Clock, HandPlatter, Home, MapPin, PackageCheck, Smartphone } from 'lucide-react';
 
 /*
   "A corrida da fome": a mesma fome, na mesma praça, por dois caminhos.
@@ -25,14 +25,12 @@ const LANES = [
     key: 'barrakinha',
     title: 'Pela Barrakinha',
     steps: [
-      'Abre o app',
-      '**Vê quem está aberto** por perto',
-      'Escolhe, **sem cadastrar endereço**',
-      'Paga no Pix, **sem taxa de entrega**',
+      'Abre o app e **vê quem está aberto**',
+      'Pede e paga no Pix, **sem endereço e sem taxa**',
       'O app **avisa quando fica pronto**',
       'Busca e come **na hora**',
     ],
-    icons: [Smartphone, MapPin, UtensilsCrossed, Banknote, Bell, HandPlatter],
+    icons: [MapPin, Banknote, Bell, HandPlatter],
     /* termina na metade da rolagem */
     end: 0.5,
     ours: true,
@@ -43,14 +41,12 @@ const LANES = [
     steps: [
       'Abre o app',
       'Cadastra o endereço',
-      'Escolhe o restaurante',
-      'Escolhe no cardápio',
-      'Paga o pedido e a entrega',
+      'Escolhe e paga, com taxa de entrega',
       'Espera o preparo',
       'O entregador te procura na praça',
       'Pedido entregue',
     ],
-    icons: [Smartphone, Home, Store, UtensilsCrossed, Banknote, Clock, Bike, PackageCheck],
+    icons: [Smartphone, Home, Banknote, Clock, Bike, PackageCheck],
     /* chega ao fim, mas só no último trecho da rolagem: a Barrakinha já
        estava comendo há muito tempo. */
     end: 0.9,
@@ -185,7 +181,7 @@ const Lane = ({ lane, progress, still }) => {
           aria-hidden="true"
           className="pointer-events-none absolute bottom-4 right-4 h-20 w-28 sm:bottom-6 sm:right-6 sm:h-24 sm:w-36"
           initial={false}
-          animate={reached >= 7 ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
+          animate={reached >= 5 ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 160, damping: 18 }}
         >
           <Moto />
