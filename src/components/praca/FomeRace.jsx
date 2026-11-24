@@ -26,8 +26,8 @@ const LANES = [
     steps: [
       'Viu no mapa o que está aberto agora',
       'Escolheu pelo cardápio, com preço e o que acabou',
-      'Pediu e pagou no Pix, sem sair do lugar',
-      'Chegou e só buscou o pastel',
+      'Pediu e pagou no Pix, sem fila e sem esperar na mesa',
+      'O app avisou que ficou pronto e ele foi buscar',
     ],
     /* termina na metade da rolagem */
     end: 0.5,
