@@ -39,7 +39,7 @@ const LANES = [
     steps: [
       'Você abre o app',
       'Acha um restaurante que entrega aí',
-      'Espera o preparo',
+      'Paga e espera o preparo',
       'O entregador vem pra cá',
       'O entregador procura você na praça',
       'O pedido chega',
