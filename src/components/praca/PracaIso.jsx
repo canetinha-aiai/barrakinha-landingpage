@@ -215,6 +215,8 @@ const Label = ({ x, y, food, dist, delay }) => {
       {/* a animação mexe no transform; por isso fica num <g> de dentro,
           senão ela anularia o translate de fora */}
       <g className="praca-pop" style={{ animationDelay: `${delay}s` }}>
+      {/* a setinha aponta pra barraca, que fica logo embaixo */}
+      <polygon points="-7,0 7,0 0,10" fill="#FBF7F2" stroke={C.lineStrong} strokeWidth={1.2} strokeLinejoin="round" />
       <rect x={-w / 2} y={-34} width={w} height={36} rx={10} fill="#FBF7F2" stroke={C.lineStrong} strokeWidth={1.2} />
       <text x={0} y={-17} textAnchor="middle" fontSize="13" fontWeight="800" fill={C.ink} className="font-sans">
         {food}
@@ -268,6 +270,10 @@ const STALLS = [
   .sort((a, b) => a.w[0] + a.w[1] - (b.w[0] + b.w[1]));
 
 const SCALE = 0.58;
+/* Topo do toldo na tela, em relação ao chão da barraca: o nome fica
+   colado nele, com a setinha encostando no toldo. */
+const ROOF_TOP = ((-RX - RY) * SIN - RZ) * SCALE;
+
 const TREES = [
   [-130, -100, 0.8],
   [-60, -128, 0.7],
@@ -305,7 +311,7 @@ const PracaIso = ({ className }) => (
       ))}
       {STALLS.map((s, i) => {
         const g = iso([s.w[0], s.w[1], 0]);
-        return <Label key={s.food} x={g.x} y={g.y - 192 * SCALE + 6} food={s.food} dist={s.dist} delay={0.4 + i * 0.35} />;
+        return <Label key={s.food} x={g.x} y={g.y + ROOF_TOP - 8} food={s.food} dist={s.dist} delay={0.4 + i * 0.35} />;
       })}
     </svg>
   </div>
