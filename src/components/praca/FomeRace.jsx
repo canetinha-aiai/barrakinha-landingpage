@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
-import { FOOD_ICONS } from '@/components/FoodIcons';
 import MorphLogo from '@/components/fluid/MorphLogo';
 import { cn } from '@/lib/utils';
 
@@ -88,9 +87,7 @@ const Lane = ({ lane, progress, still }) => {
   });
 
   const done = reached >= n;
-  const sweet = lane.ours && done;
   const width = useTransform(smooth, (v) => `${(still ? 1 : v) * 100}%`);
-  const Pastel = FOOD_ICONS.Pastel;
 
   return (
     <div
@@ -186,30 +183,6 @@ const Lane = ({ lane, progress, still }) => {
           transition={{ type: 'spring', stiffness: 160, damping: 18 }}
         >
           <Moto />
-        </motion.div>
-      ) : null}
-
-      {/* o prêmio: o pastel pula na pista da Barrakinha */}
-      {lane.ours ? (
-        <MorphLogo
-          size={112}
-          start="view"
-          label="Barrakinha"
-          className="pointer-events-none absolute bottom-4 right-4 h-20 w-20 -rotate-12 text-ember-text sm:bottom-6 sm:right-6 sm:h-28 sm:w-28"
-        />
-      ) : null}
-
-      {lane.ours ? (
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-6 right-[104px] h-14 w-14 sm:bottom-8 sm:right-[148px] sm:h-20 sm:w-20"
-          initial={false}
-          animate={sweet ? { scale: 1, rotate: -12, opacity: 1 } : { scale: 0.2, rotate: 20, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 380, damping: 14 }}
-        >
-          <svg viewBox="0 0 64 64" className="h-full w-full overflow-visible drop-shadow-none">
-            <Pastel />
-          </svg>
         </motion.div>
       ) : null}
     </div>

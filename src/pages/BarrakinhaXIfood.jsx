@@ -375,7 +375,7 @@ const ForVendors = () => (
 export const faq = [
   {
     q: 'A Barrakinha é um iFood de barraca?',
-    a: 'Não, é outra coisa. No delivery a comida vem até você. Na Barrakinha é você que vai até a barraca: abre o app, vê quais estão abertas perto de você, pede e paga no Pix. Quando fica pronto, é só buscar e comer na hora, quentinho.',
+    a: 'Não, é outra coisa. A Barrakinha é uma forma de facilitar a vida de quem gosta de comida de rua e de quem vende ela. Você abre o app, vê quais barracas estão abertas perto de você, pede e paga no Pix. Quando fica pronto, é só buscar e comer na hora, quentinho. A comida não vem até você: você vai até a barraca.',
   },
   {
     q: 'A Barrakinha entrega?',
