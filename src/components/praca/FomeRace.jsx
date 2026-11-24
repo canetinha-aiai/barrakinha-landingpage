@@ -24,10 +24,11 @@ const LANES = [
     key: 'barrakinha',
     title: 'Pela Barrakinha',
     steps: [
-      'Você abre o app e vê as barracas abertas ali perto, sem cadastrar endereço',
-      'Escolhe no cardápio',
-      'Paga no Pix, sem taxa de entrega',
-      'O app avisa quando está pronto e você busca',
+      'Abre o app e **vê o que está aberto agora** perto de você',
+      'Escolhe no cardápio, **sem cadastrar endereço**',
+      'Paga no Pix, **sem taxa de entrega**',
+      'O app **avisa quando está pronto**',
+      'Você busca e come **na hora**',
     ],
     /* termina na metade da rolagem */
     end: 0.5,
@@ -37,10 +38,10 @@ const LANES = [
     key: 'delivery',
     title: 'Pelo delivery',
     steps: [
-      'Você abre o app e tenta cadastrar o endereço da praça',
-      'Escolhe um restaurante que entrega aí',
+      'Abre o app e cadastra o endereço de entrega',
+      'Escolhe entre os restaurantes que entregam nesse endereço',
       'Escolhe no cardápio',
-      'Paga o pedido e, muitas vezes, a taxa de entrega',
+      'Paga o pedido e, em geral, a taxa de entrega',
       'Espera o preparo e o entregador',
       'O entregador procura você na praça',
       'O pedido chega',
@@ -172,7 +173,15 @@ const Lane = ({ lane, progress, still }) => {
                   lane.ours && 'font-medium',
                 )}
               >
-                {step}
+                {step.split('**').map((part, k) =>
+                  k % 2 ? (
+                    <strong key={k} className="font-bold text-ember-text">
+                      {part}
+                    </strong>
+                  ) : (
+                    part
+                  ),
+                )}
               </span>
             </li>
           );
