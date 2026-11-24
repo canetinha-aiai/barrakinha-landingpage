@@ -25,7 +25,7 @@ const LANES = [
     title: 'Pela Barrakinha',
     steps: [
       'Você abre o app e vê quem está aberto',
-      'Escolhe no cardápio, com preço e tudo',
+      'Escolhe no cardápio',
       'Paga no Pix, sem fila e sem esperar',
       'O app avisa quando está pronto e você busca',
     ],
