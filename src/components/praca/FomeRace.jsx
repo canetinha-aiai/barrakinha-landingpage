@@ -7,10 +7,9 @@ import { cn } from '@/lib/utils';
   "A corrida da fome": a mesma fome, na mesma praça, por dois caminhos.
 
   A seção é alta (260vh) e o conteúdo fica preso na tela; a rolagem é o
-  relógio. As duas pistas andam juntas, mas a da Barrakinha tem quatro
-  passos curtos e termina na metade da rolagem, com o pastel na mão; a
-  do delivery tem mais passos e, quando a rolagem acaba, o entregador
-  ainda está procurando você na praça.
+  relógio, e a página só segue depois que as duas pistas terminaram. A
+  Barrakinha tem quatro passos curtos e termina com o pastel na mão
+  antes da metade; o delivery tem mais passos e só entrega no fim.
 
   Nada de minutos do lado do delivery: o tempo de entrega muda com
   loja, horário e distância, e a gente não tem como provar um número.
@@ -38,16 +37,18 @@ const LANES = [
       'Esperou o preparo',
       'Entregador a caminho',
       'Entregador procurando você na praça',
+      'Pedido entregue',
     ],
-    /* nunca chega ao fim dentro da seção */
-    end: 1.25,
+    /* chega ao fim, mas só no último trecho da rolagem: a Barrakinha já
+       estava comendo há muito tempo. */
+    end: 0.9,
   },
 ];
 
 const Lane = ({ lane, progress, still }) => {
   const fill = useTransform(progress, [0.05, lane.end], [0, 1], { clamp: true });
   const smooth = useSpring(fill, { stiffness: 140, damping: 26 });
-  const [reached, setReached] = useState(still ? (lane.ours ? lane.steps.length : lane.steps.length - 1) : 0);
+  const [reached, setReached] = useState(still ? lane.steps.length : 0);
   const n = lane.steps.length;
 
   useMotionValueEvent(fill, 'change', (v) => {
@@ -55,8 +56,9 @@ const Lane = ({ lane, progress, still }) => {
     setReached(Math.min(n, Math.floor(v * (n - 1) + 1.0001)));
   });
 
-  const done = lane.ours && reached >= n;
-  const width = useTransform(smooth, (v) => `${(still ? (lane.ours ? 1 : 0.8) : v) * 100}%`);
+  const done = reached >= n;
+  const sweet = lane.ours && done;
+  const width = useTransform(smooth, (v) => `${(still ? 1 : v) * 100}%`);
   const Pastel = FOOD_ICONS.Pastel;
 
   return (
@@ -69,7 +71,7 @@ const Lane = ({ lane, progress, still }) => {
       <div className="flex items-baseline justify-between gap-4">
         <h3 className="display-wide text-[22px] leading-none tracking-[-0.02em] sm:text-[28px]">{lane.title}</h3>
         <span className={cn('text-[14px] font-semibold', lane.ours ? 'text-night/70' : 'text-night-muted')}>
-          {lane.ours ? (done ? 'Pronto' : 'Andando') : 'Esperando'}
+          {done ? (lane.ours ? 'Pronto' : 'Entregue') : lane.ours ? 'Andando' : 'Esperando'}
         </span>
       </div>
 
@@ -147,7 +149,7 @@ const Lane = ({ lane, progress, still }) => {
           aria-hidden="true"
           className="pointer-events-none absolute -bottom-4 right-3 h-20 w-20 sm:-bottom-6 sm:right-6 sm:h-28 sm:w-28"
           initial={false}
-          animate={done ? { scale: 1, rotate: -12, opacity: 1 } : { scale: 0.2, rotate: 20, opacity: 0 }}
+          animate={sweet ? { scale: 1, rotate: -12, opacity: 1 } : { scale: 0.2, rotate: 20, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 380, damping: 14 }}
         >
           <svg viewBox="0 0 64 64" className="h-full w-full overflow-visible drop-shadow-none">

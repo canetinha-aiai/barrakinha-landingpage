@@ -345,31 +345,29 @@
   outline-offset: 2px;
 }
 
-/* Nome e distância de cada barraca na praça 3D (/barrakinha-x-ifood).
-   Cartão de papel com filete, no raio único; não é pílula. */
-.praca-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  padding: 5px 9px;
-  border-radius: 10px;
-  background: #fbf7f2;
-  border: 1px solid #dfd5c9;
-  color: #1d1611;
-  white-space: nowrap;
-  font-family: inherit;
-  animation: praca-label-in 420ms cubic-bezier(0.23, 1, 0.32, 1) both;
+/* Praça isométrica de /barrakinha-x-ifood (PracaIso): ondas do radar,
+   pino que boia e nomes que aparecem em sequência. Tudo transform e
+   opacidade; sem "menos movimento" a cena fica parada e completa. */
+.praca-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: praca-ring 3.2s cubic-bezier(0.23, 1, 0.32, 1) infinite both;
 }
-.praca-label strong { font-size: 14px; font-weight: 800; line-height: 1.1; }
-.praca-label span { font-size: 12px; font-weight: 600; color: #c43d1c; line-height: 1.1; }
-@media (max-width: 639px) {
-  .praca-label { padding: 4px 7px; }
-  .praca-label strong { font-size: 12px; }
-  .praca-label span { font-size: 10.5px; }
+@keyframes praca-ring {
+  from { transform: scale(0.12); opacity: 0.7; }
+  to { transform: scale(1); opacity: 0; }
 }
-@keyframes praca-label-in {
-  from { opacity: 0; transform: translateY(6px) scale(0.92); }
+.praca-bob { animation: praca-bob 2.4s ease-in-out infinite; }
+@keyframes praca-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+.praca-pop { animation: praca-pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes praca-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.9); }
   to { opacity: 1; transform: none; }
 }
-@media (prefers-reduced-motion: reduce) { .praca-label { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .praca-ring { animation: none; opacity: 0.25; }
+  .praca-bob, .praca-pop { animation: none; }
+}

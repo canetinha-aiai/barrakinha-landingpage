@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { animate, motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
@@ -12,19 +12,17 @@ import Magnetic from '@/components/Magnetic';
 import Reveal from '@/components/Reveal';
 import SpringPress from '@/components/fluid/SpringPress';
 import { jump } from '@/lib/nav';
-import HeroStall from '@/components/HeroStall';
+import PracaIso from '@/components/praca/PracaIso';
 import FoodMarquee from '@/components/FoodMarquee';
 import MorphLogo from '@/components/fluid/MorphLogo';
 import FomeRace from '@/components/praca/FomeRace';
 
-/* A praça 3D (three.js) só é baixada depois que a página montou. */
-const PracaScene = lazy(() => import('@/components/praca/PracaScene'));
 
 /*
   /barrakinha-x-ifood — a página de comparação.
 
-  Versão "na praça": abre com a praça em 3D (PracaScene), o "x" grande
-  entre as duas marcas, a corrida da fome presa na rolagem (FomeRace),
+  Versão "na praça": abre com a praça isométrica (PracaIso, ilustração
+  fixa no desenho da barraca da home), o "x" grande entre as duas marcas, a corrida da fome presa na rolagem (FomeRace),
   a faixa de comidas e depois a comparação, a barraca e o FAQ.
 
   A pergunta que todo mundo faz é "é tipo um iFood?". A resposta não
@@ -46,57 +44,7 @@ const PracaScene = lazy(() => import('@/components/praca/PracaScene'));
   "barraquinha".
 */
 
-/*
-  A praça 3D entra por cima da barraquinha em SVG: o HTML
-  pré-renderizado e a primeira pintura mostram a barraca, e quando o
-  three.js chegou e desenhou o primeiro quadro, a praça aparece no
-  lugar com um fade. Se o WebGL falhar, a barraca simplesmente fica.
-*/
-const PracaHero = ({ className }) => {
-  const [load, setLoad] = useState(false);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const ok = (() => {
-      try {
-        const c = document.createElement('canvas');
-        return !!(c.getContext('webgl2') || c.getContext('webgl'));
-      } catch {
-        return false;
-      }
-    })();
-    if (!ok) return undefined;
-    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
-    const id = idle(() => setLoad(true));
-    return () => (window.cancelIdleCallback || clearTimeout)(id);
-  }, []);
-
-  return (
-    <div className={`relative ${className || ''}`}>
-      <div
-        className="transition-opacity duration-500"
-        style={{ opacity: ready ? 0 : 1 }}
-        aria-hidden={ready ? 'true' : undefined}
-      >
-        <HeroStall className="mx-auto w-full max-w-[420px]" />
-      </div>
-      {load ? (
-        <Suspense fallback={null}>
-          <PracaScene
-            className="absolute inset-0 transition-opacity duration-700"
-            onReady={() => setReady(true)}
-          />
-        </Suspense>
-      ) : null}
-      <p
-        className="pointer-events-none absolute inset-x-0 bottom-0 text-center text-[13px] text-ink-muted transition-opacity duration-500"
-        style={{ opacity: ready ? 1 : 0 }}
-      >
-        Arraste pra girar a praça
-      </p>
-    </div>
-  );
-};
+const FEE_SOURCE = 'https://saipos.com/integracoes/ifood/taxa-ifood';
 
 const Hero = () => (
   <section id="top" className="relative overflow-hidden bg-paper pt-16 text-ink">
@@ -130,7 +78,7 @@ const Hero = () => (
           </a>
         </div>
       </div>
-      <PracaHero className="aspect-square w-full lg:col-span-6 lg:-mr-10 lg:aspect-[1/0.95]" />
+      <PracaIso className="mx-auto w-full max-w-[540px] lg:col-span-6 lg:-mr-6 lg:max-w-none" />
     </div>
   </section>
 );
@@ -153,24 +101,24 @@ const Versus = () => {
 
   return (
     <section ref={ref} aria-label="Barrakinha x iFood" className="overflow-hidden border-y border-line bg-paper-raised">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-center gap-4 px-5 py-14 sm:gap-10 lg:py-20">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-center gap-2.5 px-4 py-14 sm:gap-10 lg:py-20">
         <motion.div style={reduce ? undefined : { x: left }} className="flex items-center gap-3 sm:gap-5">
           <MorphLogo size={72} start="view" label="Barrakinha" className="hidden text-ember sm:block" />
-          <MorphLogo size={44} start="view" label="Barrakinha" className="text-ember sm:hidden" />
-          <span className="display-wide text-[30px] leading-none tracking-[-0.03em] text-ink sm:text-[56px] lg:text-[72px]">
+          <MorphLogo size={34} start="view" label="Barrakinha" className="text-ember sm:hidden" />
+          <span className="display-wide text-[22px] leading-none tracking-[-0.03em] text-ink sm:text-[56px] lg:text-[72px]">
             Barrakinha
           </span>
         </motion.div>
         <motion.span
           aria-hidden="true"
           style={reduce ? undefined : { rotate }}
-          className="display-wide inline-block text-[44px] leading-none text-ember sm:text-[88px] lg:text-[112px]"
+          className="display-wide inline-block text-[34px] leading-none text-ember sm:text-[88px] lg:text-[112px]"
         >
           x
         </motion.span>
         <motion.span
           style={reduce ? undefined : { x: right }}
-          className="display-wide text-[30px] leading-none tracking-[-0.03em] text-ink-muted sm:text-[56px] lg:text-[72px]"
+          className="display-wide text-[22px] leading-none tracking-[-0.03em] text-ink-muted sm:text-[56px] lg:text-[72px]"
         >
           iFood
         </motion.span>
@@ -214,8 +162,8 @@ const rows = [
   },
   {
     label: 'Pra quem vende',
-    us: 'R$1 por pedido pago. Sem mensalidade e sem porcentagem',
-    them: 'Depende do plano contratado',
+    us: 'R$1 fixo por pedido pago. Sem mensalidade e sem porcentagem',
+    them: 'A partir de 12% do pedido, mais taxa de pagamento online. Mais caro ainda no plano em que o iFood entrega*',
   },
 ];
 
@@ -269,6 +217,15 @@ const Comparison = () => (
               ))}
             </tbody>
           </table>
+          <p className="mt-6 max-w-[70ch] text-[14px] leading-relaxed text-ink-muted">
+            * Comissão cobrada de restaurantes, segundo a{' '}
+            <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-ink">
+              Saipos
+            </a>
+            : plano Básico, 12% sobre o pedido mais a taxa de pagamento online; o plano com entrega do iFood é
+            mais alto. Os valores mudam conforme plano, cidade e contrato, então confira no iFood. Conferido em
+            24/11/2026.
+          </p>
         </Reveal>
       </div>
     </div>
@@ -406,6 +363,46 @@ const MoneyCard = () => {
   );
 };
 
+/*
+  Quanto sai de um pedido de R$25. O R$1 é o nosso, fixo. O do iFood é
+  o piso da comissão do plano mais barato (12% de R$25 = R$3,00), sem
+  contar a taxa de pagamento online nem os planos mais caros: é o menor
+  valor que a fonte sustenta, e mesmo assim é o triplo.
+*/
+const FeeCompare = () => (
+  <Reveal className="mt-5 rounded border border-night-line p-6" amount={0.4}>
+    <p className="text-[15px] text-night-muted">O que fica pra plataforma num pedido de R$25</p>
+    {[
+      { name: 'iFood', value: 'a partir de R$3,00', w: '100%', cls: 'bg-cream/40', note: true },
+      { name: 'Barrakinha', value: 'R$1,00', w: '33.3%', cls: 'bg-ember' },
+    ].map((bar, i) => (
+      <div key={bar.name} className="mt-4">
+        <div className="flex items-baseline justify-between gap-3 text-[15px]">
+          <span className="font-semibold text-cream">{bar.name}</span>
+          <span className="numeric font-semibold text-cream">{bar.value}{bar.note ? '*' : ''}</span>
+        </div>
+        <div className="mt-2 h-3 rounded-full bg-cream/10">
+          <motion.div
+            className={`h-full origin-left rounded-full ${bar.cls}`}
+            style={{ width: bar.w }}
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true, amount: 0.8 }}
+            transition={{ duration: 0.9, delay: 0.2 + i * 0.25, ease: [0.23, 1, 0.32, 1] }}
+          />
+        </div>
+      </div>
+    ))}
+    <p className="mt-4 text-[13px] leading-relaxed text-night-muted">
+      *12% de comissão do plano Básico, segundo a{' '}
+      <a href={FEE_SOURCE} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-cream">
+        Saipos
+      </a>
+      , sem a taxa de pagamento online.
+    </p>
+  </Reveal>
+);
+
 const ForVendors = () => (
   <section id="pra-quem-vende" className="bg-night text-cream">
     <div className="section">
@@ -414,9 +411,10 @@ const ForVendors = () => (
           <SectionHeading
             tone="night"
             title="Pra barraca: R$1 por pedido. Só isso."
-            description="Quem vende na rua não tem margem pra dividir cada venda. Por isso a conta é simples."
+            description="Quem vende na rua não tem margem pra dividir cada venda. Por isso a conta é simples e bem mais barata."
           />
           <MoneyCard />
+          <FeeCompare />
           <a
             href="/vendedores"
             className="mt-8 inline-block rounded text-[16px] font-semibold text-cream underline decoration-night-line underline-offset-[6px] hover:decoration-ember"
@@ -450,6 +448,10 @@ export const faq = [
   {
     q: 'Quanto a barraca paga pra usar?',
     a: 'R$1 por pedido pago no Pix, que já inclui o custo do Pix. Não tem mensalidade nem porcentagem sobre a venda.',
+  },
+  {
+    q: 'A Barrakinha é mais barata que o iFood pra quem vende?',
+    a: 'É. A Barrakinha cobra R$1 fixo por pedido pago. O iFood cobra do restaurante a partir de 12% do pedido, mais a taxa de pagamento online, segundo a Saipos. Num pedido de R$25, são R$3,00 ou mais contra R$1,00. Os valores do iFood mudam por plano, cidade e contrato.',
   },
   {
     q: 'É Barrakinha com K mesmo?',
