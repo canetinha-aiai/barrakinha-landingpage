@@ -100,19 +100,19 @@ const Lane = ({ lane, progress, still }) => {
   return (
     <div
       className={cn(
-        'relative rounded p-5 sm:p-8', 'pb-24 sm:pb-8',
+        'relative rounded p-3 pb-16 sm:p-8 sm:pb-8',
         lane.ours ? 'bg-paper text-ink' : 'border border-night-line bg-night text-cream',
       )}
     >
-      <div className="flex items-baseline justify-between gap-4">
-        <h3 className="display-wide text-[22px] leading-none tracking-[-0.02em] sm:text-[28px]">{lane.title}</h3>
-        <span className={cn('text-[14px] font-semibold', lane.ours ? 'text-ember-text' : 'text-night-muted')}>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 className="display-wide text-[15px] leading-none tracking-[-0.02em] sm:text-[28px]">{lane.title}</h3>
+        <span className={cn('text-[11px] font-semibold sm:text-[14px]', lane.ours ? 'text-ember-text' : 'text-night-muted')}>
           {done ? (lane.ours ? 'Pronto' : 'Entregue') : lane.ours ? 'Andando' : 'Esperando'}
         </span>
       </div>
 
       {/* pista */}
-      <div className={cn('relative mt-5 h-2 rounded-full sm:mt-6', lane.ours ? 'bg-ink/10' : 'bg-cream/10')}>
+      <div className={cn('relative mt-3 h-2 rounded-full sm:mt-6', lane.ours ? 'bg-ink/10' : 'bg-cream/10')}>
         <motion.div
           className={cn('absolute inset-y-0 left-0 rounded-full', lane.ours ? 'bg-ember' : 'bg-cream/60')}
           style={{ width }}
@@ -124,22 +124,22 @@ const Lane = ({ lane, progress, still }) => {
         >
           <div
             className={cn(
-              '-ml-3 h-6 w-6 rounded-full border-[3px]',
+              '-ml-2.5 h-5 w-5 rounded-full border-[3px] sm:-ml-3 sm:h-6 sm:w-6',
               lane.ours ? 'border-ember bg-paper' : 'border-cream/80 bg-night',
             )}
           />
         </motion.div>
       </div>
 
-      <ol className="mt-5 space-y-2 sm:mt-7 sm:space-y-3">
+      <ol className="mt-4 space-y-2.5 sm:mt-7 sm:space-y-3">
         {lane.steps.map((step, i) => {
           const on = i < reached;
           return (
-            <li key={step} className="flex items-center gap-3">
+            <li key={step} className="flex items-center gap-2 sm:gap-3">
               <span
                 aria-hidden="true"
                 className={cn(
-                  'grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 transition-colors duration-300',
+                  'grid h-6 w-6 shrink-0 sm:h-8 sm:w-8 place-items-center rounded-full border-2 transition-colors duration-300',
                   lane.ours
                     ? on
                       ? 'border-ember bg-ember text-paper'
@@ -149,11 +149,11 @@ const Lane = ({ lane, progress, still }) => {
                       : 'border-cream/35 text-night-muted',
                 )}
               >
-                {React.createElement(lane.icons[i], { className: 'h-4 w-4', strokeWidth: 2.2 })}
+                {React.createElement(lane.icons[i], { className: 'h-3 w-3 sm:h-4 sm:w-4', strokeWidth: 2.2 })}
               </span>
               <span
                 className={cn(
-                  'text-[15px] leading-snug transition-opacity duration-300 sm:text-[17px]',
+                  'text-[12.5px] leading-tight transition-opacity duration-300 sm:text-[17px] sm:leading-snug',
                   /* passo que ainda não chegou: mais claro, mas legível
                      (contraste ~4,5:1 nos dois fundos) */
                   on ? 'opacity-100' : lane.ours ? 'text-ink-muted' : 'text-night-muted',
@@ -179,7 +179,7 @@ const Lane = ({ lane, progress, still }) => {
       {!lane.ours ? (
         <motion.div
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-4 right-4 h-20 w-28 sm:bottom-6 sm:right-6 sm:h-24 sm:w-36"
+          className="pointer-events-none absolute bottom-2 right-2 h-12 w-16 sm:bottom-6 sm:right-6 sm:h-24 sm:w-36"
           initial={false}
           animate={reached >= 5 ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 160, damping: 18 }}
@@ -193,7 +193,7 @@ const Lane = ({ lane, progress, still }) => {
           size={112}
           start="view"
           label="Barrakinha"
-          className="pointer-events-none absolute bottom-4 right-4 h-20 w-20 -rotate-12 text-ember-text sm:bottom-6 sm:right-6 sm:h-28 sm:w-28"
+          className="pointer-events-none absolute bottom-2 right-2 h-14 w-14 -rotate-12 text-ember-text sm:bottom-6 sm:right-6 sm:h-28 sm:w-28"
         />
       ) : null}
     </div>
@@ -252,7 +252,7 @@ const FomeRace = () => {
           <p className="mt-4 hidden max-w-[46ch] text-[17px] leading-relaxed text-night-muted sm:block">
             Role a página e acompanhe os dois pedidos ao mesmo tempo.
           </p>
-          <div ref={gridRef} className="mt-6 grid grid-cols-1 gap-4 sm:mt-10 sm:gap-5 md:grid-cols-2">
+          <div ref={gridRef} className="mt-6 grid grid-cols-2 gap-2 sm:mt-10 sm:gap-5">
             {LANES.map((lane) => (
               <Lane key={lane.key} lane={lane} progress={progress} still={still} />
             ))}
