@@ -7,13 +7,14 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const { render } = await import(path.join(root, 'dist-ssr', 'entry-server.js'));
 
 /*
-  Duas páginas pré-renderizadas: a home e /vendedores. Cada uma tem o
+  Páginas pré-renderizadas: a home, /vendedores e /barrakinha-x-ifood. Cada uma tem o
   seu HTML de saída e a sua árvore (ver `render(page)` em
   src/entry-server.jsx).
 */
 const pages = [
   { page: 'home', file: path.join(root, 'dist', 'index.html') },
   { page: 'vendedores', file: path.join(root, 'dist', 'vendedores', 'index.html') },
+  { page: 'barrakinha-x-ifood', file: path.join(root, 'dist', 'barrakinha-x-ifood', 'index.html') },
 ];
 
 /*

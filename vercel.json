@@ -13,6 +13,10 @@
       "destination": "/vendedores/index.html"
     },
     {
+      "source": "/barrakinha-x-ifood",
+      "destination": "/barrakinha-x-ifood/index.html"
+    },
+    {
       "source": "/evento",
       "destination": "/evento/index.html"
     },

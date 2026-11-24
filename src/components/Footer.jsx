@@ -36,6 +36,7 @@ const Footer = ({ modelCredit = false }) => {
       items: [
         { label: 'Pra quem compra', href: '/#pra-quem-compra' },
         { label: 'Pra quem vende', href: '/vendedores' },
+        { label: 'Barrakinha x iFood', href: '/barrakinha-x-ifood' },
         { label: 'Lista de espera', href: '#lista' },
       ],
     },

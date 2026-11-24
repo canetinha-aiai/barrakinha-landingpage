@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  A home e /vendedores. `privacidade.html` fica de fora porque está marcada como
+  A home, /vendedores e /barrakinha-x-ifood. `privacidade.html` fica de fora porque está marcada como
   `noindex`: listar no sitemap uma página que pede pra não ser
   indexada é uma contradição que o Search Console reporta como erro.
 -->
@@ -16,5 +16,11 @@
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://barrakinha.com.br/barrakinha-x-ifood</loc>
+    <lastmod>2026-11-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

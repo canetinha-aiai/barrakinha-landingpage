@@ -12,6 +12,8 @@ const vendorRoute = {
     server.middlewares.use((req, _res, next) => {
       if (req.url === '/vendedores' || req.url.startsWith('/vendedores?')) {
         req.url = req.url.replace('/vendedores', '/vendedores/index.html');
+      } else if (req.url === '/barrakinha-x-ifood' || req.url.startsWith('/barrakinha-x-ifood?')) {
+        req.url = req.url.replace('/barrakinha-x-ifood', '/barrakinha-x-ifood/index.html');
       } else if (
         req.url === '/evento' ||
         req.url.startsWith('/evento?') ||
@@ -61,6 +63,7 @@ export default defineConfig({
         main: path.resolve(__dirname, 'index.html'),
         privacidade: path.resolve(__dirname, 'privacidade.html'),
         vendedores: path.resolve(__dirname, 'vendedores/index.html'),
+        'barrakinha-x-ifood': path.resolve(__dirname, 'barrakinha-x-ifood/index.html'),
         evento: path.resolve(__dirname, 'evento/index.html'),
       },
     },

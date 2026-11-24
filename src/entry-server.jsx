@@ -2,6 +2,12 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import App from '@/App';
 import Vendedores from '@/pages/Vendedores';
+import BarrakinhaXIfood from '@/pages/BarrakinhaXIfood';
+
+const pages = {
+  vendedores: Vendedores,
+  'barrakinha-x-ifood': BarrakinhaXIfood,
+};
 
 /*
   Entrada usada só no build, nunca no navegador.
@@ -14,5 +20,6 @@ import Vendedores from '@/pages/Vendedores';
   `<div>` vazio que a versão anterior entregava.
 */
 export function render(page = 'home') {
-  return renderToString(page === 'vendedores' ? <Vendedores /> : <App />);
+  const Page = pages[page] || App;
+  return renderToString(<Page />);
 }
