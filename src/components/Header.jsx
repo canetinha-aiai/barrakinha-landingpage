@@ -10,6 +10,8 @@ const links = [
   /* Quem vende tem a página dela: na home o cliente não precisa ler
      sobre mensalidade e cardápio de vendedor. */
   { label: 'Pra quem vende', href: '/vendedores' },
+  /* Comparação com a concorrência: o rótulo não cita marca. */
+  { label: 'Comparativo', href: '/barrakinha-x-ifood' },
 ];
 
 /*

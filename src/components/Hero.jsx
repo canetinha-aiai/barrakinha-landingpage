@@ -93,6 +93,13 @@ const Hero = () => {
               />
             </a>
           </div>
+
+          <a
+            href="/barrakinha-x-ifood"
+            className="mt-7 inline-block rounded text-[15px] text-ink-muted underline decoration-ink/25 underline-offset-4 hover:text-ink hover:decoration-ember"
+          >
+            Compare a Barrakinha com a concorrência
+          </a>
         </div>
 
         <HeroStall className="mx-auto w-full max-w-[460px] lg:col-span-6 lg:-mr-4 lg:max-w-none" />
